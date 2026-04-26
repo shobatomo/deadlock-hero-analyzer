@@ -20,7 +20,7 @@ def compute_axes(normalized_hero_data: Dict[str, Any]):
         ) / 5
 
         axes[hero_id]["survivability"] = (
-            (1 - features.get("deaths", 1))
+            (1 - features.get("deaths", 0))
             + features.get("self_healing_per_min", 0)
             + features.get("kd", 0)
         ) / 3

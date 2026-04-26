@@ -1,3 +1,5 @@
+import json
+
 import requests
 import time
 from typing import Optional, Dict, Any
@@ -100,3 +102,60 @@ def fetch_player_stats_metrics_daily(hero_ids) -> Optional[dict]:
         time.sleep(0.2)
 
     return hero_metrics
+
+
+
+# --------------------------------------------
+# プレイヤー個人のデータを取得する
+# --------------------------------------------
+
+def fetch_player_data(player_id:int, hero_ids):
+    """
+    Deadlock APIから指定したSteamIDのプレイヤーのヒーロー別のデータを取得する
+    """
+
+    hero_metrics = {}
+
+    for hero_id in hero_ids:
+        print(f"Fetching hero {hero_id}")
+
+        params = {
+            "account_ids":player_id,
+            "hero_ids": hero_id,
+            "min_duration_s": 900,
+            "max_matches": 50000
+        }
+
+        response = requests.get(METRICS_URL, params=params)
+
+        if response.status_code != 200:
+            print(f"Error hero {hero_id}")
+            return None
+        data = response.json()
+
+        # hero_metricsにデータを格納していく
+        hero_metrics[str(hero_id)] = data
+
+        # レート制限を考慮しインターバルを設ける
+        time.sleep(0.2)
+    
+    return hero_metrics
+
+
+def main():
+    hero_ids = fetch_hero_list()
+    result = fetch_player_data(888807, hero_ids)
+    
+    return result
+
+if __name__ == "__main__":
+    result = main()
+
+    if result:
+        print("データを取得しました")
+        print(json.dumps(result, indent=2))        
+    else:
+        print("データ取得失敗")
+
+
+
