@@ -13,7 +13,7 @@ def fetch_player_stats_metrics_daily() -> Optional[dict]:
         取得したデータの辞書。エラー時はNoneを返す
     """
     # APIエンドポイントのURL
-    url = "https://assets.deadlock-api.com/v2/heroes"
+    url = "https://api.deadlock-api.com/v1/players/888807526/account-stats"    
     
     try:
         # APIリクエストを送信

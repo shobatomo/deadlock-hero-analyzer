@@ -9,7 +9,7 @@ from typing import Optional, Dict, Any
 HERO_LIST_URL = "https://assets.deadlock-api.com/v2/heroes"
 
 # プレイヤーの統計を取得するエンドポイント
-METRICS_URL = "https://api.deadlock-api.com/v1/analytics/player-stats/metrics"
+METRICS_URL = "https://api.deadlock-api.com/v1/players/hero-stats"
 
 def fetch_hero_list():
     """ヒーロー一覧を取得"""
@@ -109,44 +109,60 @@ def fetch_player_stats_metrics_daily(hero_ids) -> Optional[dict]:
 # プレイヤー個人のデータを取得する
 # --------------------------------------------
 
-def fetch_player_data(player_id:int, hero_ids):
+def fetch_player_data(player_id: str, hero_ids):
     """
     Deadlock APIから指定したSteamIDのプレイヤーのヒーロー別のデータを取得する
     """
 
     hero_metrics = {}
 
-    for hero_id in hero_ids:
-        print(f"Fetching hero {hero_id}")
 
-        params = {
-            "account_ids":player_id,
-            "hero_ids": hero_id,
+    params = {
+            "account_ids": [player_id],
             "min_duration_s": 900,
             "max_matches": 50000
         }
-
-        response = requests.get(METRICS_URL, params=params)
-
-        if response.status_code != 200:
-            print(f"Error hero {hero_id}")
-            return None
-        data = response.json()
-
-        # hero_metricsにデータを格納していく
-        hero_metrics[str(hero_id)] = data
-
-        # レート制限を考慮しインターバルを設ける
-        time.sleep(0.2)
     
-    return hero_metrics
+    response = requests.get(METRICS_URL, params=params)
+    data = response.json()
+
+    return data
+
+    # for hero_id in hero_ids:
+    #     print(f"Fetching hero {hero_id}")
+
+    #     params = {
+    #         # Deadlock APIのplayer-stats/metricsは account_ids と hero_ids を配列として受け取る
+    #         "account_ids": [player_id],
+    #         "hero_ids": [hero_id],
+    #         "min_duration_s": 900,
+    #         "max_matches": 50000
+    #     }
+
+    #     response = requests.get(METRICS_URL, params=params)
+
+    #     if response.status_code != 200:
+    #         print(f"Error hero {hero_id}")
+    #         return None
+    #     data = response.json()
+
+    #     if data:
+    #         print(json.dumps(data, indent=2))
+    #     else:
+    #         print("データがないです")
+
+    #     hero_metrics[str(hero_id)] = data
+
+    #     # レート制限を考慮しインターバルを設ける
+    #     time.sleep(0.2)
+
+    # return hero_metrics
 
 
 def main():
-    hero_ids = fetch_hero_list()
-    result = fetch_player_data(888807, hero_ids)
-    
-    return result
+
+    myID = "76561198849073254"
+    myId3 = int(myID) - 76561197960265728
 
 if __name__ == "__main__":
     result = main()
