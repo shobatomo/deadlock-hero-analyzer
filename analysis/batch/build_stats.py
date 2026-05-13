@@ -1,9 +1,15 @@
-from analysis.core.fetch import fetch_hero_list, fetch_top_player_stats_metrics_daily, fetch_player_stats_metrics_daily
-from analysis.core.extract import extract_feature, extract_top_avg_data, extract_percentiles
-from analysis.core.normalize import normalize_data
-from analysis.core.axes import compute_axes
 import json
+import sys
+from pathlib import Path
 
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from analysis.core.axes import compute_axes
+from analysis.core.extract import extract_feature, extract_top_avg_data, extract_percentiles
+from analysis.core.fetch import fetch_hero_list, fetch_top_player_stats_metrics_daily, fetch_player_stats_metrics_daily
+from analysis.core.normalize import normalize_data
 
 def main():
 

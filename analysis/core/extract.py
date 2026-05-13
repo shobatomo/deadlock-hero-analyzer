@@ -1,6 +1,6 @@
 from typing import Optional, Dict, Any
 
-FEATURES = [
+GLOBAL_FEATURES = [
     # aggression関連の数値
     'neutral_damage',
     'neutral_damage_per_min',
@@ -39,6 +39,27 @@ FEATURES = [
 ]
 
 
+# プレイヤーデータの項目名を、6軸計算で使う共通の特徴量名へ寄せる
+PLAYER_FEATURE_ALIASES = {
+    'kills': 'kills',
+    'kills_per_min': 'kills_per_min',
+    'deaths': 'deaths',
+    'deaths_per_min': 'deaths_per_min',
+    'assists': 'assists',
+    'assists_per_min': 'assists_per_min',
+    'damage_per_min': 'player_damage_per_min',
+    'damage_mitigated_per_min': 'damage_mitigated_per_min',
+    'damage_taken_per_min': 'player_damage_taken_per_min',
+    'denies_per_min': 'denies_per_min',
+    'networth_per_min': 'net_worth_per_min',
+    'last_hits_per_min': 'last_hits_per_min',
+    'creeps_per_min': 'creeps_per_min',
+    'accuracy': 'accuracy',
+    'crit_shot_rate': 'crit_shot_rate',
+    'obj_damage_per_min': 'obj_damage_per_min',
+}
+
+
 def extract_feature(data: Dict[str, Any]):
     """データ全体から必要な特徴量の値のみを取得する"""
     result = {}
@@ -51,7 +72,7 @@ def extract_feature(data: Dict[str, Any]):
         result[hero_id] = {}
 
         # 指定した特徴量を繰り返し処理
-        for feature in FEATURES:
+        for feature in GLOBAL_FEATURES:
 
             print(f"{hero_id}の{feature}を取得します")
 
@@ -115,5 +136,33 @@ def extract_percentiles(data: Dict[str, Any]):
 
             if metric_result:
                 result[hero_id][metric_name] = metric_result
+
+    return result
+
+def extract_player_data(data: Dict[str, Any]):
+    """プレイヤーデータから必要な特徴量を取得する"""
+
+    result = {}
+
+    if not data:
+        return result
+
+    for hero_stats in data:
+        hero_id = str(hero_stats.get("hero_id", "unknown"))
+        print(f"{hero_id}のプレイヤーデータを取得します。")
+
+        result[hero_id] = {}
+
+        for source_name, output_name in PLAYER_FEATURE_ALIASES.items():
+            if source_name in hero_stats and hero_stats[source_name] is not None:
+                result[hero_id][output_name] = hero_stats[source_name]
+
+        kills = result[hero_id].get("kills", 0)
+        assists = result[hero_id].get("assists", 0)
+        deaths = result[hero_id].get("deaths", 0)
+
+        result[hero_id]["kills_plus_assists"] = kills + assists
+        result[hero_id]["kd"] = kills / max(deaths, 1)
+        result[hero_id]["kda"] = (kills + assists) / max(deaths, 1)
 
     return result
