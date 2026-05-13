@@ -43,6 +43,7 @@ def main():
     print("\n===== Top hero axes =====")
     print(json.dumps(hero_top_axes, indent=2))
 
+    return hero_top_axes
     # # データベースに保存する
     # # ヒーローごとのデータを保存
 
