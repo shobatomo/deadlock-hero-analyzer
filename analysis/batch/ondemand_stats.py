@@ -134,21 +134,38 @@ def main():
     args = parse_args()
 
     # 指定されたプレイヤーのオンデマンド統計を作成する
-    result = build_ondemand_stats(args.account_id)
-    if result is None:
+    player_data = build_ondemand_stats(args.account_id)
+    if player_data is None:
         print("Failed to process on-demand stats")
         return None
 
+    # 作成されたプレイヤーのヒーロー別6軸を試合数で重みづけして統合
+    print("プレイヤーの6軸を統合します。")
+    weighted_player_axes = compute_weighted_axes(player_data["axes"], player_data["player_data"])
+    player_data["weighted_axes"] = weighted_player_axes
+
     # 実行結果を標準出力に表示する
     print("\n===== On-demand player stats =====")
-    print(json.dumps(result, indent=2, ensure_ascii=False))
+    print(json.dumps(player_data, indent=2, ensure_ascii=False))
 
     # outputが指定されている場合はJSONファイルとして保存する
     if args.output:
-        save_json(result, args.output)
+        save_json(player_data, args.output)
 
-    return result
+    return player_data
 
+# --------------------------------------------
+# プレイヤーのヒーロー別6軸を試合数で重みづけし統合する
+# --------------------------------------------
+def compute_weighted_axes(player_axes, player_data):
+    """プレイヤーのヒーロー別の6軸を試合数で重みづけして統合"""
+    weighted_axes = {}
+    total_matches = 0
+    for hero_id, axes in player_axes.items():
+        match_count = player_data.get(hero_id, {}).get("matches", 0)    
+        total_match += match_count
+        
+    return
 
 if __name__ == "__main__":
     main()
