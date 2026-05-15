@@ -1,6 +1,7 @@
 import argparse
 import json
 import sys
+import numpy as np
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -155,17 +156,21 @@ def main():
     return player_data
 
 # --------------------------------------------
-# プレイヤーのヒーロー別6軸を試合数で重みづけし統合する
+# プレイヤーのヒーロー別6軸を試合数で重み付けし統合する
 # --------------------------------------------
 def compute_weighted_axes(player_axes, player_data):
     """プレイヤーのヒーロー別の6軸を試合数で重みづけして統合"""
     weighted_axes = {}
     total_matches = 0
     for hero_id, axes in player_axes.items():
+        # player_dataから該当ヒーローidで試合数を取得
+
         match_count = player_data.get(hero_id, {}).get("matches", 0)    
-        total_match += match_count
-        
-    return
+        total_match_count += match_count
+
+
+
+    return weighted_axes
 
 if __name__ == "__main__":
     main()
