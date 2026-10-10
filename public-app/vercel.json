@@ -1,0 +1,32 @@
+{
+  "framework": null,
+  "installCommand": "npm ci",
+  "buildCommand": "npm --prefix frontend ci && npm --prefix frontend run build",
+  "outputDirectory": "frontend/dist",
+  "functions": {
+    "api/public.js": {
+      "maxDuration": 65
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/diagnosis",
+      "destination": "/api/public"
+    },
+    {
+      "source": "/api/candidates",
+      "destination": "/api/public"
+    },
+    {
+      "source": "/api/health",
+      "destination": "/api/public"
+    },
+    {
+      "source": "/result",
+      "destination": "/index.html"
+    }
+  ],
+  "git": {
+    "deploymentEnabled": false
+  }
+}

@@ -1,0 +1,1064 @@
+{
+  "schema_version": 1,
+  "assets_source": "https://api.deadlock-api.com/v1/assets/heroes",
+  "assets_observed_at": "2026-10-08",
+  "eligibility_rule": "player_selectable=true AND development_state=release AND disabled=false AND assigned_players_only=false AND in_development=false; conflicting flags excluded",
+  "regression_ids": [
+    "15",
+    "3"
+  ],
+  "heroes": [
+    {
+      "id": "1",
+      "name": "Infernus",
+      "normal_eligible": true,
+      "reference_enabled": true,
+      "eligibility_fields": {
+        "player_selectable": true,
+        "development_state": "release",
+        "disabled": false,
+        "in_development": false,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": null
+    },
+    {
+      "id": "2",
+      "name": "Seven",
+      "normal_eligible": true,
+      "reference_enabled": true,
+      "eligibility_fields": {
+        "player_selectable": true,
+        "development_state": "release",
+        "disabled": false,
+        "in_development": false,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": null
+    },
+    {
+      "id": "3",
+      "name": "Vindicta",
+      "normal_eligible": true,
+      "reference_enabled": true,
+      "eligibility_fields": {
+        "player_selectable": true,
+        "development_state": "release",
+        "disabled": false,
+        "in_development": false,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": null
+    },
+    {
+      "id": "4",
+      "name": "Lady Geist",
+      "normal_eligible": true,
+      "reference_enabled": true,
+      "eligibility_fields": {
+        "player_selectable": true,
+        "development_state": "release",
+        "disabled": false,
+        "in_development": false,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": null,
+      "reference_status": {
+        "status": "supported",
+        "checked_at": "2026-10-08T04:49:51.460Z"
+      }
+    },
+    {
+      "id": "6",
+      "name": "Abrams",
+      "normal_eligible": true,
+      "reference_enabled": true,
+      "eligibility_fields": {
+        "player_selectable": true,
+        "development_state": "release",
+        "disabled": false,
+        "in_development": false,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": null,
+      "reference_status": {
+        "status": "supported",
+        "checked_at": "2026-10-08T04:49:52.920Z"
+      }
+    },
+    {
+      "id": "7",
+      "name": "Wraith",
+      "normal_eligible": true,
+      "reference_enabled": true,
+      "eligibility_fields": {
+        "player_selectable": true,
+        "development_state": "release",
+        "disabled": false,
+        "in_development": false,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": null,
+      "reference_status": {
+        "status": "supported",
+        "checked_at": "2026-10-08T04:49:54.920Z"
+      }
+    },
+    {
+      "id": "8",
+      "name": "McGinnis",
+      "normal_eligible": true,
+      "reference_enabled": true,
+      "eligibility_fields": {
+        "player_selectable": true,
+        "development_state": "release",
+        "disabled": false,
+        "in_development": false,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": null,
+      "reference_status": {
+        "status": "supported",
+        "checked_at": "2026-10-08T04:49:56.913Z"
+      }
+    },
+    {
+      "id": "10",
+      "name": "Paradox",
+      "normal_eligible": true,
+      "reference_enabled": true,
+      "eligibility_fields": {
+        "player_selectable": true,
+        "development_state": "release",
+        "disabled": false,
+        "in_development": false,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": null,
+      "reference_status": {
+        "status": "supported",
+        "checked_at": "2026-10-08T04:49:58.916Z"
+      }
+    },
+    {
+      "id": "11",
+      "name": "Dynamo",
+      "normal_eligible": true,
+      "reference_enabled": true,
+      "eligibility_fields": {
+        "player_selectable": true,
+        "development_state": "release",
+        "disabled": false,
+        "in_development": false,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": null,
+      "reference_status": {
+        "status": "supported",
+        "checked_at": "2026-10-08T04:50:00.927Z"
+      }
+    },
+    {
+      "id": "12",
+      "name": "Kelvin",
+      "normal_eligible": true,
+      "reference_enabled": true,
+      "eligibility_fields": {
+        "player_selectable": true,
+        "development_state": "release",
+        "disabled": false,
+        "in_development": false,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": null,
+      "reference_status": {
+        "status": "supported",
+        "checked_at": "2026-10-08T04:50:02.921Z"
+      }
+    },
+    {
+      "id": "13",
+      "name": "Haze",
+      "normal_eligible": true,
+      "reference_enabled": true,
+      "eligibility_fields": {
+        "player_selectable": true,
+        "development_state": "release",
+        "disabled": false,
+        "in_development": false,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": null,
+      "reference_status": {
+        "status": "supported",
+        "checked_at": "2026-10-08T04:50:04.931Z"
+      }
+    },
+    {
+      "id": "14",
+      "name": "Holliday",
+      "normal_eligible": true,
+      "reference_enabled": true,
+      "eligibility_fields": {
+        "player_selectable": true,
+        "development_state": "release",
+        "disabled": false,
+        "in_development": false,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": null,
+      "reference_status": {
+        "status": "supported",
+        "checked_at": "2026-10-08T04:50:07.275Z"
+      }
+    },
+    {
+      "id": "15",
+      "name": "Bebop",
+      "normal_eligible": true,
+      "reference_enabled": true,
+      "eligibility_fields": {
+        "player_selectable": true,
+        "development_state": "release",
+        "disabled": false,
+        "in_development": false,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": null
+    },
+    {
+      "id": "16",
+      "name": "Calico",
+      "normal_eligible": true,
+      "reference_enabled": true,
+      "eligibility_fields": {
+        "player_selectable": true,
+        "development_state": "release",
+        "disabled": false,
+        "in_development": false,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": null,
+      "reference_status": {
+        "status": "supported",
+        "checked_at": "2026-10-08T04:50:08.948Z"
+      }
+    },
+    {
+      "id": "17",
+      "name": "Grey Talon",
+      "normal_eligible": true,
+      "reference_enabled": true,
+      "eligibility_fields": {
+        "player_selectable": true,
+        "development_state": "release",
+        "disabled": false,
+        "in_development": false,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": null,
+      "reference_status": {
+        "status": "supported",
+        "checked_at": "2026-10-08T04:50:10.918Z"
+      }
+    },
+    {
+      "id": "18",
+      "name": "Mo & Krill",
+      "normal_eligible": true,
+      "reference_enabled": true,
+      "eligibility_fields": {
+        "player_selectable": true,
+        "development_state": "release",
+        "disabled": false,
+        "in_development": false,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": null,
+      "reference_status": {
+        "status": "supported",
+        "checked_at": "2026-10-08T04:50:13.035Z"
+      }
+    },
+    {
+      "id": "19",
+      "name": "Shiv",
+      "normal_eligible": true,
+      "reference_enabled": true,
+      "eligibility_fields": {
+        "player_selectable": true,
+        "development_state": "release",
+        "disabled": false,
+        "in_development": false,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": null,
+      "reference_status": {
+        "status": "supported",
+        "checked_at": "2026-10-08T04:50:15.463Z"
+      }
+    },
+    {
+      "id": "20",
+      "name": "Ivy",
+      "normal_eligible": true,
+      "reference_enabled": true,
+      "eligibility_fields": {
+        "player_selectable": true,
+        "development_state": "release",
+        "disabled": false,
+        "in_development": false,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": null,
+      "reference_status": {
+        "status": "supported",
+        "checked_at": "2026-10-08T04:50:16.948Z"
+      }
+    },
+    {
+      "id": "21",
+      "name": "Kali",
+      "normal_eligible": false,
+      "reference_enabled": false,
+      "eligibility_fields": {
+        "player_selectable": false,
+        "development_state": null,
+        "disabled": true,
+        "in_development": false,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": "assetsのnormal向け保守条件を満たさない・フラグ不整合"
+    },
+    {
+      "id": "25",
+      "name": "Warden",
+      "normal_eligible": true,
+      "reference_enabled": true,
+      "eligibility_fields": {
+        "player_selectable": true,
+        "development_state": "release",
+        "disabled": false,
+        "in_development": false,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": null,
+      "reference_status": {
+        "status": "supported",
+        "checked_at": "2026-10-08T04:50:18.922Z"
+      }
+    },
+    {
+      "id": "27",
+      "name": "Yamato",
+      "normal_eligible": true,
+      "reference_enabled": true,
+      "eligibility_fields": {
+        "player_selectable": true,
+        "development_state": "release",
+        "disabled": false,
+        "in_development": false,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": null,
+      "reference_status": {
+        "status": "supported",
+        "checked_at": "2026-10-08T04:50:20.928Z"
+      }
+    },
+    {
+      "id": "31",
+      "name": "Lash",
+      "normal_eligible": true,
+      "reference_enabled": true,
+      "eligibility_fields": {
+        "player_selectable": true,
+        "development_state": "release",
+        "disabled": false,
+        "in_development": false,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": null,
+      "reference_status": {
+        "status": "supported",
+        "checked_at": "2026-10-08T04:50:22.927Z"
+      }
+    },
+    {
+      "id": "35",
+      "name": "Viscous",
+      "normal_eligible": true,
+      "reference_enabled": true,
+      "eligibility_fields": {
+        "player_selectable": true,
+        "development_state": "release",
+        "disabled": false,
+        "in_development": false,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": null,
+      "reference_status": {
+        "status": "supported",
+        "checked_at": "2026-10-08T04:50:24.919Z"
+      }
+    },
+    {
+      "id": "38",
+      "name": "Gunslinger",
+      "normal_eligible": false,
+      "reference_enabled": false,
+      "eligibility_fields": {
+        "player_selectable": false,
+        "development_state": null,
+        "disabled": true,
+        "in_development": true,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": "assetsのnormal向け保守条件を満たさない・フラグ不整合"
+    },
+    {
+      "id": "39",
+      "name": "The Boss",
+      "normal_eligible": false,
+      "reference_enabled": false,
+      "eligibility_fields": {
+        "player_selectable": false,
+        "development_state": null,
+        "disabled": true,
+        "in_development": true,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": "assetsのnormal向け保守条件を満たさない・フラグ不整合"
+    },
+    {
+      "id": "48",
+      "name": "Wrecker",
+      "normal_eligible": false,
+      "reference_enabled": false,
+      "eligibility_fields": {
+        "player_selectable": false,
+        "development_state": null,
+        "disabled": true,
+        "in_development": true,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": "assetsのnormal向け保守条件を満たさない・フラグ不整合"
+    },
+    {
+      "id": "49",
+      "name": "Rutger",
+      "normal_eligible": false,
+      "reference_enabled": false,
+      "eligibility_fields": {
+        "player_selectable": false,
+        "development_state": null,
+        "disabled": true,
+        "in_development": true,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": "assetsのnormal向け保守条件を満たさない・フラグ不整合"
+    },
+    {
+      "id": "50",
+      "name": "Pocket",
+      "normal_eligible": true,
+      "reference_enabled": true,
+      "eligibility_fields": {
+        "player_selectable": true,
+        "development_state": "release",
+        "disabled": false,
+        "in_development": false,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": null,
+      "reference_status": {
+        "status": "supported",
+        "checked_at": "2026-10-08T04:50:26.922Z"
+      }
+    },
+    {
+      "id": "51",
+      "name": "Thumper",
+      "normal_eligible": false,
+      "reference_enabled": false,
+      "eligibility_fields": {
+        "player_selectable": false,
+        "development_state": null,
+        "disabled": true,
+        "in_development": true,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": "assetsのnormal向け保守条件を満たさない・フラグ不整合"
+    },
+    {
+      "id": "52",
+      "name": "Mirage",
+      "normal_eligible": true,
+      "reference_enabled": true,
+      "eligibility_fields": {
+        "player_selectable": true,
+        "development_state": "release",
+        "disabled": false,
+        "in_development": false,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": null,
+      "reference_status": {
+        "status": "supported",
+        "checked_at": "2026-10-08T04:50:28.915Z"
+      }
+    },
+    {
+      "id": "53",
+      "name": "Fathom",
+      "normal_eligible": false,
+      "reference_enabled": false,
+      "eligibility_fields": {
+        "player_selectable": false,
+        "development_state": null,
+        "disabled": true,
+        "in_development": true,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": "assetsのnormal向け保守条件を満たさない・フラグ不整合"
+    },
+    {
+      "id": "54",
+      "name": "Cadence",
+      "normal_eligible": false,
+      "reference_enabled": false,
+      "eligibility_fields": {
+        "player_selectable": false,
+        "development_state": null,
+        "disabled": true,
+        "in_development": true,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": "assetsのnormal向け保守条件を満たさない・フラグ不整合"
+    },
+    {
+      "id": "56",
+      "name": "Bomber",
+      "normal_eligible": false,
+      "reference_enabled": false,
+      "eligibility_fields": {
+        "player_selectable": false,
+        "development_state": null,
+        "disabled": true,
+        "in_development": true,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": "assetsのnormal向け保守条件を満たさない・フラグ不整合"
+    },
+    {
+      "id": "57",
+      "name": "Shield Guy",
+      "normal_eligible": false,
+      "reference_enabled": false,
+      "eligibility_fields": {
+        "player_selectable": false,
+        "development_state": null,
+        "disabled": true,
+        "in_development": true,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": "assetsのnormal向け保守条件を満たさない・フラグ不整合"
+    },
+    {
+      "id": "58",
+      "name": "Vyper",
+      "normal_eligible": true,
+      "reference_enabled": true,
+      "eligibility_fields": {
+        "player_selectable": true,
+        "development_state": "release",
+        "disabled": false,
+        "in_development": false,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": null,
+      "reference_status": {
+        "status": "supported",
+        "checked_at": "2026-10-08T04:50:30.925Z"
+      }
+    },
+    {
+      "id": "59",
+      "name": "Vandal",
+      "normal_eligible": false,
+      "reference_enabled": false,
+      "eligibility_fields": {
+        "player_selectable": false,
+        "development_state": null,
+        "disabled": true,
+        "in_development": true,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": "assetsのnormal向け保守条件を満たさない・フラグ不整合"
+    },
+    {
+      "id": "60",
+      "name": "Sinclair",
+      "normal_eligible": true,
+      "reference_enabled": true,
+      "eligibility_fields": {
+        "player_selectable": true,
+        "development_state": "release",
+        "disabled": false,
+        "in_development": false,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": null,
+      "reference_status": {
+        "status": "supported",
+        "checked_at": "2026-10-08T04:50:32.934Z"
+      }
+    },
+    {
+      "id": "61",
+      "name": "Trapper",
+      "normal_eligible": false,
+      "reference_enabled": false,
+      "eligibility_fields": {
+        "player_selectable": false,
+        "development_state": null,
+        "disabled": true,
+        "in_development": true,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": "assetsのnormal向け保守条件を満たさない・フラグ不整合"
+    },
+    {
+      "id": "62",
+      "name": "Raven",
+      "normal_eligible": false,
+      "reference_enabled": false,
+      "eligibility_fields": {
+        "player_selectable": false,
+        "development_state": null,
+        "disabled": true,
+        "in_development": true,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": "assetsのnormal向け保守条件を満たさない・フラグ不整合"
+    },
+    {
+      "id": "63",
+      "name": "Mina",
+      "normal_eligible": true,
+      "reference_enabled": true,
+      "eligibility_fields": {
+        "player_selectable": true,
+        "development_state": "release",
+        "disabled": false,
+        "in_development": false,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": null,
+      "reference_status": {
+        "status": "supported",
+        "checked_at": "2026-10-08T04:50:34.923Z"
+      }
+    },
+    {
+      "id": "64",
+      "name": "Drifter",
+      "normal_eligible": true,
+      "reference_enabled": true,
+      "eligibility_fields": {
+        "player_selectable": true,
+        "development_state": "release",
+        "disabled": false,
+        "in_development": false,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": null,
+      "reference_status": {
+        "status": "supported",
+        "checked_at": "2026-10-08T04:50:36.921Z"
+      }
+    },
+    {
+      "id": "65",
+      "name": "Venator",
+      "normal_eligible": true,
+      "reference_enabled": true,
+      "eligibility_fields": {
+        "player_selectable": true,
+        "development_state": "release",
+        "disabled": false,
+        "in_development": false,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": null,
+      "reference_status": {
+        "status": "supported",
+        "checked_at": "2026-10-08T04:50:38.953Z"
+      }
+    },
+    {
+      "id": "66",
+      "name": "Victor",
+      "normal_eligible": true,
+      "reference_enabled": true,
+      "eligibility_fields": {
+        "player_selectable": true,
+        "development_state": "release",
+        "disabled": false,
+        "in_development": false,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": null,
+      "reference_status": {
+        "status": "supported",
+        "checked_at": "2026-10-08T04:50:41.010Z"
+      }
+    },
+    {
+      "id": "67",
+      "name": "Paige",
+      "normal_eligible": true,
+      "reference_enabled": true,
+      "eligibility_fields": {
+        "player_selectable": true,
+        "development_state": "release",
+        "disabled": false,
+        "in_development": false,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": null,
+      "reference_status": {
+        "status": "supported",
+        "checked_at": "2026-10-08T04:50:42.928Z"
+      }
+    },
+    {
+      "id": "68",
+      "name": "Boho",
+      "normal_eligible": false,
+      "reference_enabled": false,
+      "eligibility_fields": {
+        "player_selectable": false,
+        "development_state": null,
+        "disabled": true,
+        "in_development": true,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": "assetsのnormal向け保守条件を満たさない・フラグ不整合"
+    },
+    {
+      "id": "69",
+      "name": "The Doorman",
+      "normal_eligible": true,
+      "reference_enabled": true,
+      "eligibility_fields": {
+        "player_selectable": true,
+        "development_state": "release",
+        "disabled": false,
+        "in_development": false,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": null,
+      "reference_status": {
+        "status": "supported",
+        "checked_at": "2026-10-08T04:50:44.920Z"
+      }
+    },
+    {
+      "id": "70",
+      "name": "Skyrunner",
+      "normal_eligible": false,
+      "reference_enabled": false,
+      "eligibility_fields": {
+        "player_selectable": false,
+        "development_state": null,
+        "disabled": true,
+        "in_development": true,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": "assetsのnormal向け保守条件を満たさない・フラグ不整合"
+    },
+    {
+      "id": "71",
+      "name": "Swan",
+      "normal_eligible": false,
+      "reference_enabled": false,
+      "eligibility_fields": {
+        "player_selectable": false,
+        "development_state": null,
+        "disabled": true,
+        "in_development": true,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": "assetsのnormal向け保守条件を満たさない・フラグ不整合"
+    },
+    {
+      "id": "72",
+      "name": "Billy",
+      "normal_eligible": true,
+      "reference_enabled": true,
+      "eligibility_fields": {
+        "player_selectable": true,
+        "development_state": "release",
+        "disabled": false,
+        "in_development": false,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": null,
+      "reference_status": {
+        "status": "supported",
+        "checked_at": "2026-10-08T04:50:46.923Z"
+      }
+    },
+    {
+      "id": "73",
+      "name": "Druid",
+      "normal_eligible": false,
+      "reference_enabled": false,
+      "eligibility_fields": {
+        "player_selectable": false,
+        "development_state": null,
+        "disabled": true,
+        "in_development": true,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": "assetsのnormal向け保守条件を満たさない・フラグ不整合"
+    },
+    {
+      "id": "74",
+      "name": "Graf",
+      "normal_eligible": false,
+      "reference_enabled": false,
+      "eligibility_fields": {
+        "player_selectable": false,
+        "development_state": null,
+        "disabled": true,
+        "in_development": true,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": "assetsのnormal向け保守条件を満たさない・フラグ不整合"
+    },
+    {
+      "id": "75",
+      "name": "Fortuna",
+      "normal_eligible": false,
+      "reference_enabled": false,
+      "eligibility_fields": {
+        "player_selectable": false,
+        "development_state": null,
+        "disabled": true,
+        "in_development": true,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": "assetsのnormal向け保守条件を満たさない・フラグ不整合"
+    },
+    {
+      "id": "76",
+      "name": "Graves",
+      "normal_eligible": true,
+      "reference_enabled": false,
+      "eligibility_fields": {
+        "player_selectable": true,
+        "development_state": "release",
+        "disabled": false,
+        "in_development": false,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": null,
+      "reference_status": {
+        "status": "unsupported",
+        "reason": "missing/nonfinite/degenerate population or top metrics",
+        "checked_at": "2026-10-08T04:50:48.922Z"
+      }
+    },
+    {
+      "id": "77",
+      "name": "Apollo",
+      "normal_eligible": true,
+      "reference_enabled": true,
+      "eligibility_fields": {
+        "player_selectable": true,
+        "development_state": "release",
+        "disabled": false,
+        "in_development": false,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": null,
+      "reference_status": {
+        "status": "supported",
+        "checked_at": "2026-10-08T04:50:50.934Z"
+      }
+    },
+    {
+      "id": "78",
+      "name": "Deadman Danny",
+      "normal_eligible": false,
+      "reference_enabled": false,
+      "eligibility_fields": {
+        "player_selectable": false,
+        "development_state": "pre_release",
+        "disabled": false,
+        "in_development": false,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": "assetsのnormal向け保守条件を満たさない・フラグ不整合"
+    },
+    {
+      "id": "79",
+      "name": "Rem",
+      "normal_eligible": true,
+      "reference_enabled": true,
+      "eligibility_fields": {
+        "player_selectable": true,
+        "development_state": "release",
+        "disabled": false,
+        "in_development": false,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": null,
+      "reference_status": {
+        "status": "supported",
+        "checked_at": "2026-10-08T04:50:52.934Z"
+      }
+    },
+    {
+      "id": "80",
+      "name": "Silver",
+      "normal_eligible": true,
+      "reference_enabled": true,
+      "eligibility_fields": {
+        "player_selectable": true,
+        "development_state": "release",
+        "disabled": false,
+        "in_development": false,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": null,
+      "reference_status": {
+        "status": "supported",
+        "checked_at": "2026-10-08T04:50:54.931Z"
+      }
+    },
+    {
+      "id": "81",
+      "name": "Celeste",
+      "normal_eligible": true,
+      "reference_enabled": true,
+      "eligibility_fields": {
+        "player_selectable": true,
+        "development_state": "release",
+        "disabled": false,
+        "in_development": false,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": null,
+      "reference_status": {
+        "status": "supported",
+        "checked_at": "2026-10-08T04:50:56.929Z"
+      }
+    },
+    {
+      "id": "82",
+      "name": "Opera",
+      "normal_eligible": false,
+      "reference_enabled": false,
+      "eligibility_fields": {
+        "player_selectable": false,
+        "development_state": null,
+        "disabled": true,
+        "in_development": true,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": "assetsのnormal向け保守条件を満たさない・フラグ不整合"
+    },
+    {
+      "id": "83",
+      "name": "hero_testhero",
+      "normal_eligible": false,
+      "reference_enabled": false,
+      "eligibility_fields": {
+        "player_selectable": false,
+        "development_state": null,
+        "disabled": true,
+        "in_development": true,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": "assetsのnormal向け保守条件を満たさない・フラグ不整合"
+    },
+    {
+      "id": "84",
+      "name": "Rat King",
+      "normal_eligible": true,
+      "reference_enabled": true,
+      "eligibility_fields": {
+        "player_selectable": true,
+        "development_state": "release",
+        "disabled": false,
+        "in_development": false,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": null,
+      "reference_status": {
+        "status": "supported",
+        "checked_at": "2026-10-08T04:50:58.933Z"
+      }
+    },
+    {
+      "id": "85",
+      "name": "Solomon",
+      "normal_eligible": false,
+      "reference_enabled": false,
+      "eligibility_fields": {
+        "player_selectable": false,
+        "development_state": "pre_release",
+        "disabled": false,
+        "in_development": false,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": "assetsのnormal向け保守条件を満たさない・フラグ不整合"
+    },
+    {
+      "id": "86",
+      "name": "Violet",
+      "normal_eligible": false,
+      "reference_enabled": false,
+      "eligibility_fields": {
+        "player_selectable": false,
+        "development_state": "pre_release",
+        "disabled": false,
+        "in_development": false,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": "assetsのnormal向け保守条件を満たさない・フラグ不整合"
+    },
+    {
+      "id": "87",
+      "name": "Nurse Harrow",
+      "normal_eligible": false,
+      "reference_enabled": false,
+      "eligibility_fields": {
+        "player_selectable": false,
+        "development_state": "pre_release",
+        "disabled": false,
+        "in_development": false,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": "assetsのnormal向け保守条件を満たさない・フラグ不整合"
+    },
+    {
+      "id": "88",
+      "name": "Baba",
+      "normal_eligible": false,
+      "reference_enabled": false,
+      "eligibility_fields": {
+        "player_selectable": true,
+        "development_state": "release",
+        "disabled": false,
+        "in_development": true,
+        "assigned_players_only": false
+      },
+      "unsupported_reason": "assetsのnormal向け保守条件を満たさない・フラグ不整合"
+    }
+  ],
+  "reference_verified_at": "2026-10-08"
+}

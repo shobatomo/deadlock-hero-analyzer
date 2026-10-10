@@ -1,0 +1,17 @@
+{
+  "name": "deadlock-fyth-local",
+  "private": true,
+  "scripts": {
+    "build": "npm --prefix frontend run build",
+    "start": "node scripts/public-preview-server.mjs",
+    "test": "node scripts/verify-public-bundle.mjs"
+  },
+  "type": "module",
+  "dependencies": {
+    "express": "5.2.1",
+    "pg": "8.23.1"
+  },
+  "engines": {
+    "node": "22.x"
+  }
+}

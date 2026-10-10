@@ -1,0 +1,209 @@
+{
+  "schema_version": 1,
+  "repository": "shobatomo/deadlock-hero-analyzer",
+  "candidate_branch": "fyth/public-preview-2026-10-09",
+  "candidate_repository_prefix": "public-app/",
+  "base_sha": "dfcb66bb28639479c0cfa153417a47783517e764",
+  "files": [
+    {
+      "path": "api/public.js",
+      "bytes": 86,
+      "sha256": "335bb503d8ebe308556c22d794fb91837a912631b61307570f407221e20a188b"
+    },
+    {
+      "path": "backend/public-app.js",
+      "bytes": 3283,
+      "sha256": "1cf61b0a3b919af2796cb352fd4fd7a50baffb6c36f8f0413c6ed9d6ac37f9dd"
+    },
+    {
+      "path": "backend/public-collection.js",
+      "bytes": 5892,
+      "sha256": "d4ce82d7b8ff96c400fb2cfd1e23f2fb277219eac3025ed1a2b5603c0cff66e1"
+    },
+    {
+      "path": "backend/five-axis.js",
+      "bytes": 7386,
+      "sha256": "151b4a328b220f8fda0ece0ac0a3138fd9897f9d461a4134c44be441def60af5"
+    },
+    {
+      "path": "backend/read-only-reference-store.js",
+      "bytes": 942,
+      "sha256": "b9809311bf3501f2adc6aa8f45b9b09dd209d1c2df0e4da9d7d6ed50051c98d4"
+    },
+    {
+      "path": "backend/reference-runtime.js",
+      "bytes": 1053,
+      "sha256": "6f7032610afdcb2d1bd83ebe9021f4f3b25daabfd5f4ae42669cce40c213e5a6"
+    },
+    {
+      "path": "backend/snapshot-reader.js",
+      "bytes": 2658,
+      "sha256": "424462d45873960bc7e8a571f5ec25f6e61845ac8214240c69a54d64ebe423c4"
+    },
+    {
+      "path": "backend/sql-executor.js",
+      "bytes": 2387,
+      "sha256": "57092351012e2a28c186473e6fb7e8e76f82621b5ec5f55d706e33895e64fe54"
+    },
+    {
+      "path": "backend/reference-contract-v2.js",
+      "bytes": 5887,
+      "sha256": "5957fb64c9be1ae928e0e69e403bfc1760f49fc9b569394b3879269ba4169c51"
+    },
+    {
+      "path": "backend/reference-contract-legacy.js",
+      "bytes": 4696,
+      "sha256": "34e27c26bfecf5b00cbeab36b0dd7d0b4abbdfb16161a20e25be03faf2b55ac8"
+    },
+    {
+      "path": "shared/diagnosis.mjs",
+      "bytes": 4216,
+      "sha256": "bfe815b755e354fba5e421cf8c1e566b7161c59ba2469a126d7e2f901588527c"
+    },
+    {
+      "path": "shared/own-metadata.mjs",
+      "bytes": 2587,
+      "sha256": "3bb0ce8958969fd88b40e409dcaed04491086662b59cfaf5be55c31b24a52101"
+    },
+    {
+      "path": "shared/heroes.mjs",
+      "bytes": 459,
+      "sha256": "95d533f3e380a20483578e67bf9077451c34ba3dc4d4f64a5e748ad45853f7cc"
+    },
+    {
+      "path": "shared/heroes.json",
+      "bytes": 30117,
+      "sha256": "e938af659729b2175fd9c0b98727b00af83feb16756aabf9e9ce285156236c2e"
+    },
+    {
+      "path": "shared/hero-guides.json",
+      "bytes": 2160,
+      "sha256": "31831c25353025bd45c6c87553a3cc26f620a1bb2dd0d43397e9160bf5c741f3"
+    },
+    {
+      "path": "shared/reference-config.mjs",
+      "bytes": 1960,
+      "sha256": "7e2c6a22f3260a7ce04794418154b17b1ec3bee330eb9df78d030513f26be417"
+    },
+    {
+      "path": "shared/reference-bootstrap.json",
+      "bytes": 50824,
+      "sha256": "00aac7a04020db13c74133c46e636a9844844974a4aa8a1ae2c53c86999ca1ee"
+    },
+    {
+      "path": "frontend/package.json",
+      "bytes": 701,
+      "sha256": "8211bd8836460527ee32a3a92188bb548041c15264a4e0e2e7f24097915096f7"
+    },
+    {
+      "path": "frontend/package-lock.json",
+      "bytes": 125068,
+      "sha256": "8f302d49a5693107c4bad088168aef55400973c09ec631d8999bd2de4e374085"
+    },
+    {
+      "path": "frontend/vite.config.js",
+      "bytes": 359,
+      "sha256": "6192888acef002f260c98561e2e6d3ad7178e9cf0afab71141af1e27d3d17a9e"
+    },
+    {
+      "path": "frontend/index.html",
+      "bytes": 380,
+      "sha256": "1340767929c7c4d5fd392324b93834b3bc42a2597db3967c8ef74585a63738d4"
+    },
+    {
+      "path": "frontend/public/favicon.svg",
+      "bytes": 9522,
+      "sha256": "61bc9a161de58248288e6905425d7180f0624c2865007b97d763fdac12043a66"
+    },
+    {
+      "path": "frontend/src/main.jsx",
+      "bytes": 229,
+      "sha256": "4b4b864dbe45253425d0c925337180ec07e204295179f80f59551216f466f618"
+    },
+    {
+      "path": "frontend/src/App.jsx",
+      "bytes": 386,
+      "sha256": "2cfa2d3cf92a35c3ceef72b906d0173424541e025366e1b7e54627dc73546137"
+    },
+    {
+      "path": "frontend/src/App.css",
+      "bytes": 2891,
+      "sha256": "6e25a776d3e8102da5bacb3cb99f4a5fc662a2e01e6143140671a556d28c3d5c"
+    },
+    {
+      "path": "frontend/src/index.css",
+      "bytes": 2888,
+      "sha256": "5cba3b03efa3428b3cc9d7d50998618a2b70a5bc458ce242d575333cde2cd8d3"
+    },
+    {
+      "path": "frontend/src/pages/Home/Home.jsx",
+      "bytes": 2041,
+      "sha256": "0de29b4768806b3666747103940c4c3bc603aea5b9a78e35bb988f9b4669bee0"
+    },
+    {
+      "path": "frontend/src/pages/Result/Result.jsx",
+      "bytes": 313,
+      "sha256": "2e577ac595b87a715816075ed00017d732ffe9d3f2b64aff87a401d5cb23c32b"
+    },
+    {
+      "path": "frontend/src/components/PublicDiagnosis.jsx",
+      "bytes": 3410,
+      "sha256": "e3527fd7fee57a4a64af1d3f29428086fd5874e58c0dd3e2f211b9d0b275975b"
+    },
+    {
+      "path": "frontend/src/components/FiveAxisSummary.jsx",
+      "bytes": 3273,
+      "sha256": "d8c13ea1e28d3d6503e0ee454b82d8e1d8bbe18055d1f56d57362ce9c7299dd4"
+    },
+    {
+      "path": "frontend/src/lib/api.js",
+      "bytes": 808,
+      "sha256": "ef9bdf3384aaef8924b7c59fda9e3116abbc8624429d8df764844d195a4a2720"
+    },
+    {
+      "path": "frontend/src/lib/session-input.js",
+      "bytes": 193,
+      "sha256": "c29148c57a8d5547b47f2159a9e19f640cd9f700c811550c64838c5a098e83e5"
+    },
+    {
+      "path": "package.json",
+      "bytes": 357,
+      "sha256": "298f7d59300da4fed77a7615b3324f314241f968eea94aba2d1f2b2766e7d27c"
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 37502,
+      "sha256": "b0d7fc75a60a8f6934beb9b1ded1aea09e33360327411913af7d1bc0a9f292ce"
+    },
+    {
+      "path": "vercel.json",
+      "bytes": 634,
+      "sha256": "de1845a8d8de149930de11748f3da22542505e9ea32affb544f7db4d5beb4697"
+    },
+    {
+      "path": "scripts/public-preview-server.mjs",
+      "bytes": 1708,
+      "sha256": "cfbf99a195033c377eedea8717ff512d2213c2b69608a4586c834082dd32008a"
+    },
+    {
+      "path": "scripts/verify-public-bundle.mjs",
+      "bytes": 7430,
+      "sha256": "2610b78a32e719ea120dd042eb79e373b778831281f4001c4188f903adeda376"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 78,
+      "sha256": "1f7b333ea5b6d601a6d8cb9cc98bed2c1b09d1b5ac28b5facfb5775907170155"
+    },
+    {
+      "path": ".vercelignore",
+      "bytes": 90,
+      "sha256": "7af4f2ec464290cc6d60550f9f0e79c1d87276dc1539440e05f8ce2030e8fac3"
+    },
+    {
+      "path": "README.md",
+      "bytes": 705,
+      "sha256": "4a25b00d2c3f0e735eb057b026be96888c07547e7818c7ee3d440115f4283d1d"
+    }
+  ]
+}

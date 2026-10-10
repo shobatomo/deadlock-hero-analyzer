@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "assets_observed_at": "2026-10-08",
+  "reviewed_at": "2026-10-09",
+  "source_note": "ゲームassets説明を配信するコミュニティAPIの保存資料。Valve公式APIとは扱いません。",
+  "official_changelog": "https://forums.playdeadlock.com/threads/09-29-2026.166726/",
+  "roster_notice": "公式更新でRat Kingの追加を確認し、保存一覧にも含まれています。現在選択できる全ヒーローを網羅する保証はありません。",
+  "roster_source": "https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1845383656387709",
+  "heroes": {
+    "50": {
+      "description": "ショットガンで近距離に入り、飛ぶクロークの移動と鞄への一時退避を組み合わせるヒーロー。",
+      "source": "https://api.deadlock-api.com/v1/assets/heroes",
+      "assets_observed_at": "2026-10-08",
+      "reviewed_at": "2026-10-09"
+    },
+    "7": {
+      "description": "相手を分断して一対一の戦いを作り、銃撃とテレポートを使って攻防を切り替えるヒーロー。",
+      "source": "https://api.deadlock-api.com/v1/assets/heroes",
+      "assets_observed_at": "2026-10-08",
+      "reviewed_at": "2026-10-09"
+    },
+    "58": {
+      "description": "滑る移動を使って位置を変え、銃撃と毒で相手を狙うヒーロー。",
+      "source": "https://api.deadlock-api.com/v1/assets/heroes",
+      "assets_observed_at": "2026-10-08",
+      "reviewed_at": "2026-10-09"
+    },
+    "15": {
+      "description": "フックで相手の位置を動かし、複数のアビリティを組み合わせて戦うヒーロー。",
+      "source": "https://api.deadlock-api.com/v1/assets/heroes",
+      "assets_observed_at": "2026-10-08",
+      "reviewed_at": "2026-10-09"
+    },
+    "3": {
+      "description": "空中で位置を取りながら射撃し、傷ついた相手を遠距離から狙うヒーロー。",
+      "source": "https://api.deadlock-api.com/v1/assets/heroes",
+      "assets_observed_at": "2026-10-08",
+      "reviewed_at": "2026-10-09"
+    }
+  }
+}
