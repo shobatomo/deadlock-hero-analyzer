@@ -1,8 +1,11 @@
 import { validateDiagnosis } from '../../../shared/diagnosis.mjs'
+import {parseProfileInput} from './steam-input.mjs'
 export async function requestDiagnosis(accountId, { signal, collect = false, refresh = false } = {}) {
+    const parsed=parseProfileInput(accountId)
+    if(!parsed.accountId)throw new Error('プレイヤーIDまたはSteamプロフィールURLを確認してください。')
     const response = await fetch('/api/diagnosis', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ account_id: accountId, ...(collect ? {collect:true,refresh} : {}) }), signal,
+        body: JSON.stringify({ account_id: parsed.accountId, ...(collect ? {collect:true,refresh} : {}) }), signal,
     })
     let data
     try { data = await response.json() } catch {

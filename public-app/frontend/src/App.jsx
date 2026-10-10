@@ -5,7 +5,7 @@ import Home from './pages/Home/Home'
 import Result from './pages/Result/Result'
 function Shell(){
  const {pathname}=useLocation()
- useEffect(()=>{document.title=pathname==='/result'?'ヒーロー候補 | FYTH':'FYTH | 次に試すヒーローを探す';window.scrollTo(0,0);document.getElementById('main-content')?.focus({preventScroll:true})},[pathname])
+ useEffect(()=>{window.scrollTo(0,0);document.getElementById('main-content')?.focus({preventScroll:true})},[pathname])
  return <><a className="skip-link" href="#main-content">本文へ移動</a>
   <header className="site-header"><Link to="/" className="brand" aria-label="FYTH トップへ"><span className="brand-mark" aria-hidden="true">F</span><span>FYTH<small>FIND YOUR TRUE HERO</small></span></Link><span className="header-note">DEADLOCK · 非公式ヒーロー診断</span></header>
   <Routes><Route path="/" element={<Home/>}/><Route path="/result" element={<Result/>}/><Route path="*" element={<Home/>}/></Routes>

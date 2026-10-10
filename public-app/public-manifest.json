@@ -112,13 +112,18 @@
     },
     {
       "path": "frontend/index.html",
-      "bytes": 380,
-      "sha256": "1340767929c7c4d5fd392324b93834b3bc42a2597db3967c8ef74585a63738d4"
+      "bytes": 1419,
+      "sha256": "2ba00280f649cc3dd214d0651685c5323b7a2e49b8089bb23e92966090acc75c"
     },
     {
       "path": "frontend/public/favicon.svg",
-      "bytes": 9522,
-      "sha256": "61bc9a161de58248288e6905425d7180f0624c2865007b97d763fdac12043a66"
+      "bytes": 272,
+      "sha256": "45561757b2dd771fb7b403160925fede56a2a5c3d94226924f0e248fa391bdb4"
+    },
+    {
+      "path": "frontend/public/favicon.ico",
+      "bytes": 5430,
+      "sha256": "eaeacf61add44cbbd30e37cba8cf47dc75ea69ddc2bd63ec6d749ec9839dab3a"
     },
     {
       "path": "frontend/src/main.jsx",
@@ -127,13 +132,13 @@
     },
     {
       "path": "frontend/src/App.jsx",
-      "bytes": 1733,
-      "sha256": "7a707ea4f0c2d189c8ab3dc47b620c09077689bdb8d023fa5779b25061bfe5f3"
+      "bytes": 1626,
+      "sha256": "785e4c3bd36f8653f8f716d42577e5bf8ab30ee8d50d9cdd258df6f2e5989b49"
     },
     {
       "path": "frontend/src/App.css",
-      "bytes": 12812,
-      "sha256": "373772258b41992b6bbc76d42fb621f856eba3faf220000279fd2e09be396032"
+      "bytes": 14906,
+      "sha256": "d65852e8761545394cc052c2ee34431e7db6651a66070466543ddeb3dc9756e1"
     },
     {
       "path": "frontend/src/index.css",
@@ -142,23 +147,23 @@
     },
     {
       "path": "frontend/src/pages/Home/Home.jsx",
-      "bytes": 4849,
-      "sha256": "00d74334c6e63f5785a428c500db6f784373570191983099127a7740288a60e1"
+      "bytes": 4287,
+      "sha256": "83e82bff2775f5a486b6783ba1a3370347901b7d65fb85274680abf5ebded633"
     },
     {
       "path": "frontend/src/pages/Result/Result.jsx",
-      "bytes": 484,
-      "sha256": "9811f237f21730b4dd3035503478d4b456e130e5e7770a3da5dd3d2996739af8"
+      "bytes": 431,
+      "sha256": "145bb0c858bc7b994d6e4d7f3e87c314c6ab2b234dfa0e8143ef3afaa4546977"
     },
     {
       "path": "frontend/src/components/PublicDiagnosis.jsx",
-      "bytes": 7860,
-      "sha256": "86b908a686adeca945dc54837ad4ed58274482bd41419606caaa21a322a1a013"
+      "bytes": 6944,
+      "sha256": "1cd1084118b1649f5a25f1c8370203169cd39594a1fed4a731c3bab086b1786a"
     },
     {
       "path": "frontend/src/components/FiveAxisSummary.jsx",
-      "bytes": 6266,
-      "sha256": "9fd337b1649700b1f830afdfeb17ba3d558a37cd4affdd2cdac4bfe7c7965359"
+      "bytes": 5836,
+      "sha256": "bcd34c1f01a2329b5d2195ba3c07ea2210124476a0f70aa84c9780abe67093f5"
     },
     {
       "path": "frontend/src/components/HeroPortrait.jsx",
@@ -167,13 +172,18 @@
     },
     {
       "path": "frontend/src/lib/api.js",
-      "bytes": 1252,
-      "sha256": "13b9c952c6c1f33bd5288d74b70859d28f8c27b95d368ef8ebd0f20bdf4a7e39"
+      "bytes": 1484,
+      "sha256": "9c74c46e1b0c560ddd3067afec1517328ac834d5e7da85c967db771b7e589625"
     },
     {
       "path": "frontend/src/lib/session-input.js",
       "bytes": 193,
       "sha256": "c29148c57a8d5547b47f2159a9e19f640cd9f700c811550c64838c5a098e83e5"
+    },
+    {
+      "path": "frontend/src/lib/steam-input.mjs",
+      "bytes": 1145,
+      "sha256": "9c95a262577c0405b520b38f39014d336b01ee37cbcc6d25f1fd892a9f02b4eb"
     },
     {
       "path": "frontend/public/heroes/1.webp",
