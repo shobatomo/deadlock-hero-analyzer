@@ -1,0 +1,244 @@
+{
+  "schema_version": 1,
+  "metadata_source": "https://api.deadlock-api.com/v1/assets/heroes",
+  "metadata_observed_at": "2026-10-08",
+  "images_fetched_at": "2026-10-10",
+  "provider": "Deadlock API (community)",
+  "rights_note": "Game artwork belongs to Valve and its respective rights holders. API source MIT license is not treated as a game-art license. FYTH is unofficial and not endorsed by Valve.",
+  "heroes": {
+    "1": {
+      "image": "/heroes/1.webp",
+      "source": "https://assets-bucket.deadlock-api.com/assets-api-res/images/heroes/inferno_card.webp",
+      "bytes": 47886,
+      "sha256": "4d68144b8a9543cf46626558f34ea8469e6710c6b93658d84f5e9186c0c69c22"
+    },
+    "2": {
+      "image": "/heroes/2.webp",
+      "source": "https://assets-bucket.deadlock-api.com/assets-api-res/images/heroes/gigawatt_card.webp",
+      "bytes": 57524,
+      "sha256": "cc8b8439abcd15eff6dc625923d57dbc10128de59b9439498b9e6195f8a9d35f"
+    },
+    "3": {
+      "image": "/heroes/3.webp",
+      "source": "https://assets-bucket.deadlock-api.com/assets-api-res/images/heroes/hornet_card.webp",
+      "bytes": 57844,
+      "sha256": "a932a83e8699bca94a544d569fb875345a59222c4522775b5991e51f063c2ff8"
+    },
+    "4": {
+      "image": "/heroes/4.webp",
+      "source": "https://assets-bucket.deadlock-api.com/assets-api-res/images/heroes/spectre_card.webp",
+      "bytes": 62828,
+      "sha256": "493f35e4b509ad502b0a4e881ce22447d06c4fbf70fbbbb6e3f3270dc7fdf76e"
+    },
+    "6": {
+      "image": "/heroes/6.webp",
+      "source": "https://assets-bucket.deadlock-api.com/assets-api-res/images/heroes/bull_card.webp",
+      "bytes": 48634,
+      "sha256": "d2552050d6df8fa97ec8a1b149ef9fa77612cfcb20bd0982b72118fb4dcd19e2"
+    },
+    "7": {
+      "image": "/heroes/7.webp",
+      "source": "https://assets-bucket.deadlock-api.com/assets-api-res/images/heroes/wraith_card.webp",
+      "bytes": 50800,
+      "sha256": "fe52ddaae5ac1e685c4091a302b6881e2db511986840fd2dac885a8a5f3fe827"
+    },
+    "8": {
+      "image": "/heroes/8.webp",
+      "source": "https://assets-bucket.deadlock-api.com/assets-api-res/images/heroes/engineer_card.webp",
+      "bytes": 56778,
+      "sha256": "a1bc712ab83a28f72c5a1a80e44771ee9abed3dd91ccf56aefd6ee4f557542ad"
+    },
+    "10": {
+      "image": "/heroes/10.webp",
+      "source": "https://assets-bucket.deadlock-api.com/assets-api-res/images/heroes/chrono_card.webp",
+      "bytes": 44226,
+      "sha256": "8a8e307a9a7a4b71169cad42e99ed32733a320f93eb3e49ad2e7923bc732b72a"
+    },
+    "11": {
+      "image": "/heroes/11.webp",
+      "source": "https://assets-bucket.deadlock-api.com/assets-api-res/images/heroes/sumo_card.webp",
+      "bytes": 60992,
+      "sha256": "73a0d0b2615ee476b28abd7963bfe8c935964e4b671b2c5ba3de1ab3b4de8523"
+    },
+    "12": {
+      "image": "/heroes/12.webp",
+      "source": "https://assets-bucket.deadlock-api.com/assets-api-res/images/heroes/kelvin_card.webp",
+      "bytes": 77554,
+      "sha256": "6760423b96858fc60fc2ca1abdf52e18f41fd1fbf4e8e198949e0d28201d226d"
+    },
+    "13": {
+      "image": "/heroes/13.webp",
+      "source": "https://assets-bucket.deadlock-api.com/assets-api-res/images/heroes/haze_card.webp",
+      "bytes": 41656,
+      "sha256": "0bbeb814bcb9b8301a4437a760f6cd992de2c057e4096f1a4d1bd3c658e3696d"
+    },
+    "14": {
+      "image": "/heroes/14.webp",
+      "source": "https://assets-bucket.deadlock-api.com/assets-api-res/images/heroes/astro_card.webp",
+      "bytes": 51870,
+      "sha256": "c0f062e2af9171ae4455c1fe56b2c476b931d8880801a9188453382880b918e5"
+    },
+    "15": {
+      "image": "/heroes/15.webp",
+      "source": "https://assets-bucket.deadlock-api.com/assets-api-res/images/heroes/bebop_card.webp",
+      "bytes": 53434,
+      "sha256": "7e4933548660fb2ed6eb7d7a3c4f7cf6ca8c5d57c971d08ad7c793fa754ea7dd"
+    },
+    "16": {
+      "image": "/heroes/16.webp",
+      "source": "https://assets-bucket.deadlock-api.com/assets-api-res/images/heroes/nano_card.webp",
+      "bytes": 54122,
+      "sha256": "6713f2162bd4cc4ed8a01df76756290ec548711e7e6dd31deb611b84c7943608"
+    },
+    "17": {
+      "image": "/heroes/17.webp",
+      "source": "https://assets-bucket.deadlock-api.com/assets-api-res/images/heroes/archer_card.webp",
+      "bytes": 61514,
+      "sha256": "1f2ce2d957c0d15ec5cb715c13760c49bdfcb8d10b069dba8512e711c5fab396"
+    },
+    "18": {
+      "image": "/heroes/18.webp",
+      "source": "https://assets-bucket.deadlock-api.com/assets-api-res/images/heroes/digger_card.webp",
+      "bytes": 61256,
+      "sha256": "5b19f0797e5f4fa9047caaf08f82ad2d40d09731b73f0fe30e6a8767a0e636a4"
+    },
+    "19": {
+      "image": "/heroes/19.webp",
+      "source": "https://assets-bucket.deadlock-api.com/assets-api-res/images/heroes/shiv_card.webp",
+      "bytes": 60342,
+      "sha256": "103501c251a1d9662dce4f6d4aa76277e1b4a0c7771b0631c34cc8a8ce94f357"
+    },
+    "20": {
+      "image": "/heroes/20.webp",
+      "source": "https://assets-bucket.deadlock-api.com/assets-api-res/images/heroes/tengu_card.webp",
+      "bytes": 56098,
+      "sha256": "20b17931d8d2477b39ba823d650b7709b70252880071441b823bee820817f5ac"
+    },
+    "25": {
+      "image": "/heroes/25.webp",
+      "source": "https://assets-bucket.deadlock-api.com/assets-api-res/images/heroes/warden_card.webp",
+      "bytes": 48908,
+      "sha256": "8b11070c36a371b16e5ccf7f923f0339f7b67eca47dd9aa7f3147c5c559beb91"
+    },
+    "27": {
+      "image": "/heroes/27.webp",
+      "source": "https://assets-bucket.deadlock-api.com/assets-api-res/images/heroes/yamato_card.webp",
+      "bytes": 40098,
+      "sha256": "4754b10c822be1b55c410211a6fc10944aa5bfc9d0e950a5e848f9af0cdc3ae8"
+    },
+    "31": {
+      "image": "/heroes/31.webp",
+      "source": "https://assets-bucket.deadlock-api.com/assets-api-res/images/heroes/lash_card.webp",
+      "bytes": 52104,
+      "sha256": "a8305b09529d47207a77617ccb674a80ddb8c8e8f13924f5f93e0d4c96aa22cf"
+    },
+    "35": {
+      "image": "/heroes/35.webp",
+      "source": "https://assets-bucket.deadlock-api.com/assets-api-res/images/heroes/viscous_card.webp",
+      "bytes": 38526,
+      "sha256": "b017882a55f142c809373caa303a71b7a038861e45805075048a75b167fe5875"
+    },
+    "50": {
+      "image": "/heroes/50.webp",
+      "source": "https://assets-bucket.deadlock-api.com/assets-api-res/images/heroes/synth_card.webp",
+      "bytes": 49996,
+      "sha256": "d4c8eca1ccc77d45e59eb97d706bf3dd069522aa081f99cf954c1ea322770ab4"
+    },
+    "52": {
+      "image": "/heroes/52.webp",
+      "source": "https://assets-bucket.deadlock-api.com/assets-api-res/images/heroes/mirage_card.webp",
+      "bytes": 48740,
+      "sha256": "682debdb54299fe122a963cb9ce2be31d84fd5c9d9bd25e99788891d396fd008"
+    },
+    "58": {
+      "image": "/heroes/58.webp",
+      "source": "https://assets-bucket.deadlock-api.com/assets-api-res/images/heroes/kali_card.webp",
+      "bytes": 35058,
+      "sha256": "498c115e5bd27de1dc567d225342a57c2ecea63f873e796f5dd891b75dc5859d"
+    },
+    "60": {
+      "image": "/heroes/60.webp",
+      "source": "https://assets-bucket.deadlock-api.com/assets-api-res/images/heroes/magician_card.webp",
+      "bytes": 29644,
+      "sha256": "8eddf571758d381dfb6f044c45c3e2a526c5afec57918f014cf5cb391ebc338f"
+    },
+    "63": {
+      "image": "/heroes/63.webp",
+      "source": "https://assets-bucket.deadlock-api.com/assets-api-res/images/heroes/vampirebat_card.webp",
+      "bytes": 50266,
+      "sha256": "2e271441f29db1d9fa1b75546593c8c01a985779005ed3f254ed9dfff304f658"
+    },
+    "64": {
+      "image": "/heroes/64.webp",
+      "source": "https://assets-bucket.deadlock-api.com/assets-api-res/images/heroes/drifter_card.webp",
+      "bytes": 56702,
+      "sha256": "bf6e5801acd623e6d748097ada777a5e74f0627cd7fa40b96be855116a894230"
+    },
+    "65": {
+      "image": "/heroes/65.webp",
+      "source": "https://assets-bucket.deadlock-api.com/assets-api-res/images/heroes/priest_card.webp",
+      "bytes": 48082,
+      "sha256": "58b1a52b5985b227634953f2c35ae71b770e36ecb3acd393f66dc39941cad0f2"
+    },
+    "66": {
+      "image": "/heroes/66.webp",
+      "source": "https://assets-bucket.deadlock-api.com/assets-api-res/images/heroes/frank_card.webp",
+      "bytes": 47656,
+      "sha256": "f5d9637878200add0b9a6755f9abc13ec0a6001b239d0653f6f60f786bf165ff"
+    },
+    "67": {
+      "image": "/heroes/67.webp",
+      "source": "https://assets-bucket.deadlock-api.com/assets-api-res/images/heroes/bookworm_card.webp",
+      "bytes": 58416,
+      "sha256": "863dd726b5ec831dc9299a6e838d8fff74f478dd0fc7194278b783de10701edc"
+    },
+    "69": {
+      "image": "/heroes/69.webp",
+      "source": "https://assets-bucket.deadlock-api.com/assets-api-res/images/heroes/doorman_card.webp",
+      "bytes": 60596,
+      "sha256": "64c54e22552b86f24fef07708c50f2356ceeeea5113a46412c22dadd2092d970"
+    },
+    "72": {
+      "image": "/heroes/72.webp",
+      "source": "https://assets-bucket.deadlock-api.com/assets-api-res/images/heroes/punkgoat_card.webp",
+      "bytes": 48296,
+      "sha256": "411486d5300d753333768da91a41e41238c9f03969cb3f2d72947f3cf7ad3489"
+    },
+    "76": {
+      "image": "/heroes/76.webp",
+      "source": "https://assets-bucket.deadlock-api.com/assets-api-res/images/heroes/necro_card.webp",
+      "bytes": 40262,
+      "sha256": "229faa3c74cc9ad6dab9103b0c4ce79a0bfc37b830172b5bb8ac2b209dc6f55a"
+    },
+    "77": {
+      "image": "/heroes/77.webp",
+      "source": "https://assets-bucket.deadlock-api.com/assets-api-res/images/heroes/fencer_card.webp",
+      "bytes": 55858,
+      "sha256": "fc118535f32357ea729f645718074a48e32f3a3793092982b3b044dc793aaeaa"
+    },
+    "79": {
+      "image": "/heroes/79.webp",
+      "source": "https://assets-bucket.deadlock-api.com/assets-api-res/images/heroes/familiar_card.webp",
+      "bytes": 50214,
+      "sha256": "4083d08ef400eae8ebf0b073d9daddc2575f74c63148c09ae28ebe9e4ba86a99"
+    },
+    "80": {
+      "image": "/heroes/80.webp",
+      "source": "https://assets-bucket.deadlock-api.com/assets-api-res/images/heroes/werewolf_card.webp",
+      "bytes": 51016,
+      "sha256": "eb0d46d74c7dd5d4cedbc49615aa77c47a38220725353dc271d0a701c2ce6b58"
+    },
+    "81": {
+      "image": "/heroes/81.webp",
+      "source": "https://assets-bucket.deadlock-api.com/assets-api-res/images/heroes/unicorn_card.webp",
+      "bytes": 71532,
+      "sha256": "ecccf6c5938555a66caa7aff485d4d846d2b92eb512049d9039dc10f96983660"
+    },
+    "84": {
+      "image": "/heroes/84.webp",
+      "source": "https://assets-bucket.deadlock-api.com/assets-api-res/images/heroes/ratking_card.webp",
+      "bytes": 87758,
+      "sha256": "e9fe904e53b06bf6eb1d7fc4b7901346826eddf4f39a0b5415a96af4743d5282"
+    }
+  }
+}
