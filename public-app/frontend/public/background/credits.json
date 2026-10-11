@@ -1,0 +1,23 @@
+{
+  "description": "Independent AI-generated city background for FYTH. Not official Valve artwork.",
+  "original_filename": "fyth-city-background.png",
+  "original_sha256": "d716e621f776c098d22df5af05ac368147f12944eb449659a17b2157a4c59043",
+  "original_width": 1672,
+  "original_height": 941,
+  "files": [
+    {
+      "name": "city-desktop.webp",
+      "width": 1440,
+      "height": 810,
+      "bytes": 43908,
+      "sha256": "f7f37c9cd9a9b3151c01d2ec47321133956e74bdec252695470b0743d6684d19"
+    },
+    {
+      "name": "city-mobile.webp",
+      "width": 480,
+      "height": 807,
+      "bytes": 19408,
+      "sha256": "179fcba70f9b0111ab3cba22bd171df81f284bc4e01ebcfa24c4dafc07f0f6e4"
+    }
+  ]
+}

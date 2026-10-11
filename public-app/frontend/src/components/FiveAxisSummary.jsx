@@ -21,10 +21,10 @@ export default function FiveAxisSummary({result,evidence,detailsContent}){
   {!evidence&&<div className="candidates-heading"><h2>{ready?'次に試してみるヒーロー':'プレイ記録を確認しました'}</h2></div>}
   {ready?<p className="result-intro">少数の記録からの参考候補です。相性や勝率を保証しません。</p>:null}
   {evidence?.collection?.cache_status==='expired'&&<p className="notice-text">期限切れの保存データを使っています。</p>}
-  {ready?<><ol className="hero-candidates">{result.recommendations.map(row=>{const guide=guides.heroes[row.hero_id],selected=chosen===row.hero_id;return <li key={row.hero_id} className={'hero-card '+(selected?'is-chosen':'')}>
+  {ready?<><ol className="hero-candidates">{result.recommendations.map(row=>{const guide=guides.heroes[row.hero_id],selected=chosen===row.hero_id,short=shortReason(row);return <li key={row.hero_id} className={'hero-card '+(selected?'is-chosen':'')}>
    <div className="hero-art"><HeroPortrait id={row.hero_id}/></div>
-   <div className="hero-card-body"><h3>{heroName(row.hero_id)}</h3><p className="hero-short-reason">{shortReason(row)}</p>
-    <button className="choose-button" aria-pressed={selected} onClick={()=>setChosen(selected?null:row.hero_id)}>{selected?'試し方を表示中':'試し方を見る'}<span aria-hidden="true">{selected?'✓':'↗'}</span></button>
+   <div className="hero-card-body"><h3>{heroName(row.hero_id)}</h3><p className="hero-short-reason">{short.endsWith("が近い")?<><span className="reason-phrase">{short.slice(0,-3)}</span><wbr/><span className="reason-phrase">が近い</span></>:short}</p>
+    <button className="choose-button" aria-pressed={selected} aria-expanded={selected} onClick={()=>setChosen(selected?null:row.hero_id)}>{selected?'試し方を表示中':'試し方を見る'}<span aria-hidden="true">{selected?'−':'+'}</span></button>
     {selected&&<div className="try-tip" role="status"><strong>{heroName(row.hero_id)}を試してみよう。</strong><p>{guide?.first_step??'まずは練習で、移動と通常攻撃、能力の使い方を確かめてみよう。'}</p><small>表示はこの画面だけ。ゲームやアカウントには反映されません。</small></div>}
    </div>
   </li>})}</ol></>:<div className="state-panel insufficient-panel"><h3>候補をまだ選べません。</h3><p role="status">比較に必要な記録が足りないため、今回は候補を出せません。最近のプレイ記録や公開状態を確認してください。</p></div>}

@@ -3,21 +3,19 @@ import {eligibleHeroes,manifest} from '../../../../shared/heroes.mjs'
 import {useRef,useState} from 'react'
 import {useNavigate} from 'react-router-dom'
 import {parseProfileInput} from '../../lib/steam-input.mjs'
-import HeroPortrait from '../../components/HeroPortrait'
 export default function Home(){
  const [input,setInput]=useState(''),[submitted,setSubmitted]=useState(false),field=useRef(null),navigate=useNavigate()
  const {accountId,error}=parseProfileInput(input),valid=accountId!==null,invalid=submitted&&!valid
  function submit(event){event.preventDefault();setSubmitted(true);if(!valid){field.current?.focus();return}setAccount(accountId);navigate('/result')}
  return <main id="main-content" tabIndex="-1" className="home-page">
   <div className="home-grid"><section className="home-intro">
-   <p className="eyebrow"><span/>DEADLOCK / HERO FINDER</p>
+   <p className="eyebrow">DEADLOCK</p>
    <h1>次に試す、<br/><em>あなたのヒーロー。</em></h1>
    <p className="intro-copy">IDを入力して、次に試すヒーロー候補3体を見つけよう。</p>
    <p className="record-prerequisite">プレイ記録がある方向けです。記録不足時は候補を出せません。</p>
-   <div className="home-portraits" aria-hidden="true"><HeroPortrait id="7" eager/><HeroPortrait id="50" eager/><HeroPortrait id="58" eager/></div>
   </section>
   <section className="input-panel" aria-labelledby="input-heading">
-   <h2 id="input-heading">IDまたはプロフィールURLを入力</h2>
+   <h2 id="input-heading">ID・<wbr/><span>プロフィールURL</span></h2>
    <form onSubmit={submit} noValidate><label htmlFor="account-id">プレイヤーID / SteamプロフィールURL <span>account_id / SteamID64</span></label>
     <input ref={field} id="account-id" type="text" autoComplete="off" spellCheck="false" maxLength={2048} value={input} onChange={e=>setInput(e.target.value)} aria-invalid={invalid} aria-describedby={invalid?'account-error account-help':'account-help'} placeholder="数字のID または https://steamcommunity.com/profiles/…"/>
     {invalid&&<p id="account-error" className="form-error" role="alert">{error==='empty'?'プレイヤーIDまたはSteamプロフィールURLを入力してください。':error==='vanity'?'名前付きの /id/ URLは未対応です。数字のSteamID64または /profiles/ URLを確認してください。':'数字のaccount_id・17桁のSteamID64、または https://steamcommunity.com/profiles/数字 のURLを入力してください。'}</p>}

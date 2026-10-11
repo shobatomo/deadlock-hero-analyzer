@@ -11,6 +11,56 @@
       "sha256": "335bb503d8ebe308556c22d794fb91837a912631b61307570f407221e20a188b"
     },
     {
+      "path": "frontend/public/background/city-desktop.webp",
+      "bytes": 43908,
+      "sha256": "f7f37c9cd9a9b3151c01d2ec47321133956e74bdec252695470b0743d6684d19"
+    },
+    {
+      "path": "frontend/public/background/city-mobile.webp",
+      "bytes": 19408,
+      "sha256": "179fcba70f9b0111ab3cba22bd171df81f284bc4e01ebcfa24c4dafc07f0f6e4"
+    },
+    {
+      "path": "frontend/public/background/credits.json",
+      "bytes": 699,
+      "sha256": "9a1c859ee919b3f7afc3b3277120466e327876a67366defc6cfe4a9bd2b67f3d"
+    },
+    {
+      "path": "frontend/public/fonts/noto-sans-jp.woff2",
+      "bytes": 176816,
+      "sha256": "c9bc544ac1dd5b1e02270aefc7dc52e07c035298fb35d2945dba22b67df0576f"
+    },
+    {
+      "path": "frontend/public/fonts/dela-gothic-one.woff2",
+      "bytes": 9464,
+      "sha256": "0a230a1c28ccdb444a21e8bb57317f73969f426aa28092811997a8aee25c53fe"
+    },
+    {
+      "path": "frontend/public/fonts/barlow-condensed.woff2",
+      "bytes": 15312,
+      "sha256": "935f4636a03a9bd544237626d6d731a9460a7e4f74c400a94675d701b1d14fc5"
+    },
+    {
+      "path": "frontend/public/fonts/noto-sans-jp-OFL.txt",
+      "bytes": 4387,
+      "sha256": "89fcb7c3bdcfafb48be9a4428f4e9f4fdbb914b8d491dc3545121715aa3d211b"
+    },
+    {
+      "path": "frontend/public/fonts/dela-gothic-one-OFL.txt",
+      "bytes": 4302,
+      "sha256": "fb755fa3280d1d215a20df2e64fe6a0f75f8208439b11671978214aae60d2997"
+    },
+    {
+      "path": "frontend/public/fonts/barlow-condensed-OFL.txt",
+      "bytes": 4377,
+      "sha256": "b1fdb0a932913e455b992402cea57253160f9b043254435520dcfbe6b17bec8c"
+    },
+    {
+      "path": "frontend/public/fonts/credits.json",
+      "bytes": 1404,
+      "sha256": "d10c847273febaaa614ea44335dfe33a8da217b93de18615cef1617f1f99a98f"
+    },
+    {
       "path": "backend/public-app.js",
       "bytes": 3548,
       "sha256": "d7c1d25ed4b14e51cdc1794007e4f17478429478e0b5c84654e54a9e195a5194"
@@ -132,13 +182,23 @@
     },
     {
       "path": "frontend/src/App.jsx",
-      "bytes": 1626,
-      "sha256": "785e4c3bd36f8653f8f716d42577e5bf8ab30ee8d50d9cdd258df6f2e5989b49"
+      "bytes": 1635,
+      "sha256": "4e749d63fee19ed105eadb01dffdd843ae550e7ee9d1c503bb17cf7e8a8fc2ba"
     },
     {
       "path": "frontend/src/App.css",
       "bytes": 14906,
       "sha256": "d65852e8761545394cc052c2ee34431e7db6651a66070466543ddeb3dc9756e1"
+    },
+    {
+      "path": "frontend/src/print.css",
+      "bytes": 9497,
+      "sha256": "01966ec5aa9220b600cabacdd369d105e7bbeb79174926fc97a44f17bb3b23f6"
+    },
+    {
+      "path": "frontend/src/fonts.css",
+      "bytes": 3980,
+      "sha256": "64ecfffe3b2c3c6cfc27e57072bff67e65a8c52cac78abdec3bd7d5ded9c911e"
     },
     {
       "path": "frontend/src/index.css",
@@ -147,8 +207,8 @@
     },
     {
       "path": "frontend/src/pages/Home/Home.jsx",
-      "bytes": 4287,
-      "sha256": "83e82bff2775f5a486b6783ba1a3370347901b7d65fb85274680abf5ebded633"
+      "bytes": 4066,
+      "sha256": "00788f2298e05fa11bedf797fb1a288737a94ba289cafbd725ce6ed30c5a1ff9"
     },
     {
       "path": "frontend/src/pages/Result/Result.jsx",
@@ -162,8 +222,8 @@
     },
     {
       "path": "frontend/src/components/FiveAxisSummary.jsx",
-      "bytes": 5836,
-      "sha256": "bcd34c1f01a2329b5d2195ba3c07ea2210124476a0f70aa84c9780abe67093f5"
+      "bytes": 6017,
+      "sha256": "9fead719127e35e9b905270e475e40fcbaa5ef8e6ee7e2f3680ff2c41fd13f9e"
     },
     {
       "path": "frontend/src/components/HeroPortrait.jsx",

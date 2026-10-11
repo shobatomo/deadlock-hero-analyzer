@@ -1,0 +1,46 @@
+{
+  "provider": "Google Fonts",
+  "license": "SIL OFL 1.1",
+  "coverage": "Noto subset covers current public UI and guide text. Characters outside subset use system Japanese fallback; no remote runtime fonts.",
+  "families": [
+    {
+      "family": "Noto Sans JP",
+      "license": "noto-sans-jp-OFL.txt",
+      "source": "https://fonts.google.com/specimen/Noto+Sans+JP",
+      "subset_codepoints": 520,
+      "files": [
+        {
+          "name": "noto-sans-jp.woff2",
+          "bytes": 176816,
+          "sha256": "c9bc544ac1dd5b1e02270aefc7dc52e07c035298fb35d2945dba22b67df0576f"
+        }
+      ]
+    },
+    {
+      "family": "Dela Gothic One",
+      "license": "dela-gothic-one-OFL.txt",
+      "source": "https://fonts.google.com/specimen/Dela+Gothic+One",
+      "subset_codepoints": 64,
+      "files": [
+        {
+          "name": "dela-gothic-one.woff2",
+          "bytes": 9464,
+          "sha256": "0a230a1c28ccdb444a21e8bb57317f73969f426aa28092811997a8aee25c53fe"
+        }
+      ]
+    },
+    {
+      "family": "Barlow Condensed",
+      "license": "barlow-condensed-OFL.txt",
+      "source": "https://fonts.google.com/specimen/Barlow+Condensed",
+      "subset_codepoints": 95,
+      "files": [
+        {
+          "name": "barlow-condensed.woff2",
+          "bytes": 15312,
+          "sha256": "935f4636a03a9bd544237626d6d731a9460a7e4f74c400a94675d701b1d14fc5"
+        }
+      ]
+    }
+  ]
+}
