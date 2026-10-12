@@ -2,168 +2,168 @@
   "schema_version": 1,
   "assets_observed_at": "2026-10-08",
   "reviewed_at": "2026-10-09",
-  "source_note": "ゲームassets説明を配信するコミュニティAPIの保存資料。Valve公式APIとは扱いません。",
+  "source_note": "ゲームアセットの説明を配信するコミュニティAPIの保存資料です。Valve公式APIの情報としては扱いません。",
   "official_changelog": "https://forums.playdeadlock.com/threads/09-29-2026.166726/",
   "roster_notice": "公式更新でRat Kingの追加を確認し、保存一覧にも含まれています。現在選択できる全ヒーローを網羅する保証はありません。",
   "roster_source": "https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1845383656387709",
   "heroes": {
     "1": {
-      "description": "炎を使って相手をじわじわ削り、素早く近づいて追い込むヒーロー。",
+      "description": "炎で相手をじわじわ削り、素早く近づいて追い込む。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
       "reviewed_at": "2026-10-09"
     },
     "2": {
-      "description": "雷の攻撃で、集まった相手に圧力をかけるヒーロー。",
+      "description": "雷の攻撃で、集まった相手に圧力をかける。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
       "reviewed_at": "2026-10-09"
     },
     "3": {
-      "description": "空中で位置を取りながら射撃し、傷ついた相手を遠距離から狙うヒーロー。",
+      "description": "空中で位置を取りながら射撃し、傷ついた相手を遠距離から狙う。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
       "reviewed_at": "2026-10-09",
-      "first_step": "距離を取り、狙いを定めて射撃する感覚を練習で確かめてみよう。"
+      "first_step": "練習で距離を取り、狙いを定めて射撃してみよう。"
     },
     "4": {
-      "description": "自分の体力を使って攻撃し、相手から体力を奪って立て直すヒーロー。",
+      "description": "自分の体力を使って攻撃し、相手から体力を奪って立て直す。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
       "reviewed_at": "2026-10-09"
     },
     "6": {
-      "description": "丈夫さを生かして相手に近づき、前で戦うヒーロー。",
+      "description": "丈夫さを生かして相手に近づき、前に出て戦う。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
       "reviewed_at": "2026-10-09"
     },
     "7": {
-      "description": "相手を分断して一対一の戦いを作り、銃撃とテレポートを使って攻防を切り替えるヒーロー。",
+      "description": "相手を分断して一対一に持ち込み、銃撃とテレポートで攻防を切り替える。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
       "reviewed_at": "2026-10-09",
-      "first_step": "練習で銃撃とテレポートを試して、攻めた後に離れる感覚をつかもう。"
+      "first_step": "練習で銃撃とテレポートを使い、攻めた後に離れる動きを試してみよう。"
     },
     "8": {
-      "description": "設置する砲台や壁で、相手の通り道や戦う場所を変えるヒーロー。",
+      "description": "砲台や壁を設置し、相手の通り道や戦う場所を変える。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
       "reviewed_at": "2026-10-09"
     },
     "10": {
-      "description": "時間を操る能力と位置の入れ替えで、戦いの流れを変えるヒーロー。",
+      "description": "時間を操る能力と位置の入れ替えで、戦いの流れを変える。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
       "reviewed_at": "2026-10-09"
     },
     "11": {
-      "description": "味方の体力を支えながら、相手をまとめて止める機会を狙うヒーロー。",
+      "description": "味方の体力を支えながら、相手をまとめて止める機会を狙う。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
       "reviewed_at": "2026-10-09"
     },
     "12": {
-      "description": "氷で相手の動きを遅くし、回復や戦場の分断で味方を助けるヒーロー。",
+      "description": "氷で相手の動きを遅くし、回復や戦場の分断で味方を助ける。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
       "reviewed_at": "2026-10-09"
     },
     "13": {
-      "description": "気づかれにくい動きから近づき、銃撃で相手を狙うヒーロー。",
+      "description": "気づかれにくい動きで近づき、銃撃で相手を狙う。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
       "reviewed_at": "2026-10-09"
     },
     "14": {
-      "description": "跳ねる移動と狙いを定めた射撃を組み合わせるヒーロー。",
+      "description": "跳ねる移動と、狙いを定めた射撃を組み合わせる。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
       "reviewed_at": "2026-10-09"
     },
     "15": {
-      "description": "フックで相手の位置を動かし、複数のアビリティを組み合わせて戦うヒーロー。",
+      "description": "フックで相手の位置を動かし、複数のアビリティを組み合わせて戦う。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
       "reviewed_at": "2026-10-09",
-      "first_step": "まずは練習でフックの狙い方と届く距離を確かめてみよう。"
+      "first_step": "練習でフックを使い、狙い方と届く距離を確かめよう。"
     },
     "16": {
-      "description": "影を利用して戦いに出入りし、一人ずつ相手を狙うヒーロー。",
+      "description": "影を利用して戦闘に出入りし、相手を一人ずつ狙う。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
       "reviewed_at": "2026-10-09"
     },
     "17": {
-      "description": "遠距離の狙いを定めた攻撃と罠を、立ち位置と組み合わせるヒーロー。",
+      "description": "立ち位置を工夫しながら、狙いを定めた遠距離攻撃と罠で戦う。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
       "reviewed_at": "2026-10-09"
     },
     "18": {
-      "description": "地面に潜って近づき、近距離で相手を捕まえるヒーロー。",
+      "description": "地面に潜って近づき、近距離で相手を捕まえる。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
       "reviewed_at": "2026-10-09"
     },
     "19": {
-      "description": "相手を少しずつ弱らせてから近づき、仕留める機会を狙うヒーロー。",
+      "description": "相手を少しずつ弱らせてから近づき、仕留める機会を狙う。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
       "reviewed_at": "2026-10-09"
     },
     "20": {
-      "description": "味方とつながり、射撃や回復を支えながら相手の動きを妨げるヒーロー。",
+      "description": "味方とつながり、射撃や回復を支えながら相手の動きを妨げる。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
       "reviewed_at": "2026-10-09"
     },
     "25": {
-      "description": "前に出て相手の動きを妨げ、追い込んで戦うヒーロー。",
+      "description": "前に出て相手の動きを妨げ、追い込む。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
       "reviewed_at": "2026-10-09"
     },
     "27": {
-      "description": "狙いを定めた強い攻撃で相手を切り崩すヒーロー。",
+      "description": "狙いを定めた強い攻撃で相手を切り崩す。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
       "reviewed_at": "2026-10-09"
     },
     "31": {
-      "description": "遠くから飛び込み、相手に戦いを仕掛けるヒーロー。",
+      "description": "遠くから飛び込み、相手に戦いを仕掛ける。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
       "reviewed_at": "2026-10-09"
     },
     "35": {
-      "description": "回避と回復を組み合わせ、相手の攻撃をしのぐヒーロー。",
+      "description": "回避と回復を組み合わせ、相手の攻撃をしのぐ。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
       "reviewed_at": "2026-10-09"
     },
     "50": {
-      "description": "ショットガンで近距離に入り、飛ぶクロークの移動と鞄への一時退避を組み合わせるヒーロー。",
+      "description": "近距離に入ってショットガンで戦い、飛ぶクロークでの移動と鞄への一時退避を組み合わせる。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
       "reviewed_at": "2026-10-09",
       "first_step": "練習で近距離の射撃、クロークでの移動、鞄への退避を順に試してみよう。"
     },
     "52": {
-      "description": "竜巻で相手を捕まえ、味方を助ける機会を狙うヒーロー。",
+      "description": "竜巻で相手を捕まえ、味方を助ける機会を狙う。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
       "reviewed_at": "2026-10-09"
     },
     "58": {
-      "description": "滑る移動を使って位置を変え、銃撃と毒で相手を狙うヒーロー。",
+      "description": "滑る移動で位置を変え、銃撃と毒で相手を狙う。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
       "reviewed_at": "2026-10-09",
-      "first_step": "滑る移動と射撃を、まずは練習で組み合わせてみよう。"
+      "first_step": "練習で滑る移動と射撃を組み合わせてみよう。"
     },
     "60": {
-      "description": "曲がる攻撃や惑わせる能力で、相手を翻弄するヒーロー。",
+      "description": "曲がる攻撃や惑わせる能力で、相手を翻弄する。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
       "reviewed_at": "2026-10-09"

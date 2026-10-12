@@ -13,9 +13,9 @@ export async function requestDiagnosis(accountId, { signal, collect = false, ref
         const publicType = ['application/json', 'text/html', 'text/plain'].includes(type) ? type : '不明'
         const hint = [502, 503, 504].includes(response.status)
             ? 'ローカルAPIサーバーが起動しているか確認してください。' : ''
-        throw new Error(`APIから正しいJSONを受け取れませんでした。（HTTP ${response.status} / Content-Type: ${publicType}）${hint}`)
+        throw new Error(`APIの応答をJSONとして読み取れませんでした。（HTTP ${response.status} / Content-Type: ${publicType}）${hint}`)
     }
     if (!response.ok) throw new Error(typeof data.error === 'string' ? data.error : 'APIに接続できませんでした。')
-    if (!validateDiagnosis(data)) throw new Error('診断結果の形式を確認できませんでした。')
+    if (!validateDiagnosis(data)) throw new Error("結果データの形式を確認できませんでした。")
     return data
 }

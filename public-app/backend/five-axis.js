@@ -1,5 +1,5 @@
 // Pure Node implementation of role-five-bounded-proxy-v3. No I/O or identity.
-export const AXES={gank_pick:['ガンク/ピック','kills','count_per_match'],farm_growth:['ファーム/成長','net_worth_per_min','per_min'],damage_output:['ダメージ出力','player_damage_per_min','per_min'],frontline:['前線維持の傾向','frontline_proxy','proxy'],support_team:['支援/連携','assists','count_per_match']}
+export const AXES={gank_pick:["敵を倒す場面への関わり",'kills','count_per_match'],farm_growth:["育ち方",'net_worth_per_min','per_min'],damage_output:["ダメージの出し方",'player_damage_per_min','per_min'],frontline:["前線での戦い方の目安",'frontline_proxy','proxy'],support_team:["味方との戦闘への関わり",'assists','count_per_match']}
 const units={kills:'count_per_match',net_worth_per_min:'per_min',player_damage_per_min:'per_min',player_damage_taken_per_min:'per_min',deaths:'count_per_match',assists:'count_per_match'}
 const front=['player_damage_taken_per_min','deaths','player_damage_per_min']
 const number=v=>typeof v==='number'&&Number.isFinite(v)
@@ -14,28 +14,28 @@ export function frontline(values,metrics){
 }
 export function recommendRoles(players,populations,tops,{axes=AXES,minimumAxes=5,includeEvidence=false}={}){
  const result={formula_version:'role-five-bounded-proxy-v3',status:'withheld',recommendations:[],axes:[],coverage:0,reasons:[],excluded_heroes:{},experimental:true}
- if(!Array.isArray(players)||!players.length||!axes||!Object.keys(axes).length||!Number.isSafeInteger(minimumAxes)||minimumAxes<1){result.reasons=['本人観測または軸設定がありません。'];return result}
+ if(!Array.isArray(players)||!players.length||!axes||!Object.keys(axes).length||!Number.isSafeInteger(minimumAxes)||minimumAxes<1){result.reasons=["プレイ記録か、比較項目の設定がありません。"];return result}
  const compatible=(r,f,u)=>r?.observation_unit==='player-hero-match'&&r?.aggregation==='mean_per_match_observation'&&r?.units?.[f]===u
  const value=(r,p,f,u)=>f==='frontline_proxy'?(front.every(k=>compatible(r,k,units[k])&&compatible(p,k,units[k]))?frontline(r.values??{},p.metrics??{}):null):(compatible(r,f,u)&&compatible(p,f,u)?relative(r.values?.[f],p.metrics?.[f]):null)
  const profile={}
  for(const [axis,[label,feature,unit]] of Object.entries(axes)){
   const samples=players.flatMap(p=>{if(!Number.isSafeInteger(p.n_matches)||p.n_matches<1)return [];const v=value(p,populations[p.hero_id],feature,unit);return v===null?[]:[[p.n_matches,v]]})
   profile[axis]=samples.length?samples.reduce((s,[n,v])=>s+n*v,0)/samples.reduce((s,[n])=>s+n,0):null
-  result.axes.push({id:axis,label,player_relative:profile[axis],measured:!!samples.length,...(includeEvidence?{sample_count:samples.reduce((s,[n])=>s+n,0)}:{}),reason:samples.length?null:'同定義の本人・全体基準が不足しています。'})
+  result.axes.push({id:axis,label,player_relative:profile[axis],measured:!!samples.length,...(includeEvidence?{sample_count:samples.reduce((s,[n])=>s+n,0)}:{}),reason:samples.length?null:"同じ条件で比べられるプレイ記録と、全体の比較データが足りません。"})
  }
  const candidates={}
  for(const [hero,top] of Object.entries(tops)){
   const v={}
   for(const [axis,[,feature,unit]] of Object.entries(axes)){if(feature&&profile[axis]!==null){const r=value(top,populations[hero],feature,unit);if(r!==null&&number((r-profile[axis])**2))v[axis]=r}}
-  if(Object.keys(v).length)candidates[hero]=v;else result.excluded_heroes[hero]='比較できる本人・ALL・TOP共通特徴がありません。'
+  if(Object.keys(v).length)candidates[hero]=v;else result.excluded_heroes[hero]="あなたの記録と、ALL・TOPの両方で比べられる項目がありません。"
  }
  const common=Object.keys(axes).filter(a=>Object.keys(candidates).length&&Object.values(candidates).every(v=>Object.hasOwn(v,a)))
  result.common_axes=common;result.coverage=common.length/Object.keys(axes).length
- if(common.length<minimumAxes){result.reasons=['共通に比較できる軸が不足しています。測定できない軸を0で補いません。'];return result}
+ if(common.length<minimumAxes){result.reasons=["共通して比べられる項目が足りません。測れない項目を0として扱うことはありません。"];return result}
  if(includeEvidence)result.used_matches=players.filter(p=>common.some(a=>value(p,populations[p.hero_id],axes[a][1],axes[a][2])!==null)).reduce((s,p)=>s+p.n_matches,0)
  for(const [hero,v] of Object.entries(candidates)){
   const gaps=common.map(a=>({axis:a,label:axes[a][0],player_relative:profile[a],top_relative:v[a],squared_gap:(profile[a]-v[a])**2}))
-  result.recommendations.push({hero_id:hero,distance:Math.sqrt(gaps.reduce((s,g)=>s+g.squared_gap,0)/gaps.length),axis_gaps:gaps,coverage:result.coverage,reason:'同ヒーロー全体で補正した観測特徴が近い参考候補です。'})
+  result.recommendations.push({hero_id:hero,distance:Math.sqrt(gaps.reduce((s,g)=>s+g.squared_gap,0)/gaps.length),axis_gaps:gaps,coverage:result.coverage,reason:"同じヒーローの全体データで補正すると、あなたの記録と傾向が近い候補です。"})
  }
  result.recommendations.sort((a,b)=>a.distance-b.distance||(a.hero_id<b.hero_id?-1:a.hero_id>b.hero_id?1:0));result.recommendations=result.recommendations.slice(0,3);result.status='ready';return result
 }
@@ -56,7 +56,7 @@ export function roleDiagnosis(payload,{includeEvidence=false}={}){
  }
  for(const row of payload.groups){if(row.http_status!==200)continue;const hero=String(row.hero_id),declared=Object.fromEntries(['observation_unit','aggregation','units'].filter(k=>Object.hasOwn(row.source_context??{},k)).map(k=>[k,row.source_context[k]]));if(row.group==='population')populations[hero]={...contract,...declared,metrics:row.metrics??{}};else if(row.group==='top')tops[hero]={...contract,...declared,values:Object.fromEntries(Object.entries(row.metrics??{}).filter(([,v])=>v&&typeof v==='object').map(([k,v])=>[k,v.avg]))}}
  const result=recommendRoles(players,populations,tops,{includeEvidence})
- result.warnings=['少数の試合から選んだ参考候補です。適性や勝率を保証しません。','本人と比較集団の期間・試合区分は異なります。','前線維持は被ダメージ・死亡・与ダメージからの推定で、位置や行動意図を測定しません。']
+ result.warnings=["少数の試合をもとにした参考候補です。適性や勝率を保証するものではありません。","あなたの記録と比較データでは、対象期間や試合の区分が異なります。","前線での戦い方は、被ダメージ・死亡・与ダメージから推定しています。実際の位置や行動の意図は測っていません。"]
  return result
 }
 export function nodeDiagnosis(payload,{signal}={}){

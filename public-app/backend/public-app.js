@@ -7,9 +7,9 @@ export function createPublicApp({collector=createPublicCollector(),timeoutMs=600
  app.use((req,res,next)=>{res.set('Cache-Control','no-store');next()})
  app.use(express.json({limit:'1kb',strict:true}))
  app.get('/api/health',(req,res)=>res.json({status:'OK',runtime:'node',storage:'request-only'}))
- app.get('/api/candidates',async(req,res)=>{try{res.json(await collector.catalog())}catch{res.status(503).json({error:'比較基準を確認できませんでした。'})}})
+ app.get('/api/candidates',async(req,res)=>{try{res.json(await collector.catalog())}catch{res.status(503).json({error:"比較に使うデータを確認できませんでした。"})}})
  app.post('/api/diagnosis',async(req,res)=>{
-  if(!req.body||Array.isArray(req.body)||Object.keys(req.body).some(k=>!['account_id','collect','refresh'].includes(k))||!validateAccountId(req.body.account_id)||['collect','refresh'].some(k=>req.body[k]!=null&&typeof req.body[k]!=='boolean'))return res.status(400).json({error:'有効な数値IDと取得条件を入力してください。'})
+  if(!req.body||Array.isArray(req.body)||Object.keys(req.body).some(k=>!['account_id','collect','refresh'].includes(k))||!validateAccountId(req.body.account_id)||['collect','refresh'].some(k=>req.body[k]!=null&&typeof req.body[k]!=='boolean'))return res.status(400).json({error:"数字のIDと取得条件を確認してください。"})
   const controller=new AbortController();let timedOut=false
   const timer=setTimeout(()=>{timedOut=true;controller.abort()},timeoutMs),close=()=>{if(!res.writableEnded)controller.abort()}
   res.on('close',close)
@@ -20,10 +20,10 @@ export function createPublicApp({collector=createPublicCollector(),timeoutMs=600
    const response=Object.fromEntries(['status','recommendations','reasons','experimental','input_state','future_inputs','five_axis','candidate_coverage','collection'].filter(k=>Object.hasOwn(result,k)).map(k=>[k,result[k]]))
    if(!res.destroyed)res.json(response)
   }catch(e){
-   const errors={busy:[409,'この入力の取得が進行中です。少し待ってください。'],cooldown:[429,'続けて取得する場合は30秒ほど待ってください。'],capacity:[429,'取得が混み合っています。少し待ってください。'],rate_limited:[429,'外部APIの取得制限です。時間をおいて再試行してください。'],unavailable:[422,'公開データを取得できません。非公開や未登録の可能性があります。'],reference_unavailable:[503,'比較基準を利用できません。'],timeout:[504,'外部APIが時間内に応答しませんでした。']}
-   errors.access_denied=[422,'外部APIへのアクセスを確認できませんでした。取得を停止しました。']
-   errors.metadata_unavailable=[502,'詳しい記録を取得できませんでした。時間をおいて再試行してください。']
-   const [status,error]=timedOut?[504,'取得が時間内に完了しませんでした。']:errors[e.code]??[502,'データを取得・分析できませんでした。時間をおいて再試行してください。']
+   const errors={busy:[409,"このIDの記録を取得しています。少しお待ちください。"],cooldown:[429,"もう一度取得するには、30秒ほどお待ちください。"],capacity:[429,"混み合っているため、少し待ってからお試しください。"],rate_limited:[429,"外部APIの取得回数の上限に達しました。時間をおいて、もう一度お試しください。"],unavailable:[422,"公開データを取得できませんでした。記録が非公開か、未登録の可能性があります。"],reference_unavailable:[503,"比較に使うデータを利用できません。"],timeout:[504,"外部APIから時間内に応答がありませんでした。"]}
+   errors.access_denied=[422,"外部APIへの接続を確認できなかったため、取得を中止しました。"]
+   errors.metadata_unavailable=[502,"試合の詳細を取得できませんでした。時間をおいて、もう一度お試しください。"]
+   const [status,error]=timedOut?[504,"時間内に取得を完了できませんでした。"]:errors[e.code]??[502,"データの取得・分析に失敗しました。時間をおいて、もう一度お試しください。"]
    if(!res.destroyed){if(status===429)res.set('Retry-After','30');res.status(status).json({error})}
   }finally{clearTimeout(timer);res.off('close',close)}
  })

@@ -27,18 +27,18 @@
     },
     {
       "path": "frontend/public/fonts/noto-sans-jp.woff2",
-      "bytes": 176816,
-      "sha256": "c9bc544ac1dd5b1e02270aefc7dc52e07c035298fb35d2945dba22b67df0576f"
+      "bytes": 179864,
+      "sha256": "c8e1940af42ffd1ad170141ce4d0b0fe313b1ce939d614cacf747986d16e9f7a"
     },
     {
       "path": "frontend/public/fonts/dela-gothic-one.woff2",
-      "bytes": 9464,
-      "sha256": "0a230a1c28ccdb444a21e8bb57317f73969f426aa28092811997a8aee25c53fe"
+      "bytes": 8392,
+      "sha256": "f56db3163f0eec355be23f9b49126fe9d67f9e6619793cad45ebd728c7b6fbaf"
     },
     {
       "path": "frontend/public/fonts/barlow-condensed.woff2",
-      "bytes": 15312,
-      "sha256": "935f4636a03a9bd544237626d6d731a9460a7e4f74c400a94675d701b1d14fc5"
+      "bytes": 8124,
+      "sha256": "280bbfb65982cc7ebab19400f6826bbf67fe53252cd2a153f9d684b612e71b56"
     },
     {
       "path": "frontend/public/fonts/noto-sans-jp-OFL.txt",
@@ -57,23 +57,23 @@
     },
     {
       "path": "frontend/public/fonts/credits.json",
-      "bytes": 1404,
-      "sha256": "d10c847273febaaa614ea44335dfe33a8da217b93de18615cef1617f1f99a98f"
+      "bytes": 1468,
+      "sha256": "9f025d9f622c48718a54cb4def0635e52629b989ed2c553b883a98982a769eac"
     },
     {
       "path": "backend/public-app.js",
-      "bytes": 3548,
-      "sha256": "d7c1d25ed4b14e51cdc1794007e4f17478429478e0b5c84654e54a9e195a5194"
+      "bytes": 3652,
+      "sha256": "3c176676a9f05b03b283f359d564aefad383acf6745840337ce037c6d961245a"
     },
     {
       "path": "backend/public-collection.js",
-      "bytes": 6565,
-      "sha256": "1adfeac5b98e22e6d18ac953e1dee13e07316d64a9a34a294f7d2a3df646ee89"
+      "bytes": 6577,
+      "sha256": "9fca40aea3896a27195823e19d1e3c664f097dca24be106638882b8016b326fd"
     },
     {
       "path": "backend/five-axis.js",
-      "bytes": 7713,
-      "sha256": "56ba3d0a026083ea42bfe9e52c456746c41c9e59291c589253c518e7da11c4bb"
+      "bytes": 7959,
+      "sha256": "c94743a757ce4d8b214cf76c7e0d9cfaf06fa02183efe47e3f8caa090c14442d"
     },
     {
       "path": "backend/read-only-reference-store.js",
@@ -112,8 +112,8 @@
     },
     {
       "path": "shared/own-metadata.mjs",
-      "bytes": 2587,
-      "sha256": "3bb0ce8958969fd88b40e409dcaed04491086662b59cfaf5be55c31b24a52101"
+      "bytes": 2653,
+      "sha256": "1afb1bf709ac90af65dbadc626f0848d05f55c44026cb0665975eb3bd317fff1"
     },
     {
       "path": "shared/heroes.mjs",
@@ -127,8 +127,8 @@
     },
     {
       "path": "shared/hero-guides.json",
-      "bytes": 8379,
-      "sha256": "f6408024ad4a7074294a0dc718e3f02824882df83437ba4cf05b88ea564cd69e"
+      "bytes": 8040,
+      "sha256": "bd7196d0844140cf7287f075d1221472b46d47f5578541aaeb7b23df9062ed12"
     },
     {
       "path": "shared/hero-visuals.json",
@@ -162,8 +162,8 @@
     },
     {
       "path": "frontend/index.html",
-      "bytes": 1419,
-      "sha256": "2ba00280f649cc3dd214d0651685c5323b7a2e49b8089bb23e92966090acc75c"
+      "bytes": 1548,
+      "sha256": "88198def47615ccb3be35657e155f64c74e568916197c74dacdf0dd8a7a52f35"
     },
     {
       "path": "frontend/public/favicon.svg",
@@ -182,8 +182,8 @@
     },
     {
       "path": "frontend/src/App.jsx",
-      "bytes": 1635,
-      "sha256": "4e749d63fee19ed105eadb01dffdd843ae550e7ee9d1c503bb17cf7e8a8fc2ba"
+      "bytes": 1612,
+      "sha256": "63b50ad5d60883b9a6138a8bebcd72263f25eadfd4b98bae19e1512f979d8c4d"
     },
     {
       "path": "frontend/src/App.css",
@@ -192,13 +192,13 @@
     },
     {
       "path": "frontend/src/print.css",
-      "bytes": 9497,
-      "sha256": "01966ec5aa9220b600cabacdd369d105e7bbeb79174926fc97a44f17bb3b23f6"
+      "bytes": 10085,
+      "sha256": "9b60734f30301c5565db8a93e1ace773111ba0314b34387a55b5d75f9dd13a84"
     },
     {
       "path": "frontend/src/fonts.css",
-      "bytes": 3980,
-      "sha256": "64ecfffe3b2c3c6cfc27e57072bff67e65a8c52cac78abdec3bd7d5ded9c911e"
+      "bytes": 4155,
+      "sha256": "c538d0c79a43aa83f1c524607045042ffea18dc1bc027b7585581fa09a27ad18"
     },
     {
       "path": "frontend/src/index.css",
@@ -207,23 +207,23 @@
     },
     {
       "path": "frontend/src/pages/Home/Home.jsx",
-      "bytes": 4066,
-      "sha256": "00788f2298e05fa11bedf797fb1a288737a94ba289cafbd725ce6ed30c5a1ff9"
+      "bytes": 4318,
+      "sha256": "d5eeba35dc701d16e7a975cb613e457f637bdcaa9d0be5671d1a3cb3fe809b18"
     },
     {
       "path": "frontend/src/pages/Result/Result.jsx",
-      "bytes": 431,
-      "sha256": "145bb0c858bc7b994d6e4d7f3e87c314c6ab2b234dfa0e8143ef3afaa4546977"
+      "bytes": 427,
+      "sha256": "b40c5df1d3c0903a7585aa181fef8202221ab48e60f9318f00668eaa59d8b33a"
     },
     {
       "path": "frontend/src/components/PublicDiagnosis.jsx",
-      "bytes": 6944,
-      "sha256": "1cd1084118b1649f5a25f1c8370203169cd39594a1fed4a731c3bab086b1786a"
+      "bytes": 7262,
+      "sha256": "0401bfcb4ebc449342780222fe29bf95d8cdd23f436c212b2c255054188442e9"
     },
     {
       "path": "frontend/src/components/FiveAxisSummary.jsx",
-      "bytes": 6017,
-      "sha256": "9fead719127e35e9b905270e475e40fcbaa5ef8e6ee7e2f3680ff2c41fd13f9e"
+      "bytes": 6444,
+      "sha256": "e9ce10ff8f5d8db8e3c6de06c2ad1b36d148d7eb52227e3eac925292e8fbfc26"
     },
     {
       "path": "frontend/src/components/HeroPortrait.jsx",
@@ -232,8 +232,8 @@
     },
     {
       "path": "frontend/src/lib/api.js",
-      "bytes": 1484,
-      "sha256": "9c74c46e1b0c560ddd3067afec1517328ac834d5e7da85c967db771b7e589625"
+      "bytes": 1490,
+      "sha256": "edf0fe62e962196811bf49dd7fd88ab50ceafb2b876b21835243b1fe55018869"
     },
     {
       "path": "frontend/src/lib/session-input.js",

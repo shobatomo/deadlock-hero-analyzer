@@ -10,22 +10,22 @@ export default function Home(){
  return <main id="main-content" tabIndex="-1" className="home-page">
   <div className="home-grid"><section className="home-intro">
    <p className="eyebrow">DEADLOCK</p>
-   <h1>次に試す、<br/><em>あなたのヒーロー。</em></h1>
-   <p className="intro-copy">IDを入力して、次に試すヒーロー候補3体を見つけよう。</p>
-   <p className="record-prerequisite">プレイ記録がある方向けです。記録不足時は候補を出せません。</p>
+   <h1>君にぴったりな<br/><em>ヒーローは誰？</em></h1>
+   <p className="intro-copy">SteamのプロフィールURLやIDから、あなたにおすすめのヒーローを探します。</p>
+   <p className="record-prerequisite">既にプレイ済みのユーザ向けです。記録が足りない場合は候補を表示できないことがあります。</p>
   </section>
   <section className="input-panel" aria-labelledby="input-heading">
-   <h2 id="input-heading">ID・<wbr/><span>プロフィールURL</span></h2>
-   <form onSubmit={submit} noValidate><label htmlFor="account-id">プレイヤーID / SteamプロフィールURL <span>account_id / SteamID64</span></label>
+   <h2 id="input-heading">プレイヤーID・<wbr/><span>SteamプロフィールURL</span></h2>
+   <form onSubmit={submit} noValidate><label htmlFor="account-id">プレイヤーID<span>（account_id・SteamID64）</span>またはSteamプロフィールURL</label>
     <input ref={field} id="account-id" type="text" autoComplete="off" spellCheck="false" maxLength={2048} value={input} onChange={e=>setInput(e.target.value)} aria-invalid={invalid} aria-describedby={invalid?'account-error account-help':'account-help'} placeholder="数字のID または https://steamcommunity.com/profiles/…"/>
-    {invalid&&<p id="account-error" className="form-error" role="alert">{error==='empty'?'プレイヤーIDまたはSteamプロフィールURLを入力してください。':error==='vanity'?'名前付きの /id/ URLは未対応です。数字のSteamID64または /profiles/ URLを確認してください。':'数字のaccount_id・17桁のSteamID64、または https://steamcommunity.com/profiles/数字 のURLを入力してください。'}</p>}
-    <p id="account-help" className="field-help">Steamの /profiles/ URLをそのまま貼り付けられます。数字のIDだけを取り出して使います。</p>
-    <button className="primary-button" type="submit">診断を確認 <span aria-hidden="true">→</span></button>
-    <p className="field-help">次の画面で記録を取得すると、候補を表示します。</p>
+    {invalid&&<p id="account-error" className="form-error" role="alert">{error==='empty'?'プレイヤーIDまたはSteamプロフィールURLを入力してください。':error==='vanity'?"/id/ に名前が続くURLには対応していません。数字のSteamID64か、/profiles/ に数字が続くURLを入力してください。":"数字のaccount_id、17桁のSteamID64、または https://steamcommunity.com/profiles/数字 のURLを入力してください。"}</p>}
+    <p id="account-help" className="field-help">/profiles/ に数字が続くSteamのURLは、そのまま貼り付けられます。URLから数字のIDだけを使います。</p>
+    <button className="primary-button" type="submit">確認画面へ</button>
+    <p className="field-help">次の画面で取得内容を確認してから、プレイ記録を取得します。</p>
    </form>
-   <details className="id-help"><summary>IDがわからないとき</summary><p>SteamのプロフィールURLが <code>/profiles/数字</code> なら、その17桁の数字がSteamID64です。URL全体をコピーして貼り付けてください。</p><p><code>/id/好きな名前</code> は未対応です。数字のSteamID64か、Deadlock APIで表示されるaccount_idを確認してください。</p><a href="https://help.steampowered.com/ja/faqs/view/2816-BE67-5B69-0FEC" target="_blank" rel="noreferrer">Steam公式：Steam IDの確認方法 ↗</a></details>
-   <p className="privacy-note">IDはURLに残さず、履歴・結果はサーバーに保存しません。</p>
+   <details className="id-help"><summary>IDがわからないとき</summary><p>SteamのプロフィールURLが <code>/profiles/数字</code> の形なら、その17桁の数字がSteamID64です。URLごとコピーして貼り付けられます。</p><p><code>/id/</code> に名前が続くURLには対応していません。数字のSteamID64か、Deadlock APIに表示されるaccount_idを確認してください。</p><a href="https://help.steampowered.com/ja/faqs/view/2816-BE67-5B69-0FEC" target="_blank" rel="noreferrer">Steam公式：Steam IDの確認方法</a></details>
+   <p className="privacy-note">IDはURLに残りません。プレイ履歴や結果はサーバーに保存しません。</p>
   </section></div>
-  <details className="beginner-note"><summary>使い方と注意</summary><p>IDを入力 → 記録を取得 → 気になる1体の試し方を見る、の順で使えます。直近30日の候補最大10試合から、詳細を最大5試合確認します。</p><p>少数の記録からの参考候補です。適性や勝率を保証しません。取得ボタンを押した時だけ入力IDを外部Deadlock APIへ送信します。</p><p>まだ記録がない場合は、気になるヒーローでプレイしてから試してください。保存された一覧は{eligibleHeroes.length}件です（{manifest.assets_observed_at}時点）。全ヒーローへの対応は保証しません。</p></details>
+  <details className="beginner-note"><summary>使い方と注意</summary><p>IDを入力し、取得内容を確認してから記録を取得します。候補が出たら、気になる1体の試し方を見てください。直近30日から最大10試合を選び、そのうち最大5試合の詳細取得を試みます。</p><p>少数の記録をもとにした参考候補です。適性や勝率は保証しません。取得ボタンを押したときだけ、入力したIDを外部のDeadlock APIへ送信します。</p><p>まだ記録がない場合は、気になるヒーローでプレイしてからお試しください。保存済みの一覧は{eligibleHeroes.length}件です（{manifest.assets_observed_at}時点）。全ヒーローに対応しているとは限りません。</p></details>
  </main>
 }

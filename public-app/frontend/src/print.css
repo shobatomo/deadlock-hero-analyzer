@@ -17,15 +17,21 @@ code{font-size:1em;color:inherit}em,a,summary:before{color:inherit}a:focus-visib
 .home-intro h1,.input-panel h2,.state-panel h2,.result-focus-heading,.candidates-heading h2{font-family:"Dela Gothic One","Noto Sans JP","Yu Gothic UI",sans-serif;font-weight:400}
 
 .hero-short-reason{text-wrap:balance}
+.hero-candidates{align-items:start}.hero-card{align-self:start}
+.acquisition-actions .alternate-id{background:var(--panel);color:var(--ink);border-color:#746b5d;box-shadow:none;text-shadow:none;text-decoration:none}
+.acquisition-actions .alternate-id:hover{background:#e3d3b9}
+button,input,select,textarea,code,.brand-mark{font-family:inherit}
+.brand-mark,.portrait-fallback>span{font-family:"Barlow Condensed","Noto Sans JP",sans-serif}
 
 .input-panel h2{font-family:"Noto Sans JP","Yu Gothic UI",sans-serif;font-weight:900}.input-panel h2 span{display:inline-block;max-width:100%}.reason-phrase{display:inline-block;max-width:100%}
 /* Let the city show through empty layout space; protect only reading surfaces. */
-body{background:var(--bg) url('/background/city-desktop.webp') center top/100% auto no-repeat}
+body{background:var(--bg);isolation:isolate}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:var(--bg) url('/background/city-desktop.webp') center top/cover no-repeat}
 .site-header,.site-footer,.home-intro,.beginner-note,.result-content,.acquisition-actions{background:transparent}
 .brand,.header-note,.home-intro>:is(h1,p),.beginner-note>summary,.beginner-note>p,.result-focus-heading,.result-intro,.result-content>.notice-text,.diagnosis-details>summary,.site-footer>*{max-width:100%;background:transparent;box-shadow:none;text-shadow:1px 0 #070707,-1px 0 #070707,0 1px #070707,0 -1px #070707,0 0 6px #070707,0 0 12px #070707}
 .diagnosis-details[open]>:not(summary){background:#070707;box-shadow:0 0 18px 8px #070707}
 .home-intro .eyebrow{width:fit-content}
 .result-page>.back-link,.acquisition-actions a{background:#070707;box-shadow:0 0 12px 5px #070707}
 .diagnosis-details,.beginner-note{background:transparent}
-@media(max-width:850px){body{background-image:url('/background/city-mobile.webp')}}
-@media(forced-colors:active){body{background-image:none}.brand,.header-note,.home-intro>:is(h1,p),.beginner-note>summary,.beginner-note>p,.result-focus-heading,.result-intro,.result-content>.notice-text,.diagnosis-details>*,.site-footer>*,.result-page>.back-link,.acquisition-actions a{background:Canvas;box-shadow:none;text-shadow:none}}
+@media(max-width:850px){body::before{background-image:url('/background/city-mobile.webp');background-position:left top}}
+@media(forced-colors:active){body::before{display:none}.brand,.header-note,.home-intro>:is(h1,p),.beginner-note>summary,.beginner-note>p,.result-focus-heading,.result-intro,.result-content>.notice-text,.diagnosis-details>*,.site-footer>*,.result-page>.back-link,.acquisition-actions a{background:Canvas;box-shadow:none;text-shadow:none}}
