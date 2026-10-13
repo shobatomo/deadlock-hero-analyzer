@@ -2,6 +2,7 @@ import {useEffect,useRef,useState} from 'react'
 import {Link} from 'react-router-dom'
 import {requestDiagnosis} from '../lib/api'
 import FiveAxisSummary from './FiveAxisSummary'
+import RecommendationFeedback from './RecommendationFeedback'
 export default function PublicDiagnosis({account}){
  const [state,setState]=useState({status:'idle'}),active=useRef(null),mounted=useRef(true),resultHeading=useRef(null),action=useRef(null)
  useEffect(()=>{mounted.current=true;return ()=>{mounted.current=false;active.current?.abort()}},[])
@@ -30,6 +31,7 @@ export default function PublicDiagnosis({account}){
     <h3>項目ごとの記録数</h3>{state.result.five_axis.axes.map(axis=><p key={axis.id}>{axis.label}：{axis.sample_count==null?'未報告':`${axis.sample_count}試合`}{!axis.measured&&'（必要な記録・比較基準が不足）'}</p>)}
     <p>候補に使う一覧には、現在の全ヒーローが含まれているとは限りません。</p><p>比較データ：{state.result.collection?.reference_source??'不明'} / 取得日時：{state.result.collection?.observed_at??'不明'}</p>{oldest&&<p>比較データの最も古い更新日時：{oldest}（UTC）</p>}
    </>}/>:<div className="state-panel"><h3>今回は候補を出せませんでした</h3><p role="status">比較に使える記録がありません。最近のプレイ記録や公開設定を確認し、時間をおいてお試しください。</p></div>}
+   {ready&&<RecommendationFeedback/>}
   </div>:<div className="state-panel">
    {loading?<><div className="loading-symbol" aria-hidden="true"/><h2>プレイ記録からおすすめを探しています…</h2><p role="status">記録の取得と分析を待っています。最大約1分かかる場合があります。</p><details className="data-details"><summary>処理の流れ</summary><ol className="acquisition-steps" aria-label="処理の順序"><li>直近30日の履歴から、最大10試合を選びます</li><li>最大5試合の詳細取得を試みます</li><li>比較できる記録を、5つの項目で分析します</li></ol><p>途中の件数は表示できません。使用件数は結果画面で確認できます。</p></details></>:<><h2>プレイ記録からおすすめを探す</h2><p>直近30日のプレイ記録を使います。</p>
     <p className="consent-copy">取得ボタンを押すと、入力したIDを外部のDeadlock APIへ送信します。プレイ履歴や結果はサーバーに保存しません。</p>

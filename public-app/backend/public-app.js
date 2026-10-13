@@ -1,11 +1,14 @@
 import express from 'express'
+import {addFeedbackRoutes} from './feedback.js'
+import {createRuntimeFeedback} from './feedback-store.js'
 import {createPublicCollector} from './public-collection.js'
 import {validateAccountId,validateDiagnosis} from '../shared/diagnosis.mjs'
 // No request-body logging, personal files, account response fields or raw metadata.
-export function createPublicApp({collector=createPublicCollector(),timeoutMs=60000}={}){
+export function createPublicApp({collector=createPublicCollector(),timeoutMs=60000,feedbackStore=null,feedbackTimeoutMs=5000,feedbackLimits}={}){
  const app=express();app.disable('x-powered-by')
  app.use((req,res,next)=>{res.set('Cache-Control','no-store');next()})
  app.use(express.json({limit:'1kb',strict:true}))
+ addFeedbackRoutes(app,{feedbackStore,feedbackTimeoutMs,feedbackLimits})
  app.get('/api/health',(req,res)=>res.json({status:'OK',runtime:'node',storage:'request-only'}))
  app.get('/api/candidates',async(req,res)=>{try{res.json(await collector.catalog())}catch{res.status(503).json({error:"比較に使うデータを確認できませんでした。"})}})
  app.post('/api/diagnosis',async(req,res)=>{
@@ -27,7 +30,12 @@ export function createPublicApp({collector=createPublicCollector(),timeoutMs=600
    if(!res.destroyed){if(status===429)res.set('Retry-After','30');res.status(status).json({error})}
   }finally{clearTimeout(timer);res.off('close',close)}
  })
- app.use((error,req,res,next)=>{if(res.headersSent)return next(error);res.status(error.type==='entity.too.large'?413:400).json({error:'入力JSONを確認してください。'})})
+ app.use((error,req,res,next)=>{
+  if(res.headersSent)return next(error)
+  const feedbackParserStatus={'entity.parse.failed':400,'entity.too.large':413,'charset.unsupported':415,'encoding.unsupported':415}
+  if(req.path==='/api/feedback'&&Object.hasOwn(feedbackParserStatus,error.type))return res.status(feedbackParserStatus[error.type]).json({status:'not_stored',retryable:true})
+  res.status(error.type==='entity.too.large'?413:400).json({error:'入力JSONを確認してください。'})
+ })
  return app
 }
-export default createPublicApp()
+export default createPublicApp({feedbackStore:createRuntimeFeedback()})

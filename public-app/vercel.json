@@ -9,6 +9,7 @@
     }
   },
   "rewrites": [
+    {"source": "/api/feedback", "destination": "/api/public"},
     {
       "source": "/api/diagnosis",
       "destination": "/api/public"

@@ -62,8 +62,8 @@
     },
     {
       "path": "backend/public-app.js",
-      "bytes": 3652,
-      "sha256": "3c176676a9f05b03b283f359d564aefad383acf6745840337ce037c6d961245a"
+      "bytes": 4242,
+      "sha256": "2a20383eaaab04ae02630bf25e9d1e4cfe7233df56c901804765e1cc7a5729ca"
     },
     {
       "path": "backend/public-collection.js",
@@ -147,8 +147,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 701,
-      "sha256": "8211bd8836460527ee32a3a92188bb548041c15264a4e0e2e7f24097915096f7"
+      "bytes": 783,
+      "sha256": "07a4c80c246ec846a094edd2091d23e3170351b12eb20ac3ea099607751704b2"
     },
     {
       "path": "frontend/package-lock.json",
@@ -217,8 +217,8 @@
     },
     {
       "path": "frontend/src/components/PublicDiagnosis.jsx",
-      "bytes": 7262,
-      "sha256": "0401bfcb4ebc449342780222fe29bf95d8cdd23f436c212b2c255054188442e9"
+      "bytes": 7362,
+      "sha256": "eae65d46185dddc8c31025f74881bd6104148281074402db7f0bc8811d52eb97"
     },
     {
       "path": "frontend/src/components/FiveAxisSummary.jsx",
@@ -447,8 +447,8 @@
     },
     {
       "path": "package.json",
-      "bytes": 357,
-      "sha256": "298f7d59300da4fed77a7615b3324f314241f968eea94aba2d1f2b2766e7d27c"
+      "bytes": 553,
+      "sha256": "7a81df0a0302d4237c7f1c7aff8af0e4d0b44e8ef43b02898b763d8aeb104556"
     },
     {
       "path": "package-lock.json",
@@ -457,8 +457,8 @@
     },
     {
       "path": "vercel.json",
-      "bytes": 634,
-      "sha256": "de1845a8d8de149930de11748f3da22542505e9ea32affb544f7db4d5beb4697"
+      "bytes": 697,
+      "sha256": "99a1ca1bd7cd5a2cd66f18b8b2e6f2e18a0ad637978a9c7e85e83ee70d212da3"
     },
     {
       "path": "scripts/public-preview-server.mjs",
@@ -467,8 +467,8 @@
     },
     {
       "path": "scripts/verify-public-bundle.mjs",
-      "bytes": 7430,
-      "sha256": "2610b78a32e719ea120dd042eb79e373b778831281f4001c4188f903adeda376"
+      "bytes": 7716,
+      "sha256": "f319e4ee18a43dc4cefc9ba521ded7df14ec6693b027b41a74bac992ddc19f11"
     },
     {
       "path": ".gitignore",
@@ -482,8 +482,58 @@
     },
     {
       "path": "README.md",
-      "bytes": 705,
-      "sha256": "4a25b00d2c3f0e735eb057b026be96888c07547e7818c7ee3d440115f4283d1d"
+      "bytes": 1881,
+      "sha256": "0b800de96a7d7c659c58f0cf031a376ea8f4e7ae9eb3960b5797caa6d97089d6"
+    },
+    {
+      "path": "backend/feedback.js",
+      "bytes": 2712,
+      "sha256": "3899025d8178fb3418cb9a03ad99a729f9baf6514e508ab672cda6da4a6d04a6"
+    },
+    {
+      "path": "frontend/src/components/RecommendationFeedback.css",
+      "bytes": 1147,
+      "sha256": "eb393016a9d169a1816bed75f03a3c31ce8c70ca22eae7643277c4bd68810d00"
+    },
+    {
+      "path": "frontend/src/components/RecommendationFeedback.jsx",
+      "bytes": 3124,
+      "sha256": "f6d03f093187bf30bad683efe857744bbacfbdebb1c017a3e6f7f91d3d8a93e2"
+    },
+    {
+      "path": "frontend/src/components/RecommendationFeedback.test.jsx",
+      "bytes": 7304,
+      "sha256": "4e90efe8bba04d49692378119ddecc1745f49ecfc37ff8a1bed7bbddeae4fcdf"
+    },
+    {
+      "path": "frontend/src/lib/feedback.js",
+      "bytes": 1288,
+      "sha256": "266d6fa4de859873ba33a282792485e944c06fac4f17b9a801ffc8a8bf29e854"
+    },
+    {
+      "path": "scripts/test-feedback.mjs",
+      "bytes": 6098,
+      "sha256": "207e94a6cbcf6cb1ddc74de160c886c4eaf04d6402269d265c1f5c30a055886f"
+    },
+    {
+      "path": "shared/feedback.mjs",
+      "bytes": 500,
+      "sha256": "8bea11f9d77466c1372349b115a1d996863b00d4c11487a8d3490fd1bc66764d"
+    },
+    {
+      "path": "backend/feedback-store.js",
+      "bytes": 4435,
+      "sha256": "382f3756873a0c53a500adb6d7f1a5077a307bb43bf23fe37682bfe40779f9a6"
+    },
+    {
+      "path": "scripts/test-feedback-store.mjs",
+      "bytes": 6651,
+      "sha256": "c1a1546668217bc0f7718ad3c8ecece42229bd869ba68f260220a59572f96c17"
+    },
+    {
+      "path": "scripts/check-feedback-connection.mjs",
+      "bytes": 1129,
+      "sha256": "2883ec7b697f4fd233373485874a4ae0919e5d92078ec9d9a98a61939689ad3b"
     }
   ]
 }

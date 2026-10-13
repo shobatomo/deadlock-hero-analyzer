@@ -1,0 +1,12 @@
+.feedback-panel{border:1px solid var(--line);background:var(--panel);color:var(--ink);color-scheme:light;padding:22px;margin-top:24px;min-width:0}
+.feedback-panel form{margin:0}.feedback-panel fieldset{border:0;padding:0;margin:0;min-width:0}
+.feedback-panel legend{font-size:16px;font-weight:700;max-width:100%;overflow-wrap:anywhere}
+.feedback-options{display:flex;flex-direction:column;gap:8px;margin:16px 0}
+.feedback-options label{display:flex;align-items:center;gap:12px;min-height:44px;margin:0;font-size:16px;cursor:pointer}
+.feedback-options input{width:20px;min-height:20px;height:20px;flex:0 0 20px;padding:0;accent-color:var(--gold)}
+.feedback-panel :focus-visible{outline:3px solid var(--ink);outline-offset:4px}
+.feedback-panel button:disabled{opacity:.65;cursor:default}.feedback-panel [role=status]{font-size:16px;margin-top:12px;overflow-wrap:anywhere}
+@media(max-width:700px){.feedback-panel{padding:18px}.feedback-panel button{width:100%}.feedback-panel legend{font-size:16px}}
+@media print{.feedback-panel{display:none}}
+
+.feedback-panel .muted{color:#514a40;font-size:16px!important}.feedback-panel legend{margin-bottom:12px}
