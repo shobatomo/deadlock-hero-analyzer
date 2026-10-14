@@ -4,8 +4,9 @@
   "scripts": {
     "build": "npm --prefix frontend run build",
     "start": "node scripts/public-preview-server.mjs",
-    "test": "node scripts/test-feedback.mjs && node scripts/test-feedback-store.mjs && node scripts/test-usage.mjs && npm --prefix frontend run test:feedback && node scripts/verify-public-bundle.mjs",
-    "feedback:check-connection": "node scripts/check-feedback-connection.mjs"
+    "test": "node scripts/test-feedback.mjs && node scripts/test-feedback-store.mjs && node scripts/test-usage.mjs && node scripts/test-windows-usage-probe.mjs && npm --prefix frontend run test:feedback && node scripts/verify-public-bundle.mjs",
+    "feedback:check-connection": "node scripts/check-feedback-connection.mjs",
+    "usage:check-connection": "node scripts/check-usage-connection.mjs"
   },
   "type": "module",
   "dependencies": {

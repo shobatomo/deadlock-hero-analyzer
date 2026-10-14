@@ -2,6 +2,7 @@ import {spawn,execFile} from 'node:child_process'
 import {promisify} from 'node:util'
 import {readFile} from 'node:fs/promises'
 import assert from 'node:assert/strict'
+import {USAGE_CHECK_SQL} from '../public-app/backend/usage-store.js'
 const exec=promisify(execFile),name='fyth-usage-sql-'+process.pid
 const image='postgres:17.11-bookworm@sha256:3645570cccdfa447589da9f57dd740faa29b30938e861289a5574b6ca6b03826'
 function query(sql,{role,fail=false}={}){return new Promise((resolve,reject)=>{
@@ -19,12 +20,18 @@ try{
  assert.equal(await query("SELECT rolconfig::text,rolcanlogin FROM pg_roles WHERE rolname='fyth_feedback_app_login'; SELECT proacl::text FROM pg_proc WHERE oid='fyth_feedback_private.increment_choice(text)'::regprocedure;"),baseline)
  const add="SELECT fyth_usage_private.increment_event('diagnosis_requested');"
  await query(add,{role:'fyth_feedback_app_login',fail:true}) // Application grant deliberately separate.
- await query('GRANT fyth_usage_submitter TO fyth_feedback_app_login WITH INHERIT TRUE, SET FALSE;')
- for(const role of ['anon','authenticated','fyth_reader','fyth_feedback_app_login','fyth_usage_submitter','fyth_usage_maintenance']){
+ assert.equal(await query("SELECT rolcanlogin::text||':'||rolconnlimit::text FROM pg_roles WHERE rolname='fyth_usage_app_login';"),'false:1')
+ assert.equal(await query("SELECT count(*) FROM pg_auth_members WHERE roleid='fyth_usage_submitter'::regrole AND member='fyth_feedback_app_login'::regrole;"),'0')
+
+ for(const role of ['anon','authenticated','fyth_reader','fyth_feedback_app_login','fyth_usage_app_login','fyth_usage_submitter','fyth_usage_maintenance']){
   for(const sql of ['SELECT * FROM fyth_usage_private.daily_counts;','DELETE FROM fyth_usage_private.daily_counts;','UPDATE fyth_usage_private.daily_counts SET count=2;',"INSERT INTO fyth_usage_private.daily_counts VALUES(current_date,'diagnosis_ready',1);",'TRUNCATE fyth_usage_private.daily_counts;','CREATE TABLE fyth_usage_private.nope(x int);'])await query(sql,{role,fail:true})
  }
- const app='fyth_feedback_app_login'
- for(const sql of ['SET ROLE fyth_usage_owner;','SET ROLE fyth_usage_submitter;','SET ROLE fyth_usage_maintenance;','SELECT fyth_usage_private.expire_counts();',"SELECT fyth_usage_private.increment_event('secret');","SELECT fyth_usage_private.increment_event(NULL);"])await query(sql,{role:app,fail:true})
+ const app='fyth_usage_app_login'
+ const metadata=JSON.parse(await query("SET statement_timeout='800ms'; SET lock_timeout='100ms'; SELECT row_to_json(m) FROM ("+USAGE_CHECK_SQL+") m;",{role:app}))
+ assert.equal(metadata.current_role,app);assert.equal(metadata.connection_limit,1);assert.equal(metadata.can_increment,true)
+ for(const key of ['can_expire','can_access_table','can_create','can_set_owner','can_set_maintenance','can_submit_feedback'])assert.equal(metadata[key],false)
+
+ for(const sql of ['SET ROLE fyth_feedback_app_login;',"SELECT fyth_feedback_private.increment_choice('まだ分からない');",'SET ROLE fyth_usage_owner;','SET ROLE fyth_usage_submitter;','SET ROLE fyth_usage_maintenance;','SELECT fyth_usage_private.expire_counts();',"SELECT fyth_usage_private.increment_event('secret');","SELECT fyth_usage_private.increment_event(NULL);"])await query(sql,{role:app,fail:true})
  await Promise.all(Array.from({length:8},()=>query(add,{role:app})))
  assert.equal(await query("SELECT count FROM fyth_usage_private.daily_counts WHERE event='diagnosis_requested';"),'8')
  await query("SET timezone='Pacific/Honolulu'; SELECT fyth_usage_private.increment_event('diagnosis_ready');",{role:app})
@@ -54,5 +61,5 @@ try{
  await query("SET cron.timezone='GMT';"+simulated,{fail:true})
  assert.equal(await query('SELECT count(*) FROM cron.job;'),'1')
 
- console.log(JSON.stringify({status:'passed',network:'none',real_project_access:false,baseline_feedback_unchanged:true,application_grant_separate:true,parallel_increments:8,utc:true,retention_boundary:true,direct_access_denied:true,cron_absence_rejected:true,cron_timezone_guard:true,cron_catalog_mock_only:true}))
+ console.log(JSON.stringify({status:'passed',network:'none',real_project_access:false,baseline_feedback_unchanged:true,dedicated_role_nologin_limit1:true,feedback_grant_absent:true,parallel_increments:8,utc:true,retention_boundary:true,direct_access_denied:true,cron_absence_rejected:true,cron_timezone_guard:true,cron_catalog_mock_only:true}))
 }finally{await exec('docker',['rm','-f',name]).catch(()=>{})}

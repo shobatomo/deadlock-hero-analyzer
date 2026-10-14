@@ -2,10 +2,11 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import {EventEmitter,once} from 'node:events'
 import {beginUsage} from '../backend/usage.js'
-import {createUsageStore,createRuntimeUsage,USAGE_SQL} from '../backend/usage-store.js'
+import {createUsageStore,createRuntimeUsage,USAGE_SQL,USAGE_CHECK_SQL} from '../backend/usage-store.js'
 import {USAGE_EVENTS} from '../shared/usage.mjs'
 import {createPublicApp} from '../backend/public-app.js'
 import {nodeDiagnosis} from '../backend/five-axis.js'
+import {checkUsageConnection} from './check-usage-connection.mjs'
 const tick=()=>new Promise(r=>setImmediate(r))
 test('request has one fixed requested and one terminal event, finish/close duplicates removed',async()=>{
  for(const expected of USAGE_EVENTS.slice(1)){
@@ -26,10 +27,10 @@ test('off never reads connection fields; failing sink and lifecycle do not escap
 test('adapter sends event-only bound SQL, bounded queue and no retry of unknown result',async()=>{
  let options,calls=[],release
  class Pool {constructor(o){options=o}on(){}end(){}query(q){calls.push(q);return new Promise(r=>release=r)}}
- const fixture=new URL('postgresql:'+'//db.adxoqjgmhmortztqngcz.supabase.co/postgres');fixture.username='fyth_feedback_app_login';fixture.password='dummy';const connectionString=fixture.toString()
+ const fixture=new URL('postgresql:'+'//db.adxoqjgmhmortztqngcz.supabase.co/postgres');fixture.username='fyth_usage_app_login';fixture.password='dummy';const connectionString=fixture.toString()
  const store=createUsageStore({connectionString,Pool});const first=store.increment(USAGE_EVENTS[0]);await tick()
  assert.equal(options.ssl.rejectUnauthorized,true);assert.equal(calls.length,1)
- assert.deepEqual(calls[0],{text:USAGE_SQL,values:[USAGE_EVENTS[0]],query_timeout:3000})
+ assert.deepEqual(calls[0],{text:USAGE_SQL,values:[USAGE_EVENTS[0]],query_timeout:1000})
  const a=store.increment(USAGE_EVENTS[1]),b=store.increment(USAGE_EVENTS[2]),c=store.increment(USAGE_EVENTS[3])
  assert.deepEqual(await store.increment(USAGE_EVENTS[4]),{status:'not_stored'})
  assert.deepEqual(await store.increment('SteamID'),{status:'not_stored'})
@@ -85,4 +86,30 @@ test('ready response uses exactly the current UI recommendation condition',async
   const response=await fetch(url+'/api/diagnosis',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({account_id:'1'})})
   assert.equal(response.status,200);assert.equal((await response.json()).five_axis.status,'ready')
  });assert.deepEqual(events,['diagnosis_requested','diagnosis_ready'])
+})
+
+test('dedicated usage configuration rejects feedback login and never falls back to its secrets',()=>{
+ class Pool {constructor(){throw Error('must not construct')}}
+ assert.equal(createRuntimeUsage({env:{FYTH_USAGE_ENABLED:'true',get FYTH_FEEDBACK_DB_URL(){throw Error('must not read')},get FYTH_FEEDBACK_DB_CA_CERT(){throw Error('must not read')}},Pool}),null)
+ const uri=new URL('postgresql:'+'//db.adxoqjgmhmortztqngcz.supabase.co/postgres');uri.username='fyth_feedback_app_login';uri.password='dummy'
+ assert.equal(createRuntimeUsage({env:{FYTH_USAGE_ENABLED:'true',FYTH_USAGE_DB_URL:uri.toString(),FYTH_USAGE_DB_CA_CERT:'public-test-ca'},Pool}),null)
+})
+
+test('dedicated probe is metadata-only, validates limit1/privileges and hides raw failures',async()=>{
+ const fixture=new URL('postgresql:'+'//db.adxoqjgmhmortztqngcz.supabase.co/postgres');fixture.username='fyth_usage_app_login';fixture.password='dummy'
+ const env={FYTH_USAGE_ENABLED:'false',FYTH_USAGE_DB_URL:fixture.toString()};let queries=[],closed=0
+ const valid={current_role:'fyth_usage_app_login',session_role:'fyth_usage_app_login',connection_limit:1,isolation:'read committed',statement_timeout:'800ms',lock_timeout:'100ms',can_increment:true,can_expire:false,can_access_table:false,can_create:false,can_set_owner:false,can_set_maintenance:false,can_submit_feedback:false}
+ let row=valid
+ class Pool{on(){}query(q){queries.push(q);return Promise.resolve({rows:[row]})}end(){closed++}}
+ assert.equal((await checkUsageConnection({env,Pool})).status,'passed');assert.deepEqual(queries,[{text:USAGE_CHECK_SQL,query_timeout:1000}]);assert.equal(closed,1)
+ row={...valid,can_submit_feedback:true};assert.equal((await checkUsageConnection({env,Pool})).status,'failed')
+ row={...valid,connection_limit:2};assert.equal((await checkUsageConnection({env,Pool})).status,'failed')
+ assert.equal((await checkUsageConnection({env:{...env,FYTH_USAGE_ENABLED:'true'},Pool})).status,'failed')
+})
+
+test('missing dedicated CA leaves runtime off before constructing any pool',()=>{
+ const uri=new URL('postgresql:'+'//db.adxoqjgmhmortztqngcz.supabase.co/postgres');uri.username='fyth_usage_app_login';uri.password='dummy'
+ let made=0;class Pool{constructor(){made++}}
+ assert.equal(createRuntimeUsage({env:{FYTH_USAGE_ENABLED:'true',FYTH_USAGE_DB_URL:uri.toString()},Pool}),null)
+ assert.equal(made,0)
 })

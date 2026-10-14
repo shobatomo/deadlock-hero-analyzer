@@ -19,7 +19,7 @@ const timeoutMs = value => {
  return match ? Number(match[1]) * ({ms:1,s:1000,min:60000}[match[2]]) : NaN
 }
 // A separate bounded connection; never modifies or reuses the reference reader.
-export function createAggregatePool({connectionString, ca, Pool = pg.Pool} = {}) {
+export function createFeedbackStore({connectionString, ca, Pool = pg.Pool} = {}) {
  let url
  try { url = new URL(connectionString) } catch { throw new Error('Feedback configuration unavailable') }
  const username = decodeURIComponent(url.username)
@@ -34,10 +34,6 @@ export function createAggregatePool({connectionString, ca, Pool = pg.Pool} = {})
   options:'-c default_transaction_isolation=read\\ committed',
  })
  pool.on?.('error', () => {})
- return pool
-}
-export function createFeedbackStore(options = {}) {
- const pool = createAggregatePool(options)
  return {
   async increment(choice) {
    if (!FEEDBACK_CHOICES.includes(choice)) return {status:'not_stored'}

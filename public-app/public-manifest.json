@@ -447,8 +447,8 @@
     },
     {
       "path": "package.json",
-      "bytes": 619,
-      "sha256": "671d9d9adcb161c51310075cd7f319ca8557b01b4caa941ea9dfe5762bc7b306"
+      "bytes": 737,
+      "sha256": "a16a23e3382939296cc767b7cd0eca33a9a3a6b5f5ff0c7b56bb412cb2026872"
     },
     {
       "path": "package-lock.json",
@@ -482,8 +482,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 2271,
-      "sha256": "d51f25775f42842f6ac229643a543624929aae4be3a0c1a5b87e2a183f0827ac"
+      "bytes": 2330,
+      "sha256": "a2f12a59bd666ef1a65052083c8cd820effe2bb663f2c0e8fb23f57a620a5afe"
     },
     {
       "path": "backend/feedback.js",
@@ -522,8 +522,8 @@
     },
     {
       "path": "backend/feedback-store.js",
-      "bytes": 4545,
-      "sha256": "1e3feeb0e03ed83247aacb0dc0f32299c14bc3308a4a4bc661d86cf9bc115bc2"
+      "bytes": 4435,
+      "sha256": "382f3756873a0c53a500adb6d7f1a5077a307bb43bf23fe37682bfe40779f9a6"
     },
     {
       "path": "scripts/test-feedback-store.mjs",
@@ -542,8 +542,8 @@
     },
     {
       "path": "backend/usage-store.js",
-      "bytes": 1255,
-      "sha256": "da11fbfbb1619559c5a990c2afae1ea7a5966912c9546b2971c21e2da0c51590"
+      "bytes": 4268,
+      "sha256": "906b8f69523217d162b02779af3c7fb610643ec442d0067a66b2137ba58e377e"
     },
     {
       "path": "shared/usage.mjs",
@@ -552,8 +552,23 @@
     },
     {
       "path": "scripts/test-usage.mjs",
-      "bytes": 7471,
-      "sha256": "fc92872989cdbf9d4f3cf36be33a600bc8ed0280940399045c2e7c9d87482128"
+      "bytes": 9906,
+      "sha256": "ebdda29b559dc2837b4d6d167d3838aa1faff42431d7942133aa8b8f5fb68e4b"
+    },
+    {
+      "path": "scripts/check-usage-connection.mjs",
+      "bytes": 1105,
+      "sha256": "9c8d45e9c3f709f6074ef1a5a30705e760534272c2dee081abe7799c2eaed2d3"
+    },
+    {
+      "path": "scripts/windows-usage-probe.mjs",
+      "bytes": 2576,
+      "sha256": "abc22291d72e555b95785f9352ddd11fc580253d73de348b556bfd46eb2987ae"
+    },
+    {
+      "path": "scripts/test-windows-usage-probe.mjs",
+      "bytes": 3211,
+      "sha256": "cc9e66b649e639b2c9b44e69c9eadcbc27527bb0872d98e2c3492284ccb4450f"
     }
   ]
 }
