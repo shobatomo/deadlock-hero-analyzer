@@ -147,13 +147,13 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 783,
-      "sha256": "07a4c80c246ec846a094edd2091d23e3170351b12eb20ac3ea099607751704b2"
+      "bytes": 782,
+      "sha256": "48b728f18697f23dc3dc7e3582acf02e95c2df6d265adf4c741f02cdd745574c"
     },
     {
       "path": "frontend/package-lock.json",
-      "bytes": 125068,
-      "sha256": "8f302d49a5693107c4bad088168aef55400973c09ec631d8999bd2de4e374085"
+      "bytes": 125394,
+      "sha256": "aa244db0d3eb147468aab5b5c099433e548fe4ff1c08f062033bc68e6d87174c"
     },
     {
       "path": "frontend/vite.config.js",
