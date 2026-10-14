@@ -26,7 +26,7 @@ export default function FiveAxisSummary({result,evidence,detailsContent}){
    <div className="hero-art"><HeroPortrait id={row.hero_id}/></div>
    <div className="hero-card-body"><h3>{heroName(row.hero_id)}</h3><p className="hero-short-reason">{short.endsWith("が近い")?<><span className="reason-phrase">{short.slice(0,-3)}</span><wbr/><span className="reason-phrase">が近い</span></>:short}</p>
     <button className="choose-button" aria-pressed={selected} aria-expanded={selected} onClick={()=>toggle(row.hero_id)}>{selected?'試し方を表示中':'試し方を見る'}<span aria-hidden="true">{selected?'−':'+'}</span></button>
-    {selected&&<div className="try-tip" role="status"><strong>{heroName(row.hero_id)}でやってみよう</strong><p>{guide?.first_step??"まずは練習で、移動・通常攻撃・アビリティを試してみよう。"}</p><small>ヒントはこの画面にだけ表示されます。ゲームやアカウントには反映されません。</small></div>}
+    {selected&&<div className="try-tip" role="status"><strong>{guide?.first_step_title??`${heroName(row.hero_id)}でやってみよう`}</strong><p>{guide?.first_step??"まずは練習で、移動・通常攻撃・アビリティを試してみよう。"}</p><small>ヒントはこの画面にだけ表示されます。ゲームやアカウントには反映されません。</small></div>}
    </div>
   </li>})}</ol></>:<div className="state-panel insufficient-panel"><h3>今回は候補を出せませんでした</h3><p role="status">比較に使える記録が足りないため、今回は候補を表示できません。最近のプレイ記録や公開設定を確認してください。</p></div>}
   <details className="data-details diagnosis-details"><summary>候補の選び方と注意点</summary>

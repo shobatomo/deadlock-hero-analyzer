@@ -127,8 +127,8 @@
     },
     {
       "path": "shared/hero-guides.json",
-      "bytes": 8040,
-      "sha256": "bd7196d0844140cf7287f075d1221472b46d47f5578541aaeb7b23df9062ed12"
+      "bytes": 19169,
+      "sha256": "be9c8a30a064bf6bfb771faa0feb81263eeaa11b1be4e16a51055a7a53adb7da"
     },
     {
       "path": "shared/hero-visuals.json",
@@ -147,8 +147,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 782,
-      "sha256": "48b728f18697f23dc3dc7e3582acf02e95c2df6d265adf4c741f02cdd745574c"
+      "bytes": 822,
+      "sha256": "d3b803cad7854bfdc68db55bcf8d306c61aa6b93d32815fc7d48580c4d22427c"
     },
     {
       "path": "frontend/package-lock.json",
@@ -222,8 +222,8 @@
     },
     {
       "path": "frontend/src/components/FiveAxisSummary.jsx",
-      "bytes": 6444,
-      "sha256": "e9ce10ff8f5d8db8e3c6de06c2ad1b36d148d7eb52227e3eac925292e8fbfc26"
+      "bytes": 6474,
+      "sha256": "9e7d270469c0b56c814e67c124909e18f3a190fe19bae85d606173ab0b75a77c"
     },
     {
       "path": "frontend/src/components/HeroPortrait.jsx",
@@ -569,6 +569,16 @@
       "path": "scripts/test-windows-usage-probe.mjs",
       "bytes": 3211,
       "sha256": "cc9e66b649e639b2c9b44e69c9eadcbc27527bb0872d98e2c3492284ccb4450f"
+    },
+    {
+      "path": "shared/hero-guides-approved.json",
+      "bytes": 11165,
+      "sha256": "d38a32e3afe0f26d19c37be64b8cd403932ca731165f9c7edf481ec51dc8eb58"
+    },
+    {
+      "path": "frontend/src/components/FiveAxisSummary.test.jsx",
+      "bytes": 3029,
+      "sha256": "cc83c7ad51ba35750c5392c51f7b4a39fba25e49123760672af27b7fd1b1fb9d"
     }
   ]
 }

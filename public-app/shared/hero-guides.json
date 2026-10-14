@@ -11,162 +11,261 @@
       "description": "炎で相手をじわじわ削り、素早く近づいて追い込む。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
-      "reviewed_at": "2026-10-09"
+      "reviewed_at": "2026-10-09",
+      "first_step_title": "一人に火をつける",
+      "first_step": "安全に撃ち合える敵が見えたら、狙いを一人に絞って燃焼が付くまで当ててみよう。火が付く感覚を覚えたら、遮蔽物の奥までは追いかけなくていい。"
     },
     "2": {
       "description": "雷の攻撃で、集まった相手に圧力をかける。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
-      "reviewed_at": "2026-10-09"
+      "reviewed_at": "2026-10-09",
+      "first_step_title": "スタンに合わせて雷球",
+      "first_step": "スタンに合わせて電球を飛ばして当ててみよう。大ダメージが狙えるはず。集団戦が始まったらウルトも使ってみよう。"
     },
     "3": {
       "description": "空中で位置を取りながら射撃し、傷ついた相手を遠距離から狙う。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
       "reviewed_at": "2026-10-09",
-      "first_step": "練習で距離を取り、狙いを定めて射撃してみよう。"
+      "first_step": "逃げたそうにしている相手に足止めを狙ってみよう。カラスを当ててキルまで持っていこう。",
+      "first_step_title": "足止めからカラスを当てる"
     },
     "4": {
       "description": "自分の体力を使って攻撃し、相手から体力を奪って立て直す。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
-      "reviewed_at": "2026-10-09"
+      "reviewed_at": "2026-10-09",
+      "first_step_title": "吸収中も手を止めない",
+      "first_step": "敵が近くで撃ち合いを続けてきたら、ライフドレイン中も射撃を重ねてみよう。相手が見える距離を保ち、回復と攻撃を同時に続ける感覚をつかもう。"
     },
     "6": {
       "description": "丈夫さを生かして相手に近づき、前に出て戦う。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
-      "reviewed_at": "2026-10-09"
+      "reviewed_at": "2026-10-09",
+      "first_step_title": "敵の後ろの壁を見る",
+      "first_step": "敵が壁の近くに立ったら、壁へ押し込む向きからショルダーチャージを試そう。まずは突進を当てるだけでなく、壁にぶつけて止めるところを目標に。"
     },
     "7": {
       "description": "相手を分断して一対一に持ち込み、銃撃とテレポートで攻防を切り替える。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
       "reviewed_at": "2026-10-09",
-      "first_step": "練習で銃撃とテレポートを使い、攻めた後に離れる動きを試してみよう。"
+      "first_step": "一人でレーンを押す前に、テレポートで戻る物陰を一つ決めてみよう。敵が寄ってきたらその場所へ退き、攻撃したあとも生き残る使い方を覚えよう。",
+      "first_step_title": "テレポートの出口を用意"
     },
     "8": {
       "description": "砲台や壁を設置し、相手の通り道や戦う場所を変える。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
-      "reviewed_at": "2026-10-09"
+      "reviewed_at": "2026-10-09",
+      "first_step_title": "タレットの角度をずらす",
+      "first_step": "味方と同じ場所を守るとき、次のタレットは前の一台から離して置いてみよう。敵を別の方向から狙えて、範囲攻撃でまとめて壊されにくい配置を探そう。"
     },
     "10": {
       "description": "時間を操る能力と位置の入れ替えで、戦いの流れを変える。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
-      "reviewed_at": "2026-10-09"
+      "reviewed_at": "2026-10-09",
+      "first_step_title": "味方の前で一瞬止める",
+      "first_step": "味方が撃てる敵を見つけたら、チャージしたカービンを当てて一瞬止めてみよう。まずは位置交換まで欲張らず、味方の追撃につながる一発を狙おう。"
     },
     "11": {
       "description": "味方の体力を支えながら、相手をまとめて止める機会を狙う。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
-      "reviewed_at": "2026-10-09"
+      "reviewed_at": "2026-10-09",
+      "first_step_title": "近づく敵を打ち上げる",
+      "first_step": "味方へ近づいてくる敵に、地面を走るパルスを当ててみよう。打ち上げている間に味方が下がったり撃ったりできる、短い余裕を作るのを目標にしてみよう。"
     },
     "12": {
       "description": "氷で相手の動きを遅くし、回復や戦場の分断で味方を助ける。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
-      "reviewed_at": "2026-10-09"
+      "reviewed_at": "2026-10-09",
+      "first_step_title": "追う敵へビームを保つ",
+      "first_step": "味方を追っている敵が見えたら、その一人に氷のビームを当て続けてみよう。移動と射撃を鈍らせて、味方が距離を取る時間を作れるか試そう。"
     },
     "13": {
       "description": "気づかれにくい動きで近づき、銃撃で相手を狙う。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
-      "reviewed_at": "2026-10-09"
+      "reviewed_at": "2026-10-09",
+      "first_step_title": "有利な相手へ仕掛ける",
+      "first_step": "孤立した敵や、自分よりもソウルが少ない敵を狙ってみよう。スリープダガーを当てて有利に戦闘を開始しよう。長くは戦えないので引き際を見極めよう。"
     },
     "14": {
       "description": "跳ねる移動と、狙いを定めた射撃を組み合わせる。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
-      "reviewed_at": "2026-10-09"
+      "reviewed_at": "2026-10-09",
+      "first_step_title": "高所からヘッドショット",
+      "first_step": "エイムに自信があれば積極的にヘッドショットを狙おう。ジャンプパッドで有利なポジションを素早く取ってみよう。"
     },
     "15": {
       "description": "フックで相手の位置を動かし、複数のアビリティを組み合わせて戦う。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
       "reviewed_at": "2026-10-09",
-      "first_step": "練習でフックを使い、狙い方と届く距離を確かめよう。"
+      "first_step": "フックで引き寄せる敵やタイミングを見極めよう。フックで引き寄せたあとはボムやメイン攻撃でキルを狙おう。フックひとつで戦局をひっくり返すこともできるぞ。",
+      "first_step_title": "引く相手とタイミングを選ぶ"
     },
     "16": {
       "description": "影を利用して戦闘に出入りし、相手を一人ずつ狙う。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
-      "reviewed_at": "2026-10-09"
+      "reviewed_at": "2026-10-09",
+      "first_step_title": "アビリティで一気に攻める",
+      "first_step": "高い機動力と近接戦闘が得意。アビリティを使って一気にキルできるように練習しよう。ウルトがある状態では強気に攻めてみよう。"
     },
     "17": {
       "description": "立ち位置を工夫しながら、狙いを定めた遠距離攻撃と罠で戦う。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
-      "reviewed_at": "2026-10-09"
+      "reviewed_at": "2026-10-09",
+      "first_step_title": "退路に罠を置く",
+      "first_step": "マップや他プレイヤーの状態をよく観察して、ウルトでキルを狙おう。前に出て矢を撃つ前に、戻る予定の細い通路へ第3アビリティの罠を置こう。"
     },
     "18": {
       "description": "地面に潜って近づき、近距離で相手を捕まえる。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
-      "reviewed_at": "2026-10-09"
+      "reviewed_at": "2026-10-09",
+      "first_step_title": "味方の前でつかむ",
+      "first_step": "ウルトで敵をつかむ前に、味方がその敵を撃てる位置にいるか見よう。次の集団戦は、味方の近くへ来た敵一人を止めて追撃の時間を作る。"
     },
     "19": {
       "description": "相手を少しずつ弱らせてから近づき、仕留める機会を狙う。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
-      "reviewed_at": "2026-10-09"
+      "reviewed_at": "2026-10-09",
+      "first_step_title": "遅れて受けるダメージを減らす",
+      "first_step": "大きく削られて遮蔽物へ戻れたら、残っている遅延ダメージを確認し、第3アビリティでその一部を減らしてみよう。敵の射撃が止んだ後も減る体力を抑え、生きて戻る練習にする。"
     },
     "20": {
       "description": "味方とつながり、射撃や回復を支えながら相手の動きを妨げる。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
-      "reviewed_at": "2026-10-09"
+      "reviewed_at": "2026-10-09",
+      "first_step_title": "大技に石で合わせる",
+      "first_step": "敵の大きな攻撃が自分に来るのを見たら、第3アビリティの石化を一度合わせてみよう。攻め始めに使い切らず、受けるはずのダメージを防ぐ場面を探す。"
     },
     "25": {
       "description": "前に出て相手の動きを妨げ、追い込む。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
-      "reviewed_at": "2026-10-09"
+      "reviewed_at": "2026-10-09",
+      "first_step_title": "遮蔽物で大技を準備",
+      "first_step": "味方と拠点を守る戦いになったら、敵の正面へ出る前に遮蔽物の陰でウルトを準備しよう。発動までの隙を減らし、敵が近くにいる間に効果を使う。"
     },
     "27": {
       "description": "狙いを定めた強い攻撃で相手を切り崩す。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
-      "reviewed_at": "2026-10-09"
+      "reviewed_at": "2026-10-09",
+      "first_step_title": "隠れられる前に斬る",
+      "first_step": "第1アビリティを溜めている間に敵が壁へ逃げそうなら、もう一度押して早めに斬ってみよう。最大まで溜めることより、射線が残る短い間に当てる感覚を覚える。"
     },
     "31": {
       "description": "遠くから飛び込み、相手に戦いを仕掛ける。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
-      "reviewed_at": "2026-10-09"
+      "reviewed_at": "2026-10-09",
+      "first_step_title": "低い高台から一撃",
+      "first_step": "近くの高台から敵を見下ろせたら、味方が届く場所へ第1アビリティで一度飛び込もう。まずは無理に高さを求めず、着地後に戻れる位置へ当てる練習にする。"
     },
     "35": {
       "description": "回避と回復を組み合わせ、相手の攻撃をしのぐ。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
-      "reviewed_at": "2026-10-09"
+      "reviewed_at": "2026-10-09",
+      "first_step_title": "危ない一撃をキューブで受ける",
+      "first_step": "大きな攻撃が自分に来ると分かったら、第2アビリティのキューブを自分へ使ってみよう。体力が尽きる直前まで待たず、危険な一撃を防ぐタイミングを覚える。"
     },
     "50": {
       "description": "近距離に入ってショットガンで戦い、飛ぶクロークでの移動と鞄への一時退避を組み合わせる。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
       "reviewed_at": "2026-10-09",
-      "first_step": "練習で近距離の射撃、クロークでの移動、鞄への退避を順に試してみよう。"
+      "first_step": "近距離で戦う前に、第2アビリティのマントを味方側の安全な方向へ飛ばそう。反撃が来たら、マントが消える前に再入力で戻り、短く攻めて離れる一回を試す。",
+      "first_step_title": "マントを帰り道にする"
     },
     "52": {
       "description": "竜巻で相手を捕まえ、味方を助ける機会を狙う。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
-      "reviewed_at": "2026-10-09"
+      "reviewed_at": "2026-10-09",
+      "first_step_title": "転移先を味方側にする",
+      "first_step": "別レーンで味方が戦い始めたら、安全な場所からウルトの転移先を味方寄りに選ぼう。敵の真ん中を避け、到着してから一緒に戦える位置を一度作る。"
     },
     "58": {
       "description": "滑る移動で位置を変え、銃撃と毒で相手を狙う。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
       "reviewed_at": "2026-10-09",
-      "first_step": "練習で滑る移動と射撃を組み合わせてみよう。"
+      "first_step": "短剣を当てた敵がまだ安全に狙える位置なら、次の短剣も効果が切れる前に同じ相手へ投げてみよう。別の敵へすぐ散らさず、重ねたときの減速を追撃につなげる。",
+      "first_step_title": "同じ相手に短剣を重ねる"
     },
     "60": {
       "description": "曲がる攻撃や惑わせる能力で、相手を翻弄する。",
       "source": "https://api.deadlock-api.com/v1/assets/heroes",
       "assets_observed_at": "2026-10-08",
-      "reviewed_at": "2026-10-09"
+      "reviewed_at": "2026-10-09",
+      "first_step_title": "分身を逃げ先にも置く",
+      "first_step": "撃ち合いを始めるとき、第2アビリティの分身を自分が逃げ込みたい場所へ置こう。敵が詰めてきたら再入力で位置を交換し、戻り先を選んでから戦う感覚を覚える。"
+    },
+    "63": {
+      "first_step_title": "削れた兵士で回復",
+      "first_step": "レーンで体力が減ったら、近くの倒せそうな敵兵に第1アビリティの傘を当ててみよう。撃破時の回復を使い、次の撃ち合いに備える。敵の懐へ無理に踏み込まない。"
+    },
+    "64": {
+      "first_step_title": "印を当てても即飛ばない",
+      "first_step": "第2アビリティの印が当たったら、飛び込む前に相手の周囲を一度見よう。敵の援護が近ければ再使用を見送り、ひとりになった相手を狙う判断を練習する。"
+    },
+    "65": {
+      "first_step_title": "壁際でGutshotを試す",
+      "first_step": "敵の背後に壁があるとき、Gutshotで壁へ押しつけてみよう。壁際でのスタンを確かめ、近づかれた場面で反撃のきっかけを作る練習に。"
+    },
+    "66": {
+      "first_step_title": "敵が離れたらオーラを切る",
+      "first_step": "近くの敵が離れたら、第3アビリティのオーラを一度切ってみよう。自分の体力も減る能力なので、当てる相手がいない時間の消耗を減らし、次の接近に備える。"
+    },
+    "67": {
+      "first_step_title": "味方の撃ち合いにバリア",
+      "first_step": "近くの味方が撃ち合いを始めたら、第2アビリティのバリアをその味方へ使ってみよう。被弾を支えながら、バリアが残る間の射撃強化も活かせるタイミングを覚える。"
+    },
+    "69": {
+      "first_step_title": "逃げる道にベルを置く",
+      "first_step": "敵が細い通路へ下がり始めたら、第1アビリティのベルをその進路へ投げてみよう。少し遅れて起こる爆発を逃げ道に重ね、相手の逃げ足を鈍らせる狙いで一度試す。"
+    },
+    "72": {
+      "first_step_title": "鎖をつないだら見失わない",
+      "first_step": "ウルトで敵に鎖をつないだら、引き寄せが起こるまで相手が見える位置を保とう。柱や角で視線を切られると鎖が外れるので、壁の向こうへ急いで回り込まない。"
+    },
+    "76": {
+      "first_step_title": "参考候補：通り道を塞ぐ",
+      "first_step": "敵が味方へ詰めてくるとき、第2アビリティの手の列を通り道に置いてみよう。横切った敵を足止めし、味方が距離を取る時間を作る。設置する向きも一度確認する。"
+    },
+    "77": {
+      "first_step_title": "突きのタイミングを覚える",
+      "first_step": "戦闘前の練習で、第3アビリティを押し続けてからタイミングを合わせて離してみよう。連打を急ぐより、まず一突きのダメージを見て、強い突きになる間隔を覚える。"
+    },
+    "79": {
+      "first_step_title": "追ってくる敵へ枕",
+      "first_step": "味方が近くの敵に追われていたら、第1アビリティの枕を追っ手へ当ててみよう。ノックバックで間を空け、味方が逃げる時間を作る。味方が追撃中の相手は、遠ざけすぎない。"
+    },
+    "80": {
+      "first_step_title": "弾が減ってから速射",
+      "first_step": "人の姿で近くの敵と撃ち合い、弾が減ったら第1アビリティを使ってみよう。即座のリロードで攻撃をつなぐ練習になる。命中精度が下がるので、遠い相手には欲張らない。"
+    },
+    "81": {
+      "first_step_title": "足が止まった敵へ光を置く",
+      "first_step": "味方の足止めが当たった敵へ、第3アビリティの光を置いてみよう。爆発まで少し間があるので、動きが止まる場面に合わせ、命中による自分のスピリット強化を狙う。"
+    },
+    "84": {
+      "first_step_title": "味方が戦う場所に旗",
+      "first_step": "味方が集まって撃ち合いを始めたら、味方が留まれる場所へウルトの旗を置いてみよう。旗の近くで被ダメージを抑えながら、味方と撃ち合いを続けてみよう。"
     }
   },
   "design_summary_reviewed_at": "2026-10-10"
