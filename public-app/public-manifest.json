@@ -217,8 +217,8 @@
     },
     {
       "path": "frontend/src/components/PublicDiagnosis.jsx",
-      "bytes": 7362,
-      "sha256": "eae65d46185dddc8c31025f74881bd6104148281074402db7f0bc8811d52eb97"
+      "bytes": 8247,
+      "sha256": "4a9193bc70522763b7a8efe2ef7259634d139a191bd4b61027bdf9bb9ef0efee"
     },
     {
       "path": "frontend/src/components/FiveAxisSummary.jsx",
@@ -502,8 +502,8 @@
     },
     {
       "path": "frontend/src/components/RecommendationFeedback.test.jsx",
-      "bytes": 7304,
-      "sha256": "4e90efe8bba04d49692378119ddecc1745f49ecfc37ff8a1bed7bbddeae4fcdf"
+      "bytes": 7737,
+      "sha256": "76dc0fd5d00e19394f2b1fb920e58be1bd420a9c8fad43e583f1f5d9e5aec064"
     },
     {
       "path": "frontend/src/lib/feedback.js",

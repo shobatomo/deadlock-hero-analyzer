@@ -21,7 +21,7 @@ try{
  await query(add,{role:'fyth_feedback_app_login',fail:true}) // Application grant deliberately separate.
  await query('GRANT fyth_usage_submitter TO fyth_feedback_app_login WITH INHERIT TRUE, SET FALSE;')
  for(const role of ['anon','authenticated','fyth_reader','fyth_feedback_app_login','fyth_usage_submitter','fyth_usage_maintenance']){
-  for(const sql of ['SELECT * FROM fyth_usage_private.daily_counts;','DELETE FROM fyth_usage_private.daily_counts;','TRUNCATE fyth_usage_private.daily_counts;','CREATE TABLE fyth_usage_private.nope(x int);'])await query(sql,{role,fail:true})
+  for(const sql of ['SELECT * FROM fyth_usage_private.daily_counts;','DELETE FROM fyth_usage_private.daily_counts;','UPDATE fyth_usage_private.daily_counts SET count=2;',"INSERT INTO fyth_usage_private.daily_counts VALUES(current_date,'diagnosis_ready',1);",'TRUNCATE fyth_usage_private.daily_counts;','CREATE TABLE fyth_usage_private.nope(x int);'])await query(sql,{role,fail:true})
  }
  const app='fyth_feedback_app_login'
  for(const sql of ['SET ROLE fyth_usage_owner;','SET ROLE fyth_usage_submitter;','SET ROLE fyth_usage_maintenance;','SELECT fyth_usage_private.expire_counts();',"SELECT fyth_usage_private.increment_event('secret');","SELECT fyth_usage_private.increment_event(NULL);"])await query(sql,{role:app,fail:true})
@@ -40,6 +40,19 @@ try{
  assert.equal(await query("SELECT count(*) FROM fyth_usage_private.daily_counts WHERE day=timezone('UTC',now())::date;"),'5')
  assert.equal(await query("SELECT string_agg(column_name,',' ORDER BY ordinal_position) FROM information_schema.columns WHERE table_schema='fyth_usage_private' AND table_name='daily_counts';"),'day,event,count')
 
- await query(await readFile(new URL('../docs/fyth/usage-retention-job.sql',import.meta.url),'utf8'),{fail:true})
- console.log(JSON.stringify({status:'passed',network:'none',real_project_access:false,baseline_feedback_unchanged:true,application_grant_separate:true,parallel_increments:8,utc:true,retention_boundary:true,direct_access_denied:true,cron_absence_rejected:true}))
+ const retention=await readFile(new URL('../docs/fyth/usage-retention-job.sql',import.meta.url),'utf8')
+ await query(retention,{fail:true})
+ // No real pg_cron in this offline DB: mock catalog only, preserve guard/schedule text.
+ await query("CREATE SCHEMA cron; CREATE TABLE cron.job(jobname text,schedule text,command text); CREATE FUNCTION cron.schedule(text,text,text) RETURNS bigint LANGUAGE sql AS 'INSERT INTO cron.job VALUES($1,$2,$3) RETURNING 1::bigint';")
+ const simulated=retention.split('\n').filter(line=>!line.includes("pg_catalog.pg_extension")).join('\n')
+ await query("SET cron.timezone='Asia/Tokyo';"+simulated,{fail:true})
+ assert.equal(await query('SELECT count(*) FROM cron.job;'),'0')
+ await query("SET cron.timezone='GMT';"+simulated)
+ assert.equal(await query("SELECT schedule FROM cron.job WHERE jobname='fyth-usage-expire-daily';"),'5 0 * * *')
+ const command=await query("SELECT command FROM cron.job WHERE jobname='fyth-usage-expire-daily';")
+ await query(command,{role:'local_migration_admin'})
+ await query("SET cron.timezone='GMT';"+simulated,{fail:true})
+ assert.equal(await query('SELECT count(*) FROM cron.job;'),'1')
+
+ console.log(JSON.stringify({status:'passed',network:'none',real_project_access:false,baseline_feedback_unchanged:true,application_grant_separate:true,parallel_increments:8,utc:true,retention_boundary:true,direct_access_denied:true,cron_absence_rejected:true,cron_timezone_guard:true,cron_catalog_mock_only:true}))
 }finally{await exec('docker',['rm','-f',name]).catch(()=>{})}

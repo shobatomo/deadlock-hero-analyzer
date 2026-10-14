@@ -90,3 +90,10 @@ describe('diagnosis remains independent of optional feedback',()=>{
   expect(screen.queryByRole('region',{name:'任意のフィードバック'})).toBeNull();expect(fetch).not.toHaveBeenCalled()
  })
 })
+
+it('discloses conditional anonymous counts without claiming collection is currently enabled',()=>{
+ render(<MemoryRouter><PublicDiagnosis account="1"/></MemoryRouter>)
+ expect(screen.getByText('匿名の利用計測について')).toBeTruthy()
+ expect(screen.getByText(/無効時にはこの集計を行いません/)).toBeTruthy()
+ expect(screen.getByText(/実人数や個人ごとの離脱率は測りません/)).toBeTruthy()
+})

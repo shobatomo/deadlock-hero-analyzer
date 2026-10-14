@@ -40,6 +40,7 @@ export default function PublicDiagnosis({account}){
    {state.status==='cancelled'&&<p className="notice-text" role="status">取得を中止しました。もう一度取得できます。</p>}
    {state.status==='error'&&<div className="error-panel" role="alert"><h3>記録を取得できませんでした。</h3><p>{state.error}</p><p>入力したIDと、公開された記録があるかを確認してください。取得制限や通信エラーの場合は、時間をおいてもう一度お試しください。</p><Link className="error-return" to="/">IDを確認する</Link></div>}
   </div>}
+  <details className="data-details"><summary>匿名の利用計測について</summary><p>利用計測を有効にした場合、診断の要求・推薦あり・推薦なし・エラー・接続切断を、日付・種類・件数だけで集計します。無効時にはこの集計を行いません。</p><p>個人のID・IPアドレス・Cookie・セッションID・入力URL・プレイ履歴・エラー本文は、この集計に保存しません。通常の集計は当日と過去29日分を保持し、バックアップには別途残る可能性があります。</p><p>再試行は別の要求として数えます。応答完了は画面表示を確認するものではなく、実人数や個人ごとの離脱率は測りません。通信障害などで集計できないことがあります。任意の3択回答は、別の回答集計です。</p></details>
   <div className={'acquisition-actions '+(complete?'after-result':'')}>{loading?<button className="secondary-button" onClick={()=>active.current?.abort()}>中止する</button>:<button ref={action} className={complete?'secondary-button':'primary-button'} onClick={collect}>{state.status==='idle'?"プレイ記録を取得しておすすめを見る":'もう一度取得する'}{!complete&&<span aria-hidden="true">→</span>}</button>}{complete&&<Link className="secondary-button alternate-id" to="/">別のIDを入力する</Link>}</div>
  </section>
 }

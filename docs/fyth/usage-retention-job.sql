@@ -2,6 +2,7 @@
 BEGIN;
 DO $$ BEGIN
  IF NOT EXISTS(SELECT 1 FROM pg_catalog.pg_extension WHERE extname='pg_cron') THEN RAISE EXCEPTION 'pg_cron must already be installed'; END IF;
+ IF COALESCE(pg_catalog.current_setting('cron.timezone',true),'') NOT IN ('UTC','GMT','Etc/UTC') THEN RAISE EXCEPTION 'UTC scheduler required'; END IF;
  IF EXISTS(SELECT 1 FROM cron.job WHERE jobname='fyth-usage-expire-daily') THEN RAISE EXCEPTION 'usage job already exists: inspect before applying'; END IF;
 END $$;
 SELECT cron.schedule('fyth-usage-expire-daily','5 0 * * *',
