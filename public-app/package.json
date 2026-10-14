@@ -4,11 +4,12 @@
   "scripts": {
     "build": "npm --prefix frontend run build",
     "start": "node scripts/public-preview-server.mjs",
-    "test": "node scripts/test-feedback.mjs && node scripts/test-feedback-store.mjs && npm --prefix frontend run test:feedback && node scripts/verify-public-bundle.mjs",
+    "test": "node scripts/test-feedback.mjs && node scripts/test-feedback-store.mjs && node scripts/test-usage.mjs && npm --prefix frontend run test:feedback && node scripts/verify-public-bundle.mjs",
     "feedback:check-connection": "node scripts/check-feedback-connection.mjs"
   },
   "type": "module",
   "dependencies": {
+    "@vercel/functions": "3.10.1",
     "express": "5.2.1",
     "pg": "8.23.1"
   },

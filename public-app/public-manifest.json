@@ -62,8 +62,8 @@
     },
     {
       "path": "backend/public-app.js",
-      "bytes": 4242,
-      "sha256": "2a20383eaaab04ae02630bf25e9d1e4cfe7233df56c901804765e1cc7a5729ca"
+      "bytes": 4651,
+      "sha256": "bff150cc20e2a2f969c22171556fef1a32f67c8c826d20463c325710835a6cf4"
     },
     {
       "path": "backend/public-collection.js",
@@ -447,13 +447,13 @@
     },
     {
       "path": "package.json",
-      "bytes": 553,
-      "sha256": "7a81df0a0302d4237c7f1c7aff8af0e4d0b44e8ef43b02898b763d8aeb104556"
+      "bytes": 619,
+      "sha256": "671d9d9adcb161c51310075cd7f319ca8557b01b4caa941ea9dfe5762bc7b306"
     },
     {
       "path": "package-lock.json",
-      "bytes": 37502,
-      "sha256": "b0d7fc75a60a8f6934beb9b1ded1aea09e33360327411913af7d1bc0a9f292ce"
+      "bytes": 48180,
+      "sha256": "8f1530d70e7cfa36f19702912e4f4c6db59bf2397402a28b582af42ac6ef08f2"
     },
     {
       "path": "vercel.json",
@@ -482,8 +482,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 1881,
-      "sha256": "0b800de96a7d7c659c58f0cf031a376ea8f4e7ae9eb3960b5797caa6d97089d6"
+      "bytes": 2271,
+      "sha256": "d51f25775f42842f6ac229643a543624929aae4be3a0c1a5b87e2a183f0827ac"
     },
     {
       "path": "backend/feedback.js",
@@ -522,8 +522,8 @@
     },
     {
       "path": "backend/feedback-store.js",
-      "bytes": 4435,
-      "sha256": "382f3756873a0c53a500adb6d7f1a5077a307bb43bf23fe37682bfe40779f9a6"
+      "bytes": 4545,
+      "sha256": "1e3feeb0e03ed83247aacb0dc0f32299c14bc3308a4a4bc661d86cf9bc115bc2"
     },
     {
       "path": "scripts/test-feedback-store.mjs",
@@ -534,6 +534,26 @@
       "path": "scripts/check-feedback-connection.mjs",
       "bytes": 1129,
       "sha256": "2883ec7b697f4fd233373485874a4ae0919e5d92078ec9d9a98a61939689ad3b"
+    },
+    {
+      "path": "backend/usage.js",
+      "bytes": 1317,
+      "sha256": "2935af78219f8dc53dea59dbb9c04d6337a8d6e62c4defb3acb64a4637ead24d"
+    },
+    {
+      "path": "backend/usage-store.js",
+      "bytes": 1255,
+      "sha256": "da11fbfbb1619559c5a990c2afae1ea7a5966912c9546b2971c21e2da0c51590"
+    },
+    {
+      "path": "shared/usage.mjs",
+      "bytes": 149,
+      "sha256": "d26c40eba33efdf4ec2a7be1a1000dd11594b736a17d615a46eb16e0275410fe"
+    },
+    {
+      "path": "scripts/test-usage.mjs",
+      "bytes": 7471,
+      "sha256": "fc92872989cdbf9d4f3cf36be33a600bc8ed0280940399045c2e7c9d87482128"
     }
   ]
 }
