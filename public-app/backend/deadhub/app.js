@@ -3,7 +3,7 @@ import {createHash,timingSafeEqual} from 'node:crypto'
 import {tokyoDay,monthBounds} from '../../shared/deadhub.mjs'
 import {RecordError} from './provider.js'
 const MESSAGES={unauthorized:'Steamでログインしてください。',not_allowed:'このSteamアカウントは利用許可されていません。',
-  login_failed:'Steamログインを確認できませんでした。最初からお試しください。',login_busy:'ログインが混み合っています。しばらくお待ちください。',
+  login_failed:'Steamログインを確認できませんでした。最初からお試しください。',
   busy:'記録を取得中です。しばらくお待ちください。',cooldown:'連続取得を防ぐため、少しお待ちください。',
   already_registered:'このSteamアカウントは登録済みです。',not_registered:'先に記録対象として登録してください。',
   rate_limited:'提供元の取得制限に達しました。時間をおいてお試しください。',provider_timeout:'提供元の応答が時間内に返りませんでした。保存済みの記録は残っています。'}

@@ -24,13 +24,19 @@ const raw=(id=99,extra={})=>({match_id:id,start_time:'2026-10-14 15:00:00',durat
 const range={accountId:'1',from:'2026-09-15T00:00:00.000Z',until:'2026-10-16T00:00:00.000Z',cursor:null}
 const record=(id='99',extra={})=>({match_id:id,started_at:new Date(Date.now()-DAY).toISOString(),hero_id:15,won:false,kills:0,deaths:2,assists:3,hero_damage:null,duration_s:1200,...extra})
 const DAY=86400000
-async function reset(){await admin.query('TRUNCATE deadhub_private.matches,deadhub_private.accounts,deadhub_private.sessions,deadhub_private.login_states,deadhub_private.openid_nonces')}
+async function reset(){await admin.query('TRUNCATE deadhub_private.matches,deadhub_private.accounts,deadhub_private.sessions,deadhub_private.openid_nonces')}
 async function ready(){await admin.query("UPDATE deadhub_private.accounts SET retry_after=now()-interval '1 second'")}
 before(async()=>{
   await exec('docker',['run','--rm','-d','--name',name,'-p','127.0.0.1::5432','-e','POSTGRES_HOST_AUTH_METHOD=trust','postgres:17.11-bookworm'])
   for(let i=0;;i++){try{await exec('docker',['exec',name,'pg_isready','-U','postgres','-h','127.0.0.1']);break}catch{if(i>100)throw Error('Database startup failed');await new Promise(r=>setTimeout(r,100))}}
   const port=Number((await exec('docker',['port',name,'5432/tcp'])).stdout.trim().split(':').at(-1))
   admin=new pg.Pool({host:'127.0.0.1',port,user:'postgres',database:'postgres'})
+  // Exercise stricter-than-current Supabase defaults: direct role grants must
+  // also be removed, rather than relying only on a REVOKE from PUBLIC.
+  await admin.query(`CREATE ROLE anon; CREATE ROLE authenticated; CREATE ROLE service_role;
+    ALTER DEFAULT PRIVILEGES GRANT ALL ON SCHEMAS TO anon,authenticated,service_role;
+    ALTER DEFAULT PRIVILEGES GRANT ALL ON TABLES TO anon,authenticated,service_role;
+    ALTER DEFAULT PRIVILEGES GRANT ALL ON FUNCTIONS TO anon,authenticated,service_role;`)
   await admin.query(await readFile(new URL('../docs/deadhub/schema.sql',import.meta.url),'utf8'))
   // This activation is confined to this disposable DB, never production.
   await admin.query('ALTER ROLE deadhub_app_login LOGIN')
@@ -94,6 +100,41 @@ test('registration, RLS owner isolation, global Steam uniqueness, no DELETE or a
   await assert.rejects(pool.query('SELECT * FROM deadhub_private.sessions'))
   assert.equal((await pool.query('SELECT * FROM deadhub_private.accounts')).rowCount,0)
   await assert.rejects(pool.query('INSERT INTO deadhub_private.matches(owner_id,match_id,started_at) VALUES($1,1,now())',[owner]))
+  const privileges=await admin.query(`SELECT r.rolname,
+    has_schema_privilege(r.oid,'deadhub_private','USAGE,CREATE') AS schema_access,
+    EXISTS(SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='deadhub_private' AND c.relkind='r'
+      AND has_table_privilege(r.oid,c.oid,'SELECT,INSERT,UPDATE,DELETE,TRUNCATE,REFERENCES,TRIGGER')) AS table_access,
+    EXISTS(SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='deadhub_private'
+      AND has_function_privilege(r.oid,p.oid,'EXECUTE')) AS function_access
+    FROM pg_roles r WHERE r.rolname IN ('anon','authenticated','service_role')`)
+  assert.equal(privileges.rowCount,3)
+  for(const row of privileges.rows)assert.deepEqual([row.schema_access,row.table_access,row.function_access],[false,false,false])
+})
+test('verified state/nonce consumption and session rotation are atomic, including at the session cap',async()=>{
+  await reset()
+  const h=value=>hashToken(String(value))
+  for(let i=0;i<10;i++)assert.equal(await store.openSession(h('session'+i),owner,'1',h('nonce'+i),h('state'+i)),true)
+  assert.equal(await store.openSession(h('over-cap'),owner,'1',h('over-cap-nonce'),h('over-cap-state')),false)
+  assert.equal(await store.openSession(h('replacement'),owner,'1',h('new-nonce'),h('new-state'),h('session0')),true)
+  assert.equal(await store.resolveSession(h('session0')),null)
+  assert.equal((await store.resolveSession(h('replacement'))).owner_id,owner)
+  // A reused nonce or state may not revoke the prior good session.
+  assert.equal(await store.openSession(h('replay1'),owner,'1',h('new-nonce'),h('different-state'),h('replacement')),false)
+  assert.equal(await store.openSession(h('replay2'),owner,'1',h('different-nonce'),h('new-state'),h('replacement')),false)
+  assert.equal((await store.resolveSession(h('replacement'))).owner_id,owner)
+  const concurrent=await Promise.all(['a','b'].map(suffix=>store.openSession(h('concurrent-'+suffix),owner,'1',h('concurrent-nonce'),h('concurrent-state'),h('replacement'))))
+  assert.equal(concurrent.filter(Boolean).length,1)
+  const current=h(concurrent[0]?'concurrent-a':'concurrent-b')
+  const distinct=await Promise.all(['a','b'].map(suffix=>store.openSession(h('distinct-'+suffix),owner,'1',h('distinct-nonce-'+suffix),h('distinct-state-'+suffix),current)))
+  assert.equal(distinct.filter(Boolean).length,1)
+  const active=h(distinct[0]?'distinct-a':'distinct-b')
+  await assert.rejects(store.openSession('invalid-token-hash',owner,'1',h('rollback-nonce'),h('rollback-state'),active))
+  assert.equal((await store.resolveSession(active)).owner_id,owner)
+  assert.equal((await admin.query('SELECT count(*)::int AS n FROM deadhub_private.openid_nonces WHERE token_hash=$1',[h('rollback-nonce')])).rows[0].n,0)
+  assert.equal((await admin.query('SELECT count(*)::int AS n FROM deadhub_private.sessions WHERE owner_id=$1',[owner])).rows[0].n,10)
+  assert.equal(await store.openSession(h('other-session'),other,'2',h('other-nonce'),h('other-state')),true)
+  assert.equal(await store.openSession(h('wrong-owner'),owner,'1',h('wrong-owner-nonce'),h('wrong-owner-state'),h('other-session')),false)
+  assert.equal((await store.resolveSession(h('other-session'))).owner_id,other)
 })
 test('sync is idempotent; sparse responses preserve known values; details can arrive later',async()=>{
   await reset();await store.register(owner,'1')
@@ -157,10 +198,10 @@ test('partial commit and bounded work; API failure keeps rows and last completed
 })
 test('Steam verified login, safe cookie, replays, wrong identity/origin and endpoint authorization',async()=>{
   await reset()
-  let verification=0,syncCalls=0
+  let verification=0,syncCalls=0,validVerification=true
   const auth=createSteamAuth({store,origin,allowedAccounts:['1'],fetchImpl:async(url,opts)=>{
     assert.equal(url,'https://steamcommunity.com/openid/login');assert.equal(opts.body.get('openid.mode'),'check_authentication');verification++
-    return new Response('ns:http://specs.openid.net/auth/2.0\nis_valid:true\n')
+    return new Response('ns:http://specs.openid.net/auth/2.0\nis_valid:'+validVerification+'\n')
   }})
   const app=createDeadhubApp({store,auth,sync:async id=>{assert.equal(id,owner);syncCalls++;return {status:'success'}},cronOwner:owner,cronSecret:'x'.repeat(40)})
   server=app.listen(0,'127.0.0.1');await once(server,'listening');base='http://127.0.0.1:'+server.address().port
@@ -168,6 +209,9 @@ test('Steam verified login, safe cookie, replays, wrong identity/origin and endp
   assert.equal((await fetch(base+'/api/deadhub/records')).status,401)
   assert.equal((await post('/api/deadhub/register')).status,401)
   assert.equal((await post('/api/deadhub/auth/login',{Origin:'https://evil.test'})).status,403)
+  for(let i=0;i<120;i++)assert.equal((await post('/api/deadhub/auth/login')).status,200)
+  assert.equal((await admin.query('SELECT count(*)::int AS n FROM deadhub_private.openid_nonces')).rows[0].n,0)
+  assert.equal((await admin.query('SELECT count(*)::int AS n FROM deadhub_private.sessions')).rows[0].n,0)
   async function assertion(account='1',change={}) {
     const start=await post('/api/deadhub/auth/login'),login=new URL((await start.json()).url)
     assert.match(start.headers.get('set-cookie'),/HttpOnly; Secure; SameSite=Lax/)
@@ -198,11 +242,16 @@ test('Steam verified login, safe cookie, replays, wrong identity/origin and endp
   const noCookie=await assertion()
   await fetch(base+noCookie.path,{redirect:'manual'})
   assert.equal(verification,0)
+  validVerification=false
+  const invalid=await assertion(),invalidResult=await fetch(base+invalid.path,{headers:{Cookie:invalid.cookie},redirect:'manual'})
+  assert.match(invalidResult.headers.get('location'),/login=failed/)
+  assert.equal((await admin.query('SELECT count(*)::int AS n FROM deadhub_private.sessions')).rows[0].n,0)
+  validVerification=true;verification=0
   const good=await assertion(),verified=await fetch(base+good.path,{headers:{Cookie:good.cookie},redirect:'manual'})
   assert.equal(verified.headers.get('location'),origin+'/deadhub');assert.equal(verification,1)
   sessionCookie=verified.headers.getSetCookie().find(c=>c.startsWith('__Host-deadhub_session=')).split(';')[0]
   const replay=await fetch(base+good.path,{headers:{Cookie:good.cookie},redirect:'manual'})
-  assert.match(replay.headers.get('location'),/login=failed/);assert.equal(verification,1)
+  assert.match(replay.headers.get('location'),/login=failed/);assert.equal(verification,2)
   const read=await fetch(base+'/api/deadhub/records?month='+month,{headers:{Cookie:sessionCookie}})
   assert.equal(read.status,200);assert.equal(read.headers.get('cache-control'),'private, no-store')
   assert.equal((await post('/api/deadhub/register',{Cookie:sessionCookie},JSON.stringify({account_id:'2'}))).status,400)

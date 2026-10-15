@@ -109,9 +109,7 @@ export function createRecordStore(pool) {
       return tx(owner,client=>client.query(`UPDATE deadhub_private.accounts SET sync_status='error',last_error=$3,
         retry_after=now()+($4::int * interval '1 second'),lease_token=null,lease_until=null WHERE owner_id=$1 AND lease_token=$2`,[owner,token,code,Math.min(86400,Math.max(60,retryAfter))]))
     },
-    async beginLogin(hash) {return (await pool.query('SELECT deadhub_private.begin_login($1) AS ok',[hash])).rows[0].ok},
-    async consumeLogin(hash) {return (await pool.query('SELECT deadhub_private.consume_login($1) AS ok',[hash])).rows[0].ok},
-    async openSession(hash,owner,accountId,nonceHash) {return (await pool.query('SELECT deadhub_private.open_session($1,$2,$3,$4) AS ok',[hash,owner,accountId,nonceHash])).rows[0].ok},
+    async openSession(hash,owner,accountId,nonceHash,stateHash,previousHash=null) {return (await pool.query('SELECT deadhub_private.open_session($1,$2,$3,$4,$5,$6) AS ok',[hash,owner,accountId,nonceHash,stateHash,previousHash])).rows[0].ok},
     async resolveSession(hash) {return (await pool.query('SELECT * FROM deadhub_private.resolve_session($1)',[hash])).rows[0]??null},
     async closeSession(hash) {await pool.query('SELECT deadhub_private.close_session($1)',[hash])},
     close:()=>pool.end(),

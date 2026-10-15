@@ -11,7 +11,7 @@ Status: implementation and local verification complete; **not deployed, not yet 
 
 ## Open and register after activation
 
-1. Open **`https://<existing-app-host>/deadhub`** on PC or phone.
+1. After the approved production activation, open **`https://deadlock-fyth.vercel.app/deadhub`** on PC or phone. This route is not deployed yet.
 2. Choose **Steamでログインする**, authenticate on Steam's official site, then return. Only the configured owner SteamID64 is allowed.
 3. Choose **このアカウントを登録して過去30日を取得**. The target Steam identity comes from the verified login, never an editable client-supplied ID.
 4. After synchronization, select a colored day. The page shows games, win/loss/unknown, K/D/A and damage. Reloading resolves the session and reads the database. **最新の記録を取得** performs a manual update.
@@ -59,18 +59,18 @@ Provider `final_stats` is the last available sample, not a guarantee that a comp
 [Steam's documented OpenID provider](https://steamcommunity.com/dev) and [OpenID 2.0 verification requirements](https://openid.net/specs/openid-authentication-2_0.html) were checked. No Steam Web API key, Steam password, independent application password or Supabase Auth configuration is needed.
 
 - Fixed HTTPS origin/realm/return URL and the Steam claimed-ID namespace/endpoint. No Host-header redirects, arbitrary discovery URLs or client account selection.
-- Random 256-bit state bound to an HttpOnly Secure SameSite=Lax `__Host-` cookie. SHA-256 state stored in DB, 10-minute expiry, single-use atomic consumption, capacity 100 outstanding requests.
+- Random 256-bit state bound to an HttpOnly Secure SameSite=Lax `__Host-` cookie with a 10-minute browser lifetime. Starting login performs no database writes and consumes no shared pending-login capacity. After Steam verification, state and nonce hashes are accepted atomically with independent uniqueness constraints and a 20-minute replay retention window. Neither raw value is stored.
 - Required signed fields, identical identity/claimed ID, exact return URL, namespace, duplicate-param rejection and fresh response nonce. Assertion verified server-to-server using Steam `check_authentication`; invalid responses never create sessions. Nonce hashes are unique across app instances.
-- Random 256-bit opaque session cookie, HttpOnly / Secure / SameSite=Lax / Path=/, expires in seven days. Only the token hash is stored; logout revokes it. No signing secret is required. Re-login rotates/revokes the old token. At most ten live sessions per owner.
+- Random 256-bit opaque session cookie, HttpOnly / Secure / SameSite=Lax / Path=/, expires in seven days. Only the token hash is stored; logout revokes it. No signing secret is required. Re-login atomically replaces the same owner's previous token before checking the ten-session cap. A rejected/replayed assertion cannot revoke an existing session.
 - The server verifies the allowlisted Steam identity on each read/write, then supplies the internal owner to a transaction-local DB context. Record RLS enforces owner separation. Steam registration cannot be changed or deleted through any app endpoint.
 - Browser POSTs require same-origin JSON. No CORS access. Responses use no-store/no-referrer. No raw provider responses, request bodies, driver errors or credentials are logged by this code.
-- `deadhub_app_login` is separate from all FYTH roles, NOLOGIN in the draft, no bypass RLS, no schema creation, deletion/truncation, broad memberships or direct session-table access. Auth functions use a fixed empty search path and are not public. No `service_role` connection.
+- `deadhub_app_login` is separate from all FYTH roles, NOLOGIN in the draft, no bypass RLS, no schema creation, deletion/truncation, broad memberships or direct session-table access. Auth functions use a fixed empty search path. PUBLIC plus existing `anon`, `authenticated` and `service_role` receive explicit schema/table/function revokes; only the private application role can execute these functions. No `service_role` connection.
 
 ## Local evidence, separated by scope
 
 ### Synthetic fixtures
 
-`npm run test:deadhub`: nine test groups on disposable PostgreSQL 17.11. Covers JST midnight/month/year/leap boundaries; true zero/null/partial sums; provider account/range/ordering validation; bounded pagination and 429; registration uniqueness; RLS and forbidden deletion/session access; upsert and delayed field completion; separate owners using the same match ID; persisted restart reads; parallel lease acquisition, cooldown, stale worker fencing, cursor recovery, stopped-day catchup; partial failure retention; Steam callback verification/replay/identity/return URL/signed-field/nonce/CSRF/authorization; Cron versus browser credentials; disabled runtime and credential separation.
+`npm run test:deadhub`: ten test groups on disposable PostgreSQL 17.11. Covers JST midnight/month/year/leap boundaries; true zero/null/partial sums; provider account/range/ordering validation; bounded pagination and 429; registration uniqueness; RLS and forbidden deletion/session access; upsert and delayed field completion; separate owners using the same match ID; persisted restart reads; parallel lease acquisition, cooldown, stale worker fencing, cursor recovery, stopped-day catchup; partial failure retention; Steam callback verification/replay/identity/return URL/signed-field/nonce/CSRF/authorization; Cron versus browser credentials; disabled runtime and credential separation. Security regressions also cover 120 unauthenticated login starts without DB allocation, separate state/nonce replay rejection, session rotation at the cap, concurrent exchange, other-owner protection, invalid Steam verification, and revocation under synthetic global Supabase-style default grants.
 
 `npm run test:deadhub-browser`: synthetic-only page/API fixtures at widths **1280, 390, 320**. Month navigation, keyboard day selection, partial totals, update in progress/complete/failure, records remaining after failure and reload, no horizontal overflow, day height >=44px. Disconnected screen checked. Screenshots, when generated, are marked as dummy data and kept in `/tmp`, not published or included in git.
 
@@ -78,7 +78,7 @@ Node **22.23.3** production build passed. Existing `npm test` passed: **85 exist
 
 ### Live API → disposable local DB
 
-Allowed owner account was used on 2026-10-15. **No real Steam browser login and no production DB access** were performed.
+Allowed owner account was used on 2026-10-15. **No real Steam browser login and no production record writes** were performed. Separate production inspection was limited to read-only project/role/default-grant/event-trigger metadata.
 
 - Completed query window: **2026-09-15 08:42:47 UTC – 2026-10-15 08:42:47 UTC** (JST 17:42:47).
 - Initial result: **18 actual matches**, observed **2026-09-15 11:32:40 UTC – 2026-10-14 12:54:56 UTC** (JST Sep 15 20:32:40 – Oct 14 21:54:56).
@@ -88,11 +88,18 @@ Allowed owner account was used on 2026-10-15. **No real Steam browser login and 
 
 ## Approval and owner steps still required
 
-1. Review/apply **[schema.sql](schema.sql)** on the existing Supabase project. This creates only `deadhub_private` and a dedicated NOLOGIN role; it does not touch the FYTH schemas or `auth.users`.
+Exact existing targets, confirmed by read-only inspection on 2026-10-15:
+
+- Supabase **DeadlockFYTH**, project **`adxoqjgmhmortztqngcz`**, ap-northeast-1, PostgreSQL 17.11.
+- Vercel **deadlock-fyth**, project **`prj_eknZdUrfiSOL4eOdfK3OEODut17w`**, team **`team_H1BMitz1DUJuT83Bx7ofDF8X`**, source directory **`public-app`**, Node 22, Production environment. Canonical app origin: **`https://deadlock-fyth.vercel.app`**. The separate reference worker is not a deployment target.
+
+1. Review/apply **[schema.sql](schema.sql)** once on that Supabase project. It creates `deadhub_private` with **four tables** (`accounts`, `matches`, `openid_nonces`, `sessions`), **two owner RLS policies**, indexes/constraints and **three private auth functions** (`open_session`, `resolve_session`, `close_session`). All tables have RLS; records additionally FORCE RLS. Functions are SECURITY DEFINER with an empty fixed search path and schema-qualified commands, owned by the migration executor. No FYTH objects or `auth.users` are changed.
 2. Approve/activate only `deadhub_app_login` and privately provision its password/verified TLS connection. Run **[preflight.sql](preflight.sql)** with that login. Do not widen `fyth_reader`/`fyth_writer`, reuse their credentials, or expose the private schema through a public database API.
-3. In the existing app project's **Production-only** environment, configure `DEADHUB_DB_URL`, optional `DEADHUB_DB_CA_CERT`, `DEADHUB_OWNER_STEAM_ID` (owner's allowed SteamID64), `DEADHUB_PUBLIC_ORIGIN` (exact HTTPS origin, no trailing slash) and a >=32-character random `CRON_SECRET`. Keep `DEADHUB_ENABLED=false` until ready. No Preview connection or credentials. Do not change the separate existing worker's secret or schedule.
-4. Approve deployment of this reviewed candidate to the existing app, then enable `DEADHUB_ENABLED=true`. Git auto-deployment remains disabled. No GitHub push, merge or deployment was performed here.
+3. In the existing app project's **Production-only** environment, configure `DEADHUB_DB_URL`, optional `DEADHUB_DB_CA_CERT`, `DEADHUB_OWNER_STEAM_ID` (owner's allowed SteamID64), `DEADHUB_PUBLIC_ORIGIN` (exact HTTPS origin, no trailing slash), a >=32-character random `CRON_SECRET`, and the activation gate `DEADHUB_ENABLED`. Keep the gate disabled until ready. `VERCEL_ENV` is platform-managed and only read by the application. No Preview connection or credentials. Do not change the separate existing worker's secret or schedule. Secret values must be provisioned through an approved private channel, never migration files, git, command arguments or report output.
+4. Approve deployment of the final reviewed commit to the existing app, then activate the gate. Git auto-deployment remains disabled. No GitHub push, merge or deployment was performed here; these are separate approval steps.
 5. Owner performs real Steam login, registration and initial sync at `/deadhub`, reloads, and confirms personal dates/stats. This is the first production end-to-end proof; the local test does not replace it.
 6. After the next 06:00–06:59 JST window, verify an actual Vercel scheduled invocation and the saved sync timestamp/outcome. Until then report scheduling **configured, unverified**. Observe a subsequent real match/late update as a separate production check.
 
-No destructive changes, paid service changes or credential creation are included. Disabling `DEADHUB_ENABLED` stops both records API and scheduled acquisition without deleting existing records.
+The draft role is NOLOGIN, connection limit 3, no superuser/create-db/create-role/replication/bypass-RLS. After separately approved LOGIN activation it receives only schema USAGE, SELECT/INSERT/UPDATE on accounts/matches, and EXECUTE on the three auth functions. It receives no DELETE/TRUNCATE, schema CREATE, role memberships or direct auth-table privileges. These are proposed privileges on new objects only, not permission changes already performed.
+
+No destructive changes, paid service changes or credential creation have been performed. Disabling `DEADHUB_ENABLED` stops both records API and scheduled acquisition without deleting existing records. Production owner login, durable re-access and actual scheduled invocation remain independent unverified checks.

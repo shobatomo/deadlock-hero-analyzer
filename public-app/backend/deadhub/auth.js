@@ -30,7 +30,9 @@ export function createSteamAuth({store,origin,allowedAccounts,fetchImpl=fetch,no
     origin,
     async start(req,res) {
       const state=randomBytes(32).toString('base64url')
-      if (!await store.beginLogin(hashToken(state))) throw new RecordError('login_busy',429)
+      // Unauthenticated starts allocate no shared DB state. The high-entropy
+      // host-only cookie binds the response to this browser; verified state and
+      // nonce hashes are consumed atomically only after Steam confirms it.
       res.setHeader('Set-Cookie',cookie(STATE,state,600))
       const url=new URL(ENDPOINT)
       url.search=new URLSearchParams({'openid.ns':NS,'openid.mode':'checkid_setup','openid.realm':origin+'/',
@@ -42,7 +44,6 @@ export function createSteamAuth({store,origin,allowedAccounts,fetchImpl=fetch,no
       res.setHeader('Set-Cookie',cookie(STATE,'',0))
       // Reject duplicate parameters and unsolicited / cross-browser callbacks.
       if ([...params.keys()].some(k=>params.getAll(k).length!==1) || !/^[A-Za-z0-9_-]{43}$/.test(state??'') || !equal(state,readCookie(req,STATE))) throw new RecordError('login_failed',401)
-      if (!await store.consumeLogin(hashToken(state))) throw new RecordError('login_failed',401)
       const fields=['op_endpoint','claimed_id','identity','return_to','response_nonce','assoc_handle']
       const signed=(params.get('openid.signed')??'').split(',')
       const claimed=params.get('openid.claimed_id'), expectedReturn=callback+'?state='+state
@@ -65,10 +66,9 @@ export function createSteamAuth({store,origin,allowedAccounts,fetchImpl=fetch,no
       const lines=text.split('\n').filter(Boolean), values=new Map(lines.map(line=>[line.slice(0,line.indexOf(':')),line.slice(line.indexOf(':')+1)]))
       if (!response.ok || values.size!==lines.length || values.get('is_valid')!=='true' || values.get('ns')!==NS) throw new RecordError('login_failed',401)
       const token=randomBytes(32).toString('base64url'), owner=ownerForAccount(account)
-      if (!await store.openSession(hashToken(token),owner,account,hashToken(nonce))) throw new RecordError('login_failed',401)
-      // Rotate/revoke an existing session after successful authentication.
       const previous=readCookie(req,SESSION)
-      if (previous && /^[A-Za-z0-9_-]{43}$/.test(previous)) await store.closeSession(hashToken(previous))
+      const previousHash=/^[A-Za-z0-9_-]{43}$/.test(previous??'')?hashToken(previous):null
+      if (!await store.openSession(hashToken(token),owner,account,hashToken(nonce),hashToken(state),previousHash)) throw new RecordError('login_failed',401)
       res.setHeader('Set-Cookie',[cookie(STATE,'',0),cookie(SESSION,token,7*86400)])
       res.redirect(303,origin+'/deadhub')
     },

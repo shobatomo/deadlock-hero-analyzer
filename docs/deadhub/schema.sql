@@ -58,8 +58,11 @@ grant select, insert, update on deadhub_private.accounts, deadhub_private.matche
 -- Owner context is server-set after Steam OpenID verification. This connection
 -- must never be exposed to a browser. This schema is not a PostgREST API schema.
 
-create table deadhub_private.login_states (token_hash text primary key check(token_hash ~ '^[a-f0-9]{64}$'), expires_at timestamptz not null);
-create table deadhub_private.openid_nonces (token_hash text primary key check(token_hash ~ '^[a-f0-9]{64}$'), expires_at timestamptz not null);
+create table deadhub_private.openid_nonces (
+  token_hash text primary key check(token_hash ~ '^[a-f0-9]{64}$'),
+  state_hash text not null unique check(state_hash ~ '^[a-f0-9]{64}$'),
+  expires_at timestamptz not null
+);
 create table deadhub_private.sessions (
   token_hash text primary key check(token_hash ~ '^[a-f0-9]{64}$'),
   owner_id uuid not null,
@@ -67,34 +70,22 @@ create table deadhub_private.sessions (
   expires_at timestamptz not null
 );
 create index sessions_expiry_idx on deadhub_private.sessions(expires_at);
-alter table deadhub_private.login_states enable row level security;
 alter table deadhub_private.openid_nonces enable row level security;
 alter table deadhub_private.sessions enable row level security;
 -- No direct table grants. These narrowly scoped definer functions are callable
 -- only by the private server login. Raw session/state tokens never enter the DB.
-create function deadhub_private.begin_login(p_hash text) returns boolean
-language plpgsql security definer set search_path='' as $$
-begin
-  perform pg_catalog.pg_advisory_xact_lock(190846239,1);
-  delete from deadhub_private.login_states where expires_at<=now();
-  if (select count(*) from deadhub_private.login_states)>=100 then return false; end if;
-  insert into deadhub_private.login_states values(p_hash,now()+interval '10 minutes');
-  return true;
-end; $$;
-create function deadhub_private.consume_login(p_hash text) returns boolean
-language plpgsql security definer set search_path='' as $$
-begin
-  delete from deadhub_private.login_states where token_hash=p_hash and expires_at>now();
-  return found;
-end; $$;
-create function deadhub_private.open_session(p_hash text,p_owner uuid,p_account bigint,p_nonce text) returns boolean
+create function deadhub_private.open_session(p_hash text,p_owner uuid,p_account bigint,p_nonce text,p_state text,p_previous text) returns boolean
 language plpgsql security definer set search_path='' as $$
 begin
   perform pg_catalog.pg_advisory_xact_lock(190846239,2);
   delete from deadhub_private.openid_nonces where expires_at<=now();
   delete from deadhub_private.sessions where expires_at<=now();
-  insert into deadhub_private.openid_nonces values(p_nonce,now()+interval '20 minutes') on conflict do nothing;
+  -- Only the server calls this after Steam verification. Both the assertion and
+  -- browser state are single-use across instances. Unverified starts do no DML.
+  insert into deadhub_private.openid_nonces values(p_nonce,p_state,now()+interval '20 minutes') on conflict do nothing;
   if not found then return false; end if;
+  -- Rotate only this owner's prior session before the cap, in this transaction.
+  delete from deadhub_private.sessions where token_hash=p_previous and owner_id=p_owner and steam_account_id=p_account;
   if (select count(*) from deadhub_private.sessions where owner_id=p_owner)>=10 then return false; end if;
   insert into deadhub_private.sessions values(p_hash,p_owner,p_account,now()+interval '7 days');
   return true;
@@ -106,8 +97,17 @@ $$;
 create function deadhub_private.close_session(p_hash text) returns void language sql security definer set search_path='' as $$
   delete from deadhub_private.sessions where token_hash=p_hash;
 $$;
-revoke all on function deadhub_private.begin_login(text),deadhub_private.consume_login(text),
-  deadhub_private.open_session(text,uuid,bigint,text),deadhub_private.resolve_session(text),deadhub_private.close_session(text) from public;
-grant execute on function deadhub_private.begin_login(text),deadhub_private.consume_login(text),
-  deadhub_private.open_session(text,uuid,bigint,text),deadhub_private.resolve_session(text),deadhub_private.close_session(text) to deadhub_app_login;
+revoke all on all tables in schema deadhub_private from public;
+revoke all on all functions in schema deadhub_private from public;
+-- Also remove direct grants inherited from any global default privileges.
+-- These roles exist on Supabase; conditional handling keeps local PG identical.
+do $$ declare excluded_role text; begin
+  for excluded_role in select rolname from pg_roles where rolname in ('anon','authenticated','service_role') loop
+    execute format('revoke all on schema deadhub_private from %I',excluded_role);
+    execute format('revoke all on all tables in schema deadhub_private from %I',excluded_role);
+    execute format('revoke all on all functions in schema deadhub_private from %I',excluded_role);
+  end loop;
+end; $$;
+grant execute on function deadhub_private.open_session(text,uuid,bigint,text,text,text),
+  deadhub_private.resolve_session(text),deadhub_private.close_session(text) to deadhub_app_login;
 commit;
