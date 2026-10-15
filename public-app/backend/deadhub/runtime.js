@@ -1,4 +1,4 @@
-import {createRecordPool,createRecordStore} from './store.js'
+import {createRecordPool,createRecordStore,getRecordPoolFailureCode} from './store.js'
 import {createRecordProvider} from './provider.js'
 import {createRecordSync} from './sync.js'
 import {createSteamAuth,ownerForAccount} from './auth.js'
@@ -17,10 +17,15 @@ export function createRecordRuntime({env=process.env,initializationLogger=code=>
     stage='DEADHUB_INIT_OWNER_ID'
     const account=normalizeAccountId(env.DEADHUB_OWNER_STEAM_ID)
     stage='DEADHUB_INIT_DATABASE'
-    const store=createRecordStore(createRecordPool({connectionString:env.DEADHUB_DB_URL,ca:env.DEADHUB_DB_CA_CERT}))
+    const pool=createRecordPool({connectionString:env.DEADHUB_DB_URL,ca:env.DEADHUB_DB_CA_CERT})
+    stage='DEADHUB_INIT_DB_STORE'
+    const store=createRecordStore(pool)
     stage='DEADHUB_INIT_AUTH'
     const auth=createSteamAuth({store,origin:env.DEADHUB_PUBLIC_ORIGIN,allowedAccounts:[account]})
     stage='DEADHUB_INIT_SERVICES'
     return {store,auth,sync:createRecordSync({store,provider:createRecordProvider()}),cronOwner:ownerForAccount(account)}
-  } catch {return unavailable()}
+  } catch(error) {
+    if(stage==='DEADHUB_INIT_DATABASE')stage=getRecordPoolFailureCode(error)??stage
+    return unavailable()
+  }
 }

@@ -16,6 +16,7 @@ class FakePool {
   end(){}
 }
 mock.module('../public-app/backend/deadhub/store.js',{namedExports:{
+  getRecordPoolFailureCode:actualStore.getRecordPoolFailureCode,
   createRecordPool:options=>actualStore.createRecordPool({...options,Pool:FakePool}),
   createRecordStore:pool=>{if(storeFailure)throw privateError();return actualStore.createRecordStore(pool)}
 }})
@@ -74,15 +75,15 @@ test('invalid DB URL configuration fails without constructing a Pool or logging 
     direct().replace('adxoqjgmhmortztqngcz','wrong-project'),direct().replace('deadhub_app_login','wrong_role'),
     direct().replace(':DUMMY_ONLY',''),direct().replace('/postgres','/wrong_database'),
     direct().replace('deadhub_app_login','%ZZ')]
-  for(const url of invalid){
-    const result=run({...valid(),DEADHUB_DB_URL:url});failed(result,'DATABASE');assert.equal(result.pools.length,0)
+  for(const [index,url] of invalid.entries()){
+    const result=run({...valid(),DEADHUB_DB_URL:url});failed(result,index<2?'DB_URL_PARSE':'DB_URL_CONDITIONS');assert.equal(result.pools.length,0)
   }
 })
 
-test('Pool and store construction errors emit only one local database stage',()=>{
+test('Pool and store construction errors emit distinct local database stages',()=>{
   for(const target of ['pool','store']){
     poolFailure=target==='pool';storeFailure=target==='store'
-    try{failed(run(valid()),'DATABASE')}finally{poolFailure=false;storeFailure=false}
+    try{failed(run(valid()),target==='pool'?'DB_POOL':'DB_STORE')}finally{poolFailure=false;storeFailure=false}
   }
 })
 

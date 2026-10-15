@@ -602,13 +602,13 @@
     },
     {
       "path": "backend/deadhub/runtime.js",
-      "bytes": 1547,
-      "sha256": "028eaf3b3be5d626e5a681802e738aaab4b29066a94757e619e5911caad39317"
+      "bytes": 1725,
+      "sha256": "7777710366030ecbaaa4f2a0dad062960d4994630902d1b50bfee641d639829d"
     },
     {
       "path": "backend/deadhub/store.js",
-      "bytes": 8680,
-      "sha256": "d2ef99537e87c4521c91fbcb23b75a9e98acfeb71cc4beabb741e825ebd31496"
+      "bytes": 9444,
+      "sha256": "4185b955006921ff5f8b20b17da711cf5ea21b3ad1e369f3ecdb4115ab4b3143"
     },
     {
       "path": "backend/deadhub/sync.js",

@@ -4,18 +4,37 @@ import {monthBounds, DAY_MS, RECORD_FIELDS} from '../../shared/deadhub.mjs'
 import {RecordError} from './provider.js'
 
 const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
-export function createRecordPool({connectionString, ca, Pool=pg.Pool}={}) {
+// Only locally created failures carry a fixed initialization code.
+const poolFailures=new WeakMap()
+export const getRecordPoolFailureCode=error=>poolFailures.get(error)??null
+export function createRecordPool({connectionString, ca, Pool}={}) {
+  let stage='DEADHUB_INIT_DB_DRIVER'
+  try {
+  if(Pool===undefined)Pool=pg.Pool
+  stage='DEADHUB_INIT_DB_URL_PARSE'
   let url; try { url=new URL(connectionString) } catch { throw new Error('Record database configuration required') }
+  stage='DEADHUB_INIT_DB_URL_CONDITIONS'
   const project='adxoqjgmhmortztqngcz', login='deadhub_app_login', user=decodeURIComponent(url.username)
   const direct=url.hostname===`db.${project}.supabase.co` && user===login
   const pooled=url.hostname.endsWith('.pooler.supabase.com') && user===`${login}.${project}`
   if (!['postgres:','postgresql:'].includes(url.protocol) || (!direct&&!pooled) || !url.password || url.pathname!=='/postgres') throw new Error('Record database configuration invalid')
+  stage='DEADHUB_INIT_DB_URL_OPTIONS'
   for (const key of [...url.searchParams.keys()]) url.searchParams.delete(key)
+  stage='DEADHUB_INIT_DB_DRIVER'
+  if(typeof Pool!=='function')throw new Error('Record database driver unavailable')
+  stage='DEADHUB_INIT_DB_POOL'
   const pool=new Pool({connectionString:url.toString(), ssl:{rejectUnauthorized:true,...(ca?{ca}:{})},
     max:2, connectionTimeoutMillis:3000, idleTimeoutMillis:10000, query_timeout:5000,
     statement_timeout:4000, lock_timeout:1000, application_name:'deadhub-records'})
+  stage='DEADHUB_INIT_DB_LISTENER'
   pool.on?.('error',()=>{})
   return pool
+  } catch {
+    // Discard driver/parser details; they can include connection information.
+    const failure=new Error('Record database initialization failed')
+    poolFailures.set(failure,stage)
+    throw failure
+  }
 }
 const iso = value => value ? new Date(value).toISOString() : null
 function publicAccount(row) {
