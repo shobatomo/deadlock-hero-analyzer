@@ -6,10 +6,16 @@
   "functions": {
     "api/public.js": {
       "maxDuration": 65
+    },
+    "api/deadhub.js": {
+      "maxDuration": 65
     }
   },
   "rewrites": [
-    {"source": "/api/feedback", "destination": "/api/public"},
+    {
+      "source": "/api/feedback",
+      "destination": "/api/public"
+    },
     {
       "source": "/api/diagnosis",
       "destination": "/api/public"
@@ -25,9 +31,23 @@
     {
       "source": "/result",
       "destination": "/index.html"
+    },
+    {
+      "source": "/api/deadhub/:path*",
+      "destination": "/api/deadhub"
+    },
+    {
+      "source": "/deadhub",
+      "destination": "/index.html"
     }
   ],
   "git": {
     "deploymentEnabled": false
-  }
+  },
+  "crons": [
+    {
+      "path": "/api/deadhub/cron",
+      "schedule": "0 21 * * *"
+    }
+  ]
 }

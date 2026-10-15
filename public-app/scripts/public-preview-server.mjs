@@ -4,12 +4,14 @@ import {readFile} from 'node:fs/promises'
 import {resolve,relative,dirname} from 'node:path'
 import {fileURLToPath,pathToFileURL} from 'node:url'
 import handler from '../api/public.js'
+import recordHandler from '../api/deadhub.js'
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..')
-export async function createPreviewServer({api=handler,directory=root}={}){
+export async function createPreviewServer({api=handler,records=recordHandler,directory=root}={}){
  const config=JSON.parse(await readFile(resolve(directory,'vercel.json'),'utf8')),dist=resolve(directory,config.outputDirectory)
  return http.createServer(async(req,res)=>{
   try{
    const path=new URL(req.url,'http://127.0.0.1').pathname,rule=config.rewrites.find(r=>r.source===path)
+   if(path.startsWith('/api/deadhub/'))return records(req,res)
    if(rule?.destination==='/api/public')return api(req,res)
    if(path.startsWith('/api/')){res.writeHead(404);res.end('Not found');return}
    const destination=rule?.destination??(path==='/'?'/index.html':path),file=resolve(dist,'.'+decodeURIComponent(destination))

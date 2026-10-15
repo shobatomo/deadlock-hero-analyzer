@@ -37,7 +37,10 @@ export async function verifyBundle(){
  }
  const config=JSON.parse(await fs.readFile(resolve(root,'vercel.json'),'utf8'))
  assert.equal(config.git.deploymentEnabled,false);assert.equal(config.functions['api/public.js'].maxDuration,65)
- assert.deepEqual(config.rewrites,[...['feedback','diagnosis','candidates','health'].map(n=>({source:'/api/'+n,destination:'/api/public'})),{source:'/result',destination:'/index.html'}])
+ assert.deepEqual(config.rewrites,[...['feedback','diagnosis','candidates','health'].map(n=>({source:'/api/'+n,destination:'/api/public'})),{source:'/result',destination:'/index.html'},
+  {source:'/api/deadhub/:path*',destination:'/api/deadhub'},{source:'/deadhub',destination:'/index.html'}])
+ assert.equal(config.functions['api/deadhub.js'].maxDuration,65)
+ assert.deepEqual(config.crons,[{path:'/api/deadhub/cron',schedule:'0 21 * * *'}])
  const pkg=JSON.parse(await fs.readFile(resolve(root,'package.json'),'utf8')),lock=JSON.parse(await fs.readFile(resolve(root,'package-lock.json'),'utf8'))
  assert.deepEqual(pkg.dependencies,lock.packages[''].dependencies);assert.equal(pkg.engines.node,'22.x')
  const front=JSON.parse(await fs.readFile(resolve(root,'frontend/package.json'),'utf8')),flock=JSON.parse(await fs.readFile(resolve(root,'frontend/package-lock.json'),'utf8'))
@@ -58,7 +61,9 @@ export async function verifyBundle(){
  const server=(await createPreviewServer({api})).listen(0,'127.0.0.1');await once(server,'listening')
  const url='http://127.0.0.1:'+server.address().port
  try{
-  for(const path of ['/','/result']){const response=await fetch(url+path);assert.equal(response.status,200);assert.ok((await response.text()).includes('<div id="root">'))}
+  for(const path of ['/','/result','/deadhub']){const response=await fetch(url+path);assert.equal(response.status,200);assert.ok((await response.text()).includes('<div id="root">'))}
+  assert.deepEqual(await (await fetch(url+'/api/deadhub/config')).json(),{enabled:false,auth:'steam',time_zone:'Asia/Tokyo'})
+  for(const path of ['/api/deadhub/records','/api/deadhub/cron'])assert.equal((await fetch(url+path)).status,503)
   for(const path of ['/api/health','/api/candidates'])assert.equal((await fetch(url+path)).status,200)
   const feedback=await fetch(url+'/api/feedback',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({choice:'まだ分からない'})});assert.equal(feedback.status,503);assert.deepEqual(await feedback.json(),{status:'not_stored',retryable:true})
   const response=await fetch(url+'/api/diagnosis',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({account_id:'1'})})
@@ -66,6 +71,6 @@ export async function verifyBundle(){
   for(const path of ['/api/reference-daily','/.env','/backend/public-app.js','/result/private-id'])assert.equal((await fetch(url+path)).status,404)
   assert.equal(calls,1)
  }finally{await new Promise(r=>server.close(r))}
- return {status:'passed',source_files:manifest.files.length,artifact_files:artifacts.length,source_maps:0,sensitive_pattern_hits:0,api_routes:4,spa_routes:2,worker_route:404,local_only:true,external_calls:0,vercel_runtime_verified:false}
+ return {status:'passed',source_files:manifest.files.length,artifact_files:artifacts.length,source_maps:0,sensitive_pattern_hits:0,fyth_api_routes:4,deadhub_disabled_verified:true,spa_routes:3,worker_route:404,local_only:true,external_calls:0,vercel_runtime_verified:false}
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(resolve(process.argv[1])).href){try{console.log(JSON.stringify(await verifyBundle()))}catch(e){console.error(JSON.stringify({status:'failed',code:'public_bundle_verification_failed',reason:e.message}));process.exitCode=1}}

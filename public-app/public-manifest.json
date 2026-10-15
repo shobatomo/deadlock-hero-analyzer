@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "repository": "shobatomo/deadlock-hero-analyzer",
-  "candidate_branch": "fyth/public-preview-2026-10-09",
+  "candidate_branch": "deadhub/record-mvp",
   "candidate_repository_prefix": "public-app/",
-  "base_sha": "49847d526033eeea7b05a8967dfa828f46d45569",
+  "base_sha": "e6da35bc8726aece739b76b2ee3adae2c024e245",
   "files": [
     {
       "path": "api/public.js",
@@ -182,8 +182,8 @@
     },
     {
       "path": "frontend/src/App.jsx",
-      "bytes": 1612,
-      "sha256": "63b50ad5d60883b9a6138a8bebcd72263f25eadfd4b98bae19e1512f979d8c4d"
+      "bytes": 1893,
+      "sha256": "b50c5e8326e88755112ad8e8ff6345e212ee9e8d047f9bb9e699bd9c6b8d3a65"
     },
     {
       "path": "frontend/src/App.css",
@@ -447,8 +447,8 @@
     },
     {
       "path": "package.json",
-      "bytes": 737,
-      "sha256": "a16a23e3382939296cc767b7cd0eca33a9a3a6b5f5ff0c7b56bb412cb2026872"
+      "bytes": 863,
+      "sha256": "aa2d4342fb317e8355e16b5b58f51775414497505cd776cc372f2374ef9a0bac"
     },
     {
       "path": "package-lock.json",
@@ -457,18 +457,18 @@
     },
     {
       "path": "vercel.json",
-      "bytes": 697,
-      "sha256": "99a1ca1bd7cd5a2cd66f18b8b2e6f2e18a0ad637978a9c7e85e83ee70d212da3"
+      "bytes": 1030,
+      "sha256": "c21861f0144c869217eee44e30b82c7b78ec95e08d4de926fa9affdfb395bd21"
     },
     {
       "path": "scripts/public-preview-server.mjs",
-      "bytes": 1708,
-      "sha256": "cfbf99a195033c377eedea8717ff512d2213c2b69608a4586c834082dd32008a"
+      "bytes": 1839,
+      "sha256": "ce9c8222265da02959e0e6187444ca5f1709d5d828600618ef8ca43d26fdd9d1"
     },
     {
       "path": "scripts/verify-public-bundle.mjs",
-      "bytes": 7716,
-      "sha256": "f319e4ee18a43dc4cefc9ba521ded7df14ec6693b027b41a74bac992ddc19f11"
+      "bytes": 8258,
+      "sha256": "2777367b110148bcce57e3af5a71f1b26976746ebd98f96577ef2db5bde7c24f"
     },
     {
       "path": ".gitignore",
@@ -482,8 +482,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 2330,
-      "sha256": "a2f12a59bd666ef1a65052083c8cd820effe2bb663f2c0e8fb23f57a620a5afe"
+      "bytes": 3386,
+      "sha256": "944e24cc52a554fa95cdbdf3e08e15122506cc88d47acad6f192dd0e5213a068"
     },
     {
       "path": "backend/feedback.js",
@@ -579,6 +579,56 @@
       "path": "frontend/src/components/FiveAxisSummary.test.jsx",
       "bytes": 3029,
       "sha256": "cc83c7ad51ba35750c5392c51f7b4a39fba25e49123760672af27b7fd1b1fb9d"
+    },
+    {
+      "path": "api/deadhub.js",
+      "bytes": 257,
+      "sha256": "a5d8c1dc232cdc29c39a0170984977c32dc739337ebacc374c8ed7290d110012"
+    },
+    {
+      "path": "backend/deadhub/app.js",
+      "bytes": 4498,
+      "sha256": "cc40c350077e5cff007723e17be4e94b5811dc1c6bd3b1f273634220860f6c68"
+    },
+    {
+      "path": "backend/deadhub/auth.js",
+      "bytes": 6363,
+      "sha256": "84316a3437d618319dd2bf4650efc66d8122631fc462b756c81ea09b5fb4ce7a"
+    },
+    {
+      "path": "backend/deadhub/provider.js",
+      "bytes": 4469,
+      "sha256": "86b8dfa76d466e8a4f1d5817ff523bf438f268d7d70dcf8dff39ae94603e5e97"
+    },
+    {
+      "path": "backend/deadhub/runtime.js",
+      "bytes": 996,
+      "sha256": "6ca6f8937ca1d0182f42e7659c910e6980f2ad670ddf5c4a2a61144c34947cf6"
+    },
+    {
+      "path": "backend/deadhub/store.js",
+      "bytes": 8871,
+      "sha256": "429d791a011e0ccce3b4decb0b7e1526903a0115440e3b1a94abc270ada94dfa"
+    },
+    {
+      "path": "backend/deadhub/sync.js",
+      "bytes": 1107,
+      "sha256": "1192b249fc19f10fd1248d359e3ae99fbbc4087a0b6e0d022a3cf41325096f6d"
+    },
+    {
+      "path": "frontend/src/pages/Deadhub/Deadhub.css",
+      "bytes": 4393,
+      "sha256": "a816056a8850346bf7cef4b26f12106a1dc32c5885ca968c182183385c6ec860"
+    },
+    {
+      "path": "frontend/src/pages/Deadhub/Deadhub.jsx",
+      "bytes": 12215,
+      "sha256": "c8712dfac8243314124b113e1918b07e0858b58ff05bff2c71f7142d17c8848d"
+    },
+    {
+      "path": "shared/deadhub.mjs",
+      "bytes": 2231,
+      "sha256": "f486885e7a497e8c6ec3bbb3b43e6cf35e889c67e7bd916200e2432475e2ce76"
     }
   ]
 }
