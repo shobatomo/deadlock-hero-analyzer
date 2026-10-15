@@ -602,8 +602,8 @@
     },
     {
       "path": "backend/deadhub/runtime.js",
-      "bytes": 996,
-      "sha256": "6ca6f8937ca1d0182f42e7659c910e6980f2ad670ddf5c4a2a61144c34947cf6"
+      "bytes": 1547,
+      "sha256": "028eaf3b3be5d626e5a681802e738aaab4b29066a94757e619e5911caad39317"
     },
     {
       "path": "backend/deadhub/store.js",
