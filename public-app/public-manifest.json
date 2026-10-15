@@ -607,8 +607,8 @@
     },
     {
       "path": "backend/deadhub/store.js",
-      "bytes": 9444,
-      "sha256": "4185b955006921ff5f8b20b17da711cf5ea21b3ad1e369f3ecdb4115ab4b3143"
+      "bytes": 9892,
+      "sha256": "f5a435e8e6c9ed859fc54ee16441436796b6f89ffd681945d041c09e5053e735"
     },
     {
       "path": "backend/deadhub/sync.js",

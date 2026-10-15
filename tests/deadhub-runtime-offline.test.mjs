@@ -71,12 +71,15 @@ test('owner format and semantic Steam account validation retain distinct fixed d
 })
 
 test('invalid DB URL configuration fails without constructing a Pool or logging input',()=>{
-  const invalid=[undefined,'DUMMY_NOT_A_URL',direct().replace('postgresql:','https:'),
-    direct().replace('adxoqjgmhmortztqngcz','wrong-project'),direct().replace('deadhub_app_login','wrong_role'),
-    direct().replace(':DUMMY_ONLY',''),direct().replace('/postgres','/wrong_database'),
-    direct().replace('deadhub_app_login','%ZZ')]
-  for(const [index,url] of invalid.entries()){
-    const result=run({...valid(),DEADHUB_DB_URL:url});failed(result,index<2?'DB_URL_PARSE':'DB_URL_CONDITIONS');assert.equal(result.pools.length,0)
+  const invalid=[[undefined,'DB_URL_PARSE'],['DUMMY_NOT_A_URL','DB_URL_PARSE'],
+    [direct().replace('postgresql:','https:'),'DB_URL_SCHEME'],
+    [direct().replace('adxoqjgmhmortztqngcz','wrong-project'),'DB_URL_TARGET'],
+    [direct().replace('deadhub_app_login','wrong_role'),'DB_URL_TARGET'],
+    [direct().replace(':DUMMY_ONLY',''),'DB_URL_PASSWORD'],
+    [direct().replace('/postgres','/wrong_database'),'DB_URL_PATHNAME'],
+    [direct().replace('deadhub_app_login','%ZZ'),'DB_URL_USERNAME_DECODE']]
+  for(const [url,code] of invalid){
+    const result=run({...valid(),DEADHUB_DB_URL:url});failed(result,code);assert.equal(result.pools.length,0)
   }
 })
 

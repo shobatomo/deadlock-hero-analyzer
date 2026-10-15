@@ -22,11 +22,23 @@ function failure(options,code){
  return error
 }
 
-test('URL parse and URL conditions are distinct and never expose parser input',()=>{
+test('each URL condition has a fixed code without exposing parser input',()=>{
  for(const connectionString of [undefined,'DUMMY_NOT_A_URL','https://[DUMMY_INVALID'])failure({connectionString},'URL_PARSE')
- for(const connectionString of [direct().replace('postgresql:','https:'),direct().replace('deadhub_app_login','%ZZ'),
-  direct().replace('adxoqjgmhmortztqngcz','other-project'),direct().replace('deadhub_app_login','other_role'),
-  direct().replace(':DUMMY_ONLY',''),direct().replace('/postgres','/other_database')])failure({connectionString},'URL_CONDITIONS')
+ for(const [connectionString,code] of [[direct().replace('postgresql:','https:'),'URL_SCHEME'],
+  [direct().replace('deadhub_app_login','%ZZ'),'URL_USERNAME_DECODE'],
+  [direct().replace('adxoqjgmhmortztqngcz','other-project'),'URL_TARGET'],
+  [direct().replace('deadhub_app_login','other_role'),'URL_TARGET'],
+  [direct().replace(':DUMMY_ONLY',''),'URL_PASSWORD'],
+  [direct().replace('/postgres','/other_database'),'URL_PATHNAME']])failure({connectionString},code)
+})
+
+test('combined URL failures preserve username, scheme, target, password and pathname priority',()=>{
+ const wrong=direct().replace('postgresql:','https:').replace('deadhub_app_login','other_role').replace(':DUMMY_ONLY','').replace('/postgres','/other_database')
+ failure({connectionString:wrong.replace('other_role','%ZZ')},'URL_USERNAME_DECODE')
+ failure({connectionString:wrong},'URL_SCHEME')
+ failure({connectionString:wrong.replace('https:','postgresql:')},'URL_TARGET')
+ failure({connectionString:wrong.replace('https:','postgresql:').replace('other_role','deadhub_app_login')},'URL_PASSWORD')
+ failure({connectionString:direct().replace('/postgres','/other_database')},'URL_PATHNAME')
 })
 
 test('query-option preparation failures are distinguished without accepting URI TLS overrides',t=>{

@@ -13,11 +13,20 @@ export function createRecordPool({connectionString, ca, Pool}={}) {
   if(Pool===undefined)Pool=pg.Pool
   stage='DEADHUB_INIT_DB_URL_PARSE'
   let url; try { url=new URL(connectionString) } catch { throw new Error('Record database configuration required') }
-  stage='DEADHUB_INIT_DB_URL_CONDITIONS'
+  stage='DEADHUB_INIT_DB_URL_USERNAME_DECODE'
   const project='adxoqjgmhmortztqngcz', login='deadhub_app_login', user=decodeURIComponent(url.username)
+  stage='DEADHUB_INIT_DB_URL_TARGET'
   const direct=url.hostname===`db.${project}.supabase.co` && user===login
   const pooled=url.hostname.endsWith('.pooler.supabase.com') && user===`${login}.${project}`
-  if (!['postgres:','postgresql:'].includes(url.protocol) || (!direct&&!pooled) || !url.password || url.pathname!=='/postgres') throw new Error('Record database configuration invalid')
+  // Preserve eager target calculation and the original rejection order.
+  stage='DEADHUB_INIT_DB_URL_SCHEME'
+  if (!['postgres:','postgresql:'].includes(url.protocol)) throw new Error('Record database configuration invalid')
+  stage='DEADHUB_INIT_DB_URL_TARGET'
+  if (!direct&&!pooled) throw new Error('Record database configuration invalid')
+  stage='DEADHUB_INIT_DB_URL_PASSWORD'
+  if (!url.password) throw new Error('Record database configuration invalid')
+  stage='DEADHUB_INIT_DB_URL_PATHNAME'
+  if (url.pathname!=='/postgres') throw new Error('Record database configuration invalid')
   stage='DEADHUB_INIT_DB_URL_OPTIONS'
   for (const key of [...url.searchParams.keys()]) url.searchParams.delete(key)
   stage='DEADHUB_INIT_DB_DRIVER'
