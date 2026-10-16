@@ -3,6 +3,7 @@ import {heroName} from '../../../../shared/heroes.mjs'
 import {tokyoDay,shiftMonth,dayState,daySummary} from '../../../../shared/deadhub.mjs'
 import HeroPortrait from '../../components/HeroPortrait'
 import SteamProfile from './SteamProfile'
+import MatchTrends from './MatchTrends'
 import {safeSteamProfile} from '../../../../shared/steam-profile.mjs'
 import './Deadhub.css'
 
@@ -35,6 +36,11 @@ export default function Deadhub() {
   const [config,setConfig]=useState(null),[view,setView]=useState(null),[authState,setAuthState]=useState('checking')
   const [busy,setBusy]=useState(false),[message,setMessage]=useState(''),[error,setError]=useState(''),[now,setNow]=useState(Date.now())
   const active=useRef(false)
+  const records=useRef({month:currentMonth,request:0,controller:null,mounted:false})
+  useEffect(()=>{
+    records.current.mounted=true
+    return()=>{records.current.mounted=false;records.current.request++;records.current.controller?.abort()}
+  },[])
   const [profile,setProfile]=useState(null)
   const steamId=authState==='signed_in'?view?.identity?.steam_id:null
   useEffect(()=>{
@@ -44,17 +50,26 @@ export default function Deadhub() {
     request('profile',{signal:control.signal}).then(data=>{if(!control.signal.aborted)setProfile(safeSteamProfile(data.profile,steamId))}).catch(()=>{}).finally(()=>clearTimeout(timer))
     return()=>{clearTimeout(timer);control.abort()}
   },[steamId])
-  const load=useCallback(async(signal)=>{
-    try {const data=await request('records?month='+month,{signal});if(signal?.aborted)return;setView(data);setAuthState('signed_in')}
-    catch(e){if(signal?.aborted)return;if(e.code==='unauthorized'){setView(null);setAuthState('signed_out')}else setError(e.message)}
-  },[month])
+  // A stable callback reads the selected month at invocation, including after sync.
+  const load=useCallback(async({poll=false}={})=>{
+    const state=records.current
+    if(!state.mounted||(poll&&state.controller))return
+    state.controller?.abort()
+    const control=new AbortController(),generation=++state.request,requestedMonth=state.month
+    state.controller=control
+    const stale=()=>control.signal.aborted||!state.mounted||generation!==state.request
+    try {const data=await request('records?month='+requestedMonth,{signal:control.signal});if(stale())return;setView(data);setAuthState('signed_in')}
+    catch(e){if(stale())return;if(e.code==='unauthorized'){setView(null);setAuthState('signed_out')}else setError(e.message)}
+    finally{if(state.controller===control)state.controller=null}
+  },[])
   useEffect(()=>{const control=new AbortController();request('config',{signal:control.signal}).then(setConfig).catch(e=>{if(!control.signal.aborted)setError(e.message)});return()=>control.abort()},[])
-  useEffect(()=>{if(!config?.enabled)return;const control=new AbortController();load(control.signal);return()=>control.abort()},[config,load])
+  useEffect(()=>{if(config?.enabled)load()},[config,month,load])
   const remoteBusy=view?.account?.sync_status==='running'
   useEffect(()=>{
     if(!busy&&!remoteBusy)return
-    const control=new AbortController(),timer=setInterval(()=>load(control.signal),3000)
-    return()=>{control.abort();clearInterval(timer)}
+    const timer=setInterval(()=>load({poll:true}),3000)
+    // load owns cancellation; stopping polling must not abort a newer refresh.
+    return()=>clearInterval(timer)
   },[busy,remoteBusy,load])
   const cooldown=Math.max(0,Math.ceil((new Date(view?.account?.retry_after??0).getTime()-now)/1000))
   useEffect(()=>{if(!cooldown)return;const timer=setInterval(()=>setNow(Date.now()),1000);return()=>clearInterval(timer)},[cooldown])
@@ -73,7 +88,13 @@ export default function Deadhub() {
     try{await request('auth/logout',{method:'POST'});setView(null);setAuthState('signed_out');setError('');setMessage('')}
     catch(e){setError(e.message)}
   }
-  function move(step) {const next=shiftMonth(month,step);setMonth(next);setSelected(next===currentMonth?today:next+'-01')}
+  function move(step) {
+    const state=records.current,next=shiftMonth(state.month,step)
+    if(next<'2020-01'||next>currentMonth)return
+    // Invalidate immediately, including A -> B -> A and responses ignoring abort.
+    state.month=next;state.request++;state.controller?.abort()
+    setMonth(next);setSelected(next===currentMonth?today:next+'-01')
+  }
   const account=view?.account, rows=view?.month===month?view.matches:[], daily=rows.filter(r=>tokyoDay(r.started_at)===selected),summary=daySummary(daily)
   const [year,index]=month.split('-').map(Number), days=new Date(Date.UTC(year,index,0)).getUTCDate()
   const offset=new Date(Date.UTC(year,index-1,1)).getUTCDay()
@@ -97,6 +118,7 @@ export default function Deadhub() {
         <div className="dh-sync-note" role="status">{message||((busy||remoteBusy)?(!account?.last_success_at?'初回同期中です。':'記録を取得しています。'):account?.sync_status==='partial'?'未取得の続きがあります。次の更新で再開します。':account?.sync_status==='interrupted'?'前回の同期が中断されました。次の更新で再開します。':account?.sync_status==='error'?'前回の取得に失敗しました。保存済みの記録を表示しています。':account?'保存済みの記録を表示しています。':'登録すると初回同期を開始します。')}</div>
       </section>
       {account&&<>
+      <MatchTrends rows={rows} month={month} pending={monthPending} observedCount={view.observed.count} onMove={move} canPrevious={month!=='2020-01'} canNext={month!==currentMonth}/>
       <div className="dh-layout">
         <section className="dh-panel dh-calendar" aria-label="プレイ記録カレンダー">
           <div className="dh-month"><button aria-label="前の月" onClick={()=>move(-1)} disabled={month==='2020-01'}>‹</button><h2>{year}年{index}月</h2><button aria-label="次の月" onClick={()=>move(1)} disabled={month===currentMonth}>›</button></div>

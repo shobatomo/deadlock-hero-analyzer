@@ -622,8 +622,8 @@
     },
     {
       "path": "frontend/src/pages/Deadhub/Deadhub.jsx",
-      "bytes": 12999,
-      "sha256": "d2f6fc2425d00a3773325d1db60823e426a1b12147e9a93c565fbb9adab79b2f"
+      "bytes": 14148,
+      "sha256": "8d387e11035017206ea08efb157fe275958b893ec0ac93a948d5fbd7f9a4f483"
     },
     {
       "path": "shared/deadhub.mjs",
@@ -644,6 +644,21 @@
       "path": "shared/steam-profile.mjs",
       "bytes": 1310,
       "sha256": "155a27e2b664b56e0e2f1d4e5ef1d9c722c380b0726fedf6133de7e4db52e6a1"
+    },
+    {
+      "path": "shared/record-trends.mjs",
+      "bytes": 4178,
+      "sha256": "035aa78b7d3e2ce0e27c4c0a523080669fe3669cce8cc14ec6a84727421065aa"
+    },
+    {
+      "path": "frontend/src/pages/Deadhub/MatchTrends.jsx",
+      "bytes": 11678,
+      "sha256": "e957a1c971f6770823b2c095fdfd10bc8f7e8a8006735a6c715fd275e159ecbf"
+    },
+    {
+      "path": "frontend/src/pages/Deadhub/MatchTrends.css",
+      "bytes": 5106,
+      "sha256": "9b63d75510d022be3439c14a26df0eb53b3e12ef192c7dbe51134206c44740c1"
     }
   ]
 }
