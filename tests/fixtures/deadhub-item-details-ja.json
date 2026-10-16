@@ -1,0 +1,263 @@
+[
+  {
+    "id": 1548066885,
+    "type": "upgrade",
+    "name": "基礎拡張マガジン",
+    "shop_image_webp": "https://assets-bucket.deadlock-api.com/assets-api-res/images/items/weapon/basic_magazine.webp",
+    "description": {},
+    "properties": {
+      "BaseAttackDamagePercent": {
+        "value": "8",
+        "label": "武器ダメージ",
+        "postvalue_label": "武器ダメージ",
+        "prefix": "{s:sign}",
+        "postfix": "%"
+      },
+      "BonusClipSizePercent": {
+        "value": "30",
+        "label": "最大弾数",
+        "postvalue_label": "最大弾数",
+        "prefix": "{s:sign}",
+        "postfix": "%"
+      }
+    },
+    "tooltip_sections": [
+      {
+        "section_type": "innate",
+        "section_attributes": [
+          {
+            "properties": [
+              "BaseAttackDamagePercent"
+            ],
+            "elevated_properties": [
+              "BonusClipSizePercent"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 1009965641,
+    "type": "upgrade",
+    "name": "モンスターラウンド",
+    "shop_image_webp": "https://assets-bucket.deadlock-api.com/assets-api-res/images/items/weapon/monster_rounds.webp",
+    "description": {},
+    "properties": {
+      "NonPlayerBonusWeaponPower": {
+        "value": "25",
+        "label": "対NPC武器ダメージ",
+        "postvalue_label": "対NPC武器ダメージ",
+        "prefix": "{s:sign}",
+        "postfix": "%",
+        "conditional": "対NPC"
+      },
+      "NonPlayerBulletResist": {
+        "value": "25",
+        "label": "対NPC弾薬耐性",
+        "postvalue_label": "対NPC弾薬耐性",
+        "prefix": "{s:sign}",
+        "postfix": "%",
+        "conditional": "対NPC"
+      },
+      "OutOfCombatHealthRegen": {
+        "value": "1",
+        "label": "非戦闘時リジェネ",
+        "postvalue_label": "非戦闘時リジェネ",
+        "prefix": "{s:sign}",
+        "postfix": ""
+      }
+    },
+    "tooltip_sections": [
+      {
+        "section_type": "innate",
+        "section_attributes": [
+          {
+            "properties": [
+              "OutOfCombatHealthRegen"
+            ],
+            "elevated_properties": [
+              "NonPlayerBonusWeaponPower",
+              "NonPlayerBulletResist"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 709540378,
+    "type": "upgrade",
+    "name": "サクリファイス",
+    "shop_image_webp": "https://assets-bucket.deadlock-api.com/assets-api-res/images/items/weapon/cultist_sacrifice.webp",
+    "description": {
+      "desc": "敵NPC1体を対象にする。対象をキルして<span class=\"highlight\">170%の追加ソウル</span>を獲得し、長時間持続する強力なバフを獲得する"
+    },
+    "properties": {
+      "AbilityCooldown": {
+        "value": "270",
+        "label": "クールダウン",
+        "postvalue_label": "クールダウン",
+        "postfix": "秒"
+      },
+      "AbilityDuration": {
+        "value": "160",
+        "label": "継続時間",
+        "postvalue_label": "継続時間",
+        "postfix": "秒"
+      },
+      "BaseAttackDamagePercent": {
+        "value": "10",
+        "label": "武器ダメージ",
+        "postvalue_label": "武器ダメージ",
+        "prefix": "{s:sign}",
+        "postfix": "%",
+        "usage_flags": [
+          "ConditionallyApplied"
+        ]
+      },
+      "BonusHealth": {
+        "value": "50",
+        "label": "HP増加",
+        "postvalue_label": "HP増加",
+        "prefix": "{s:sign}",
+        "usage_flags": [
+          "ConditionallyApplied"
+        ]
+      },
+      "NonPlayerBonusWeaponPower": {
+        "value": "30",
+        "label": "対NPC武器ダメージ",
+        "postvalue_label": "対NPC武器ダメージ",
+        "prefix": "{s:sign}",
+        "postfix": "%",
+        "conditional": "対NPC"
+      },
+      "NonPlayerBulletResist": {
+        "value": "30",
+        "label": "対NPC弾薬耐性",
+        "postvalue_label": "対NPC弾薬耐性",
+        "prefix": "{s:sign}",
+        "postfix": "%",
+        "conditional": "対NPC"
+      },
+      "OutOfCombatHealthRegen": {
+        "value": "2",
+        "label": "非戦闘時リジェネ",
+        "postvalue_label": "非戦闘時リジェネ",
+        "prefix": "{s:sign}",
+        "postfix": ""
+      },
+      "TechRangeMultiplier": {
+        "value": "12",
+        "label": "アビリティ範囲",
+        "postvalue_label": "アビリティ範囲",
+        "prefix": "{s:sign}",
+        "postfix": "%",
+        "usage_flags": [
+          "ConditionallyApplied"
+        ]
+      }
+    },
+    "tooltip_sections": [
+      {
+        "section_type": "innate",
+        "section_attributes": [
+          {
+            "properties": [
+              "OutOfCombatHealthRegen",
+              "NonPlayerBonusWeaponPower",
+              "NonPlayerBulletResist"
+            ],
+            "elevated_properties": []
+          }
+        ]
+      },
+      {
+        "section_type": "active",
+        "section_attributes": [
+          {
+            "loc_string": "敵NPC1体を対象にする。対象をキルして<span class=\"highlight\">170%の追加ソウル</span>を獲得し、長時間持続する強力なバフを獲得する",
+            "properties": [
+              "AbilityCooldown",
+              "AbilityDuration"
+            ],
+            "important_properties": [
+              "BaseAttackDamagePercent",
+              "BonusHealth",
+              "TechRangeMultiplier"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 2064029594,
+    "type": "upgrade",
+    "name": "オープニングラウンド",
+    "shop_image_webp": "https://assets-bucket.deadlock-api.com/assets-api-res/images/items/weapon/opening_rounds.webp",
+    "description": {
+      "desc": "<span class=\"highlight\">HPが50%を上回る敵</span>に対する攻撃が追加で<span class=\"highlight\">武器ダメージ</span>を与える"
+    },
+    "properties": {
+      "BaseAttackDamagePercent": {
+        "value": "8",
+        "label": "武器ダメージ",
+        "postvalue_label": "武器ダメージ",
+        "prefix": "{s:sign}",
+        "postfix": "%"
+      },
+      "BaseAttackDamagePercentBonus": {
+        "value": "25",
+        "label": "武器ダメージ",
+        "postvalue_label": "武器ダメージ",
+        "prefix": "+",
+        "postfix": "%",
+        "usage_flags": [
+          "ConditionallyApplied"
+        ]
+      },
+      "BonusBulletSpeedPercent": {
+        "value": "60",
+        "label": "弾速",
+        "postvalue_label": "弾速",
+        "prefix": "{s:sign}",
+        "postfix": "%"
+      },
+      "TechPower": {
+        "value": "7",
+        "label": "スピリットパワー",
+        "postvalue_label": "スピリットパワー",
+        "prefix": "{s:sign}",
+        "postfix": ""
+      }
+    },
+    "tooltip_sections": [
+      {
+        "section_type": "innate",
+        "section_attributes": [
+          {
+            "properties": [
+              "BonusBulletSpeedPercent",
+              "BaseAttackDamagePercent",
+              "TechPower"
+            ],
+            "elevated_properties": []
+          }
+        ]
+      },
+      {
+        "section_type": "passive",
+        "section_attributes": [
+          {
+            "loc_string": "<span class=\"highlight\">HPが50%を上回る敵</span>に対する攻撃が追加で<span class=\"highlight\">武器ダメージ</span>を与える",
+            "important_properties": [
+              "BaseAttackDamagePercentBonus"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]
