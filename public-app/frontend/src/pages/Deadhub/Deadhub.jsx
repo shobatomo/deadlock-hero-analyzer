@@ -1,6 +1,9 @@
 import {useCallback,useEffect,useRef,useState} from 'react'
 import {heroName} from '../../../../shared/heroes.mjs'
 import {tokyoDay,shiftMonth,dayState,daySummary} from '../../../../shared/deadhub.mjs'
+import HeroPortrait from '../../components/HeroPortrait'
+import SteamProfile from './SteamProfile'
+import {safeSteamProfile} from '../../../../shared/steam-profile.mjs'
 import './Deadhub.css'
 
 const dateTime=value=>value?new Intl.DateTimeFormat('ja-JP',{timeZone:'Asia/Tokyo',dateStyle:'medium',timeStyle:'short'}).format(new Date(value)):'未同期'
@@ -17,7 +20,8 @@ async function request(path,{signal,...options}={}) {
 }
 function Match({row}) {
   return <li className="dh-match">
-    <div className="dh-match-head"><time dateTime={row.started_at}>{clock(row.started_at)}</time><strong>{row.hero_id==null?'ヒーロー未取得':heroName(row.hero_id)}</strong>
+    <div className="dh-match-head"><div aria-hidden="true"><HeroPortrait key={row.hero_id??'unknown'} id={row.hero_id} className="dh-hero-portrait"/></div>
+      <div className="dh-match-heading"><time dateTime={row.started_at}>{clock(row.started_at)}</time><strong>{row.hero_id==null?'ヒーロー未取得':heroName(row.hero_id)}</strong></div>
       <span>{row.won==null?'勝敗未取得':row.won?'勝利':'敗北'}</span></div>
     <dl><div><dt>キル / デス / アシスト</dt><dd>{number(row.kills)} / {number(row.deaths)} / {number(row.assists)}</dd></div>
       <div><dt>与ダメージ（対プレイヤー）</dt><dd>{number(row.hero_damage)}</dd></div>
@@ -31,6 +35,15 @@ export default function Deadhub() {
   const [config,setConfig]=useState(null),[view,setView]=useState(null),[authState,setAuthState]=useState('checking')
   const [busy,setBusy]=useState(false),[message,setMessage]=useState(''),[error,setError]=useState(''),[now,setNow]=useState(Date.now())
   const active=useRef(false)
+  const [profile,setProfile]=useState(null)
+  const steamId=authState==='signed_in'?view?.identity?.steam_id:null
+  useEffect(()=>{
+    if(!steamId)return
+    const control=new AbortController(),timer=setTimeout(()=>control.abort(),3500)
+    setProfile(null)
+    request('profile',{signal:control.signal}).then(data=>{if(!control.signal.aborted)setProfile(safeSteamProfile(data.profile,steamId))}).catch(()=>{}).finally(()=>clearTimeout(timer))
+    return()=>{clearTimeout(timer);control.abort()}
+  },[steamId])
   const load=useCallback(async(signal)=>{
     try {const data=await request('records?month='+month,{signal});if(signal?.aborted)return;setView(data);setAuthState('signed_in')}
     catch(e){if(signal?.aborted)return;if(e.code==='unauthorized'){setView(null);setAuthState('signed_out')}else setError(e.message)}
@@ -76,7 +89,7 @@ export default function Deadhub() {
         {authState==='checking'&&config?.enabled&&<p role="status">ログイン状態を確認しています…</p>}
       </section> : <>
       <section className="dh-panel dh-account" aria-label="登録と同期">
-        <div><span className="dh-label">Steamアカウント</span><strong className="dh-steam">{view.identity.steam_id}</strong>
+        <div className="dh-account-main"><SteamProfile steamId={steamId} profile={profile}/>
           <p>最終同期：{dateTime(account?.last_success_at)}</p></div>
         <div className="dh-actions">{account?<button className="dh-primary" onClick={()=>update()} disabled={busy||remoteBusy||cooldown>0}>
           {busy||remoteBusy?'記録を取得中…':cooldown>0?`再取得まで ${cooldown} 秒`:'最新の記録を取得'}</button>:<button className="dh-primary" onClick={()=>update(true)} disabled={busy}>{busy?'初回同期中…':'このアカウントを登録して過去30日を取得'}</button>}
@@ -90,10 +103,10 @@ export default function Deadhub() {
           <div className="dh-grid"><div className="dh-week" aria-hidden="true">{['日','月','火','水','木','金','土'].map(d=><span key={d}>{d}</span>)}</div>
             {Array.from({length:offset},(_,i)=><span key={'blank'+i} aria-hidden="true"/>)}
             {Array.from({length:days},(_,i)=>{const day=`${month}-${String(i+1).padStart(2,'0')}`,state=monthPending?'loading':dayState(day,rows,account),count=rows.filter(r=>tokyoDay(r.started_at)===day).length
-              return <button key={day} className={`dh-day dh-${state}`} aria-label={`${day} ${stateLabel[state]}${count?` ${count}試合`:''}`} aria-pressed={selected===day} onClick={()=>setSelected(day)}><span>{i+1}</span>{count>0&&<small>{count}試合</small>}</button>})}
+              return <button key={day} className={`dh-day dh-${state}`} aria-label={`${day} ${stateLabel[state]}${count?` ${count}試合`:''}`} aria-pressed={selected===day} onClick={()=>setSelected(day)}><span>{i+1}</span></button>})}
           </div>
-          <div className="dh-legend"><span><i className="dh-dot recorded"/>記録あり</span><span><i className="dh-dot empty"/>照会済み</span><span><i className="dh-dot unsynced"/>未確認</span></div>
-          <p className="dh-muted">色は遊んだ記録を表します。勝敗や成績による色分けはありません。</p>
+          <div className="dh-legend"><span><i className="dh-dot recorded"/>記録あり</span><span><i className="dh-dot unsynced"/>記録の表示なし</span></div>
+          <p className="dh-muted">色は記録の有無を表します。日付を選ぶと取得状況を確認できます。勝敗や成績による色分けはありません。</p>
         </section>
         <section className="dh-panel dh-detail" aria-label="選択日の記録">
           <p className="dh-label">DAY RECORD</p><h2>{Number(selected.slice(5,7))}月{Number(selected.slice(8))}日の記録</h2>

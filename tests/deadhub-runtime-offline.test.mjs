@@ -43,10 +43,17 @@ function config(runtime){
   let body;route({}, {json:value=>{body=value}});return body
 }
 
+test('optional profile configuration never disables records or makes a request during initialization',()=>{
+  const missing=run(valid());assert.equal(missing.runtime.profile,null);assert.equal(missing.runtime.avatar,null);assert.equal(config(missing.runtime).enabled,true)
+  const denied=valid();Object.defineProperty(denied,'DEADHUB_STEAM_WEB_API_KEY',{get(){throw privateError()}})
+  const result=run(denied);assert.equal(result.runtime.profile,null);assert.equal(config(result.runtime).enabled,true);assert.deepEqual(result.logs,[])
+  const configured=run({...valid(),DEADHUB_STEAM_WEB_API_KEY:'a'.repeat(32)});assert.equal(typeof configured.runtime.profile,'function');assert.equal(typeof configured.runtime.avatar,'function');assert.equal(config(configured.runtime).enabled,true);assert.deepEqual(configured.logs,[])
+})
+
 test('flag requires exact true and short-circuits every other configuration read',()=>{
   for(const flag of [undefined,'false','TRUE',' true','true ','1']){
     const env={DEADHUB_ENABLED:flag}
-    for(const key of ['VERCEL_ENV','DEADHUB_OWNER_STEAM_ID','DEADHUB_DB_URL','DEADHUB_DB_CA_CERT','DEADHUB_PUBLIC_ORIGIN'])
+    for(const key of ['VERCEL_ENV','DEADHUB_OWNER_STEAM_ID','DEADHUB_DB_URL','DEADHUB_DB_CA_CERT','DEADHUB_PUBLIC_ORIGIN','DEADHUB_STEAM_WEB_API_KEY'])
       Object.defineProperty(env,key,{get(){throw Error('Later configuration read')}})
     const result=run(env);failed(result,'DISABLED');assert.equal(result.pools.length,0)
     assert.deepEqual(config(result.runtime),{enabled:false,auth:'steam',time_zone:'Asia/Tokyo'})
