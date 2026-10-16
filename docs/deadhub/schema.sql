@@ -38,6 +38,12 @@ create table deadhub_private.matches (
   assists integer check (assists >= 0),
   hero_damage bigint check (hero_damage >= 0),
   duration_s integer check (duration_s >= 0),
+  final_items jsonb constraint matches_final_items_shape check (
+    final_items is null or
+    case when jsonb_typeof(final_items) = 'array' then
+      jsonb_array_length(final_items) <= 32 and octet_length(final_items::text) <= 65536
+    else false end
+  ),
   fetched_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
   primary key (owner_id, match_id)

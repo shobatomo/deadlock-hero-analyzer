@@ -1,5 +1,6 @@
 // Only stored bulk metadata. No match_ids (which queues parsing), Steam fallback,
 // analytics, replay requests, or raw response logging/persistence.
+import {createItemCatalog,projectFinalItems} from './item-assets.js'
 export const PROVIDER_LIMITS = Object.freeze({pageSize:30, pages:3, timeoutMs:12000, bodyBytes:2000000})
 export class RecordError extends Error {
   constructor(code, status=502, retryAfter=60) { super(code); this.code=code; this.status=status; this.retryAfter=retryAfter }
@@ -29,13 +30,13 @@ export function projectRecord(raw, accountId, from, until) {
   return {match_id:String(match), started_at, hero_id:uint(p.hero_id),
     won:decided && winner!==null && own!==null ? winner===own : null,
     kills:uint(p.kills), deaths:uint(p.deaths), assists:uint(p.assists),
-    hero_damage:uint(p.final_stats?.player_damage), duration_s:uint(raw.duration_s)}
+    hero_damage:uint(p.final_stats?.player_damage), duration_s:uint(raw.duration_s),final_items:null}
 }
-export function createRecordProvider({fetchImpl=fetch}={}) {
+export function createRecordProvider({fetchImpl=fetch,itemCatalog=createItemCatalog({fetchImpl})}={}) {
   return {async page({accountId, from, until, cursor}, signal) {
     const url=new URL('https://api.deadlock-api.com/v1/matches/metadata')
     const params={account_ids:accountId,only_filtered_players:'true',match_mode:'ranked,unranked',
-      include_info:'true',include_player_kda:'true',include_player_final_stats:'true',
+      include_info:'true',include_player_kda:'true',include_player_final_stats:'true',include_player_items:'true',
       min_unix_timestamp:String(Math.floor(new Date(from).getTime()/1000)),
       max_unix_timestamp:String(Math.floor(new Date(until).getTime()/1000)-1),
       order_by:'match_id',order_direction:'desc',limit:String(PROVIDER_LIMITS.pageSize)}
@@ -57,6 +58,14 @@ export function createRecordProvider({fetchImpl=fetch}={}) {
       const records=raw.map(row=>projectRecord(row,accountId,from,until))
       const ids=records.map(r=>Number(r.match_id))
       if (ids.some((id,i)=>(cursor!==null && id>Number(cursor)) || (i>0 && id>=ids[i-1]))) throw new RecordError('invalid_provider')
+      const players=raw.map(row=>row.players.find(p=>String(p.account_id)===String(accountId)))
+      let catalog=null
+      // One cached public catalog, no additional per-match metadata requests.
+      if(players.some(p=>Array.isArray(p.items)&&p.items.length)){
+        try{catalog=await itemCatalog()}catch{/* Optional item data cannot discard K/D/A. */}
+      }
+      signal?.throwIfAborted()
+      records.forEach((record,i)=>{record.final_items=projectFinalItems(players[i].items,catalog)})
       return {records, done:raw.length<PROVIDER_LIMITS.pageSize,
         cursor:records.length ? String(Number(records.at(-1).match_id)-1) : cursor}
     } catch (error) {

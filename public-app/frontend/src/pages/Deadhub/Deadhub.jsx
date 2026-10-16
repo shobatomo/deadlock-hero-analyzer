@@ -4,6 +4,7 @@ import {tokyoDay,shiftMonth,dayState,daySummary} from '../../../../shared/deadhu
 import HeroPortrait from '../../components/HeroPortrait'
 import SteamProfile from './SteamProfile'
 import MatchTrends from './MatchTrends'
+import FinalItems from './FinalItems'
 import {safeSteamProfile} from '../../../../shared/steam-profile.mjs'
 import './Deadhub.css'
 
@@ -28,6 +29,7 @@ function Match({row}) {
       <div><dt>与ダメージ（対プレイヤー）</dt><dd>{number(row.hero_damage)}</dd></div>
       <div><dt>試合時間</dt><dd>{row.duration_s==null?'未取得':`${Math.floor(row.duration_s/60)}分${row.duration_s%60}秒`}</dd></div></dl>
     <small>試合ID {row.match_id}</small>
+    <FinalItems items={row.final_items}/>
   </li>
 }
 export default function Deadhub() {

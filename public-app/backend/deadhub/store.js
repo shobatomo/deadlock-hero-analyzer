@@ -2,6 +2,8 @@ import pg from 'pg'
 import {randomUUID} from 'node:crypto'
 import {monthBounds, DAY_MS, RECORD_FIELDS} from '../../shared/deadhub.mjs'
 import {RecordError} from './provider.js'
+import {safeFinalItems} from '../../shared/final-items.mjs'
+const storedFields=[...RECORD_FIELDS,'final_items']
 
 const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 // Only locally created failures carry a fixed initialization code.
@@ -85,10 +87,10 @@ export function createRecordStore(pool) {
       const {start,end}=monthBounds(month)
       return tx(owner,async client=>{
         const account=(await client.query('SELECT * FROM deadhub_private.accounts WHERE owner_id=$1',[owner])).rows[0]
-        const {rows}=await client.query(`SELECT match_id,started_at,hero_id,won,kills,deaths,assists,hero_damage,duration_s,fetched_at,updated_at
+        const {rows}=await client.query(`SELECT match_id,started_at,hero_id,won,kills,deaths,assists,hero_damage,duration_s,final_items,fetched_at,updated_at
           FROM deadhub_private.matches WHERE owner_id=$1 AND started_at >= $2 AND started_at < $3 ORDER BY started_at DESC,match_id DESC`,[owner,start,end])
         const range=(await client.query('SELECT count(*)::int AS count,min(started_at) AS first,max(started_at) AS last FROM deadhub_private.matches WHERE owner_id=$1',[owner])).rows[0]
-        return {account:publicAccount(account),month,matches:rows.map(r=>({...r,hero_damage:r.hero_damage===null?null:Number(r.hero_damage),started_at:iso(r.started_at),fetched_at:iso(r.fetched_at),updated_at:iso(r.updated_at)})),
+        return {account:publicAccount(account),month,matches:rows.map(r=>({...r,final_items:safeFinalItems(r.final_items),hero_damage:r.hero_damage===null?null:Number(r.hero_damage),started_at:iso(r.started_at),fetched_at:iso(r.fetched_at),updated_at:iso(r.updated_at)})),
           observed:{count:range.count,first:iso(range.first),last:iso(range.last)},provider:'stored_metadata',requery_days:7}
       })
     },
@@ -111,14 +113,17 @@ export function createRecordStore(pool) {
         const row=await locked(client,owner,lease.token)
         if (String(row.cursor_match_id)!==String(lease.cursor)) throw new RecordError('lease_lost',409)
         if (page.records.length) {
-          const cols=['owner_id','match_id','started_at',...RECORD_FIELDS]
-          const vals=page.records.flatMap(record=>[owner,record.match_id,record.started_at,...RECORD_FIELDS.map(k=>record[k])])
+          const cols=['owner_id','match_id','started_at',...storedFields]
+          const vals=page.records.flatMap(record=>{
+            const items=safeFinalItems(record.final_items)
+            return [owner,record.match_id,record.started_at,...RECORD_FIELDS.map(k=>record[k]),items===null?null:JSON.stringify(items)]
+          })
           const placeholders=page.records.map((_,row)=>'('+cols.map((_,col)=>'$'+(row*cols.length+col+1)).join(',')+')').join(',')
           // A sparse later response cannot erase a previously observed value.
           // One bounded write per page also avoids a network round-trip per match.
           await client.query(`INSERT INTO deadhub_private.matches AS stored(${cols.join(',')}) VALUES ${placeholders}
             ON CONFLICT(owner_id,match_id) DO UPDATE SET started_at=excluded.started_at,
-            ${RECORD_FIELDS.map(k=>`${k}=coalesce(excluded.${k},stored.${k})`).join(',')},updated_at=now()`,vals)
+            ${storedFields.map(k=>`${k}=coalesce(excluded.${k},stored.${k})`).join(',')},updated_at=now()`,vals)
         }
         if (page.done) {
           await client.query(`UPDATE deadhub_private.accounts SET sync_status='success',last_success_at=now(),last_error=null,

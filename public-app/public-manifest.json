@@ -597,8 +597,8 @@
     },
     {
       "path": "backend/deadhub/provider.js",
-      "bytes": 4469,
-      "sha256": "86b8dfa76d466e8a4f1d5817ff523bf438f268d7d70dcf8dff39ae94603e5e97"
+      "bytes": 5124,
+      "sha256": "d23469637fc86b7a72c4aa048e2379b85d7431b836f3d726aebb50e42b590824"
     },
     {
       "path": "backend/deadhub/runtime.js",
@@ -607,8 +607,8 @@
     },
     {
       "path": "backend/deadhub/store.js",
-      "bytes": 9892,
-      "sha256": "f5a435e8e6c9ed859fc54ee16441436796b6f89ffd681945d041c09e5053e735"
+      "bytes": 10188,
+      "sha256": "4ab15bba156b35efe632f315776056b009bc2a207103f25b2407594f1b798983"
     },
     {
       "path": "backend/deadhub/sync.js",
@@ -622,8 +622,8 @@
     },
     {
       "path": "frontend/src/pages/Deadhub/Deadhub.jsx",
-      "bytes": 14148,
-      "sha256": "55de810bf5f5516bc8b2ff6c8a58206c6d9132833dae88bb9761de4053625923"
+      "bytes": 14228,
+      "sha256": "a179ef749e9fb4a46bcbdb9ab4e916c7c46701127a3910228219f4ba7e603397"
     },
     {
       "path": "shared/deadhub.mjs",
@@ -659,6 +659,26 @@
       "path": "frontend/src/pages/Deadhub/MatchTrends.css",
       "bytes": 5103,
       "sha256": "4e8f308722fd9a849783d874dac47fd6fca500f872a4d8215cf44d32973a3876"
+    },
+    {
+      "path": "backend/deadhub/item-assets.js",
+      "bytes": 2439,
+      "sha256": "8d02da1a59bd981aebbfe939eaf9e90f17cfb4e1f92d8e3d8694da7cd69ec886"
+    },
+    {
+      "path": "shared/final-items.mjs",
+      "bytes": 1182,
+      "sha256": "01f585adb8e3996eff24fc56f23b53bfb3b24a03d651ca595f33d7a0b2b6b01c"
+    },
+    {
+      "path": "frontend/src/pages/Deadhub/FinalItems.jsx",
+      "bytes": 1511,
+      "sha256": "5b017b0991744be116611931fd2b5b65a61c2aa05bdcaca5bd5d5ae36c76cdcd"
+    },
+    {
+      "path": "frontend/src/pages/Deadhub/FinalItems.css",
+      "bytes": 1109,
+      "sha256": "e56d6caf1ca742bd07c0d0978c3d8e2905de6b1374159b1222a21163afc1bf64"
     }
   ]
 }
