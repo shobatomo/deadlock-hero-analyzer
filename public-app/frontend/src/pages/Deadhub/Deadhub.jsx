@@ -118,7 +118,6 @@ export default function Deadhub() {
         <div className="dh-sync-note" role="status">{message||((busy||remoteBusy)?(!account?.last_success_at?'初回同期中です。':'記録を取得しています。'):account?.sync_status==='partial'?'未取得の続きがあります。次の更新で再開します。':account?.sync_status==='interrupted'?'前回の同期が中断されました。次の更新で再開します。':account?.sync_status==='error'?'前回の取得に失敗しました。保存済みの記録を表示しています。':account?'保存済みの記録を表示しています。':'登録すると初回同期を開始します。')}</div>
       </section>
       {account&&<>
-      <MatchTrends rows={rows} month={month} pending={monthPending} observedCount={view.observed.count} onMove={move} canPrevious={month!=='2020-01'} canNext={month!==currentMonth}/>
       <div className="dh-layout">
         <section className="dh-panel dh-calendar" aria-label="プレイ記録カレンダー">
           <div className="dh-month"><button aria-label="前の月" onClick={()=>move(-1)} disabled={month==='2020-01'}>‹</button><h2>{year}年{index}月</h2><button aria-label="次の月" onClick={()=>move(1)} disabled={month===currentMonth}>›</button></div>
@@ -138,6 +137,7 @@ export default function Deadhub() {
             <div className="dh-empty"><strong>{stateLabel[selectedState]}</strong><p>{selectedState==='empty'?'取得済みのデータには、この日の試合がありません。外部データに取得漏れがある可能性があります。':'この日の記録の有無を、まだ確認できていません。'}</p></div>}
         </section>
       </div>
+      <MatchTrends rows={rows} month={month} pending={monthPending} observedCount={view.observed.count} onMove={move} canPrevious={month!=='2020-01'} canNext={month!==currentMonth}/>
       <section className="dh-panel dh-coverage" aria-label="取得範囲">
         <h2>取得できた範囲</h2><p>照会完了：{account.coverage_from?`${dateTime(account.coverage_from)} 〜 ${dateTime(account.coverage_until)}`:'まだ完了していません'}</p>
         <p>保存済み：{view.observed.count}試合{view.observed.first?`（${dateTime(view.observed.first)} 〜 ${dateTime(view.observed.last)}）`:''}</p>

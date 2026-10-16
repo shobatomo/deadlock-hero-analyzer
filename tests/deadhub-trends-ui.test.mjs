@@ -137,6 +137,29 @@ async function racePage({remoteBusy=false}={}){
  return {...view,state}
 }
 const movePage=(view,step)=>fireEvent.click(view.getByRole('button',{name:step<0?'グラフの前の月':'グラフの次の月',exact:true}))
+test('calendar and selected-day records precede trends, retaining header and shared month navigation',async()=>{
+ const view=await racePage()
+ const assertOrder=()=>{
+  const panels=['登録と同期','プレイ記録カレンダー','選択日の記録','ヒーロー別の推移','取得範囲'].map(name=>view.getByRole('region',{name,exact:true}))
+  for(let i=1;i<panels.length;i++)assert.ok(panels[i-1].compareDocumentPosition(panels[i])&Node.DOCUMENT_POSITION_FOLLOWING)
+  assert.equal(view.container.querySelectorAll('.dh-trends').length,1)
+  assert.ok(panels[0].contains(view.getByRole('button',{name:'最新の記録を取得',exact:true})))
+  assert.ok(panels[0].contains(view.getByRole('button',{name:'ログアウト',exact:true})))
+ }
+ assertOrder()
+ const otherDay=activeMonth+(today.endsWith('-01')?'-02':'-01')
+ fireEvent.click(view.getByRole('button',{name:new RegExp('^'+otherDay+' ')}))
+ assert.equal(view.container.querySelectorAll('.dh-match').length,0)
+ assert.equal(view.container.querySelector('.dh-day[aria-pressed=true]').getAttribute('aria-label').startsWith(otherDay),true)
+ assert.ok(view.container.querySelector('.dh-trends svg'))
+ assertOrder()
+ fireEvent.click(view.getByRole('button',{name:'前の月',exact:true}))
+ await waitFor(()=>assertMonth(view,previousMonth,'5回'))
+ assertOrder()
+ movePage(view,1)
+ await waitFor(()=>assertMonth(view,activeMonth,'5回'))
+ assertOrder()
+})
 function assertMonth(view,requested,value){
  const chart=view.getByRole('region',{name:'ヒーロー別の推移',exact:true}),[year,month]=requested.split('-').map(Number)
  assert.equal(chart.getAttribute('aria-busy'),'false')
