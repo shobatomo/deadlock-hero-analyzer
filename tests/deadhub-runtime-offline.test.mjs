@@ -146,3 +146,21 @@ test('default logger receives one fixed string; failing logger cannot enable a r
   const result=run(valid(),{initializationLogger:()=>{throw Error('No success logs expected')}})
   assert.equal(config(result.runtime).enabled,true)
 })
+
+test('invalid invitations fail before pool construction without logging account values',()=>{
+  for(const value of ['',null,'2',accountIdToSteamId('2')+',',accountIdToSteamId('2')+','+accountIdToSteamId('3')]){
+    const result=run({...valid(),DEADHUB_INVITED_STEAM_IDS:value})
+    failed(result,'INVITATIONS');assert.equal(result.pools.length,0)
+  }
+})
+test('invited runtime keeps the owner cron target and revalidates sessions against the configured invitation',async()=>{
+  const {runtime}=run({...valid(),DEADHUB_INVITED_STEAM_IDS:accountIdToSteamId('2')})
+  const {ownerForAccount}=await import('../public-app/backend/deadhub/auth.js')
+  assert.equal(runtime.cronOwner,ownerForAccount('1'))
+  for(const account of ['1','2','3']){
+    runtime.store.resolveSession=async()=>({steam_account_id:account,owner_id:ownerForAccount(account)})
+    const pending=runtime.auth.identify({headers:{cookie:'__Host-deadhub_session='+'a'.repeat(43)}})
+    if(account==='3')await assert.rejects(pending,e=>e.code==='unauthorized')
+    else assert.equal((await pending).accountId,account)
+  }
+})

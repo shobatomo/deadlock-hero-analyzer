@@ -5,6 +5,23 @@ export const PROVIDER_LIMITS = Object.freeze({pageSize:30, pages:3, timeoutMs:12
 export class RecordError extends Error {
   constructor(code, status=502, retryAfter=60) { super(code); this.code=code; this.status=status; this.retryAfter=retryAfter }
 }
+// Persist exact whole seconds with PostgreSQL int. null means an indefinite
+// safety stop, never a shorter fallback for an unrepresentable provider wait.
+export const MAX_RETRY_SECONDS=2147483647
+export function safeRetrySeconds(seconds) {
+  return typeof seconds==='number'&&Number.isFinite(seconds)&&seconds<=MAX_RETRY_SECONDS
+    ?Math.max(60,Math.ceil(seconds)):null
+}
+// HTTP Retry-After accepts delta-seconds or an HTTP date, without a 24h cap.
+export function providerRetryAfter(value,now=Date.now()) {
+  if(typeof value!=='string'||!value.trim())return 60
+  const text=value.trim()
+  if(/^\d+$/.test(text))return safeRetrySeconds(Number(text))
+  // Oversized unparseable headers also fail conservatively, not after 60s.
+  if(text.length>128)return null
+  const date=Date.parse(text)
+  return Number.isFinite(date)?safeRetrySeconds((date-now)/1000):60
+}
 const uint = value => {
   const n = typeof value==='string' && /^\d+$/.test(value) ? Number(value) : value
   return Number.isSafeInteger(n) && n>=0 ? n : null
@@ -32,7 +49,7 @@ export function projectRecord(raw, accountId, from, until) {
     kills:uint(p.kills), deaths:uint(p.deaths), assists:uint(p.assists),
     hero_damage:uint(p.final_stats?.player_damage), duration_s:uint(raw.duration_s),final_items:null}
 }
-export function createRecordProvider({fetchImpl=fetch,itemCatalog=createItemCatalog({fetchImpl})}={}) {
+export function createRecordProvider({fetchImpl=fetch,itemCatalog=createItemCatalog({fetchImpl}),now=()=>Date.now()}={}) {
   return {async page({accountId, from, until, cursor}, signal) {
     const url=new URL('https://api.deadlock-api.com/v1/matches/metadata')
     const params={account_ids:accountId,only_filtered_players:'true',match_mode:'ranked,unranked',
@@ -46,9 +63,10 @@ export function createRecordProvider({fetchImpl=fetch,itemCatalog=createItemCata
     try {
       const response=await fetchImpl(url,{signal:linked,redirect:'error'})
       if (!response.ok) {
-        const retry=Number(response.headers.get('retry-after'))
-        throw new RecordError(response.status===429?'rate_limited':'provider_failed',502,
-          Number.isFinite(retry)&&retry>0?Math.min(86400,Math.ceil(retry)):60)
+        const header=response.headers.get('retry-after'),wait=providerRetryAfter(header,now())
+        const error=new RecordError(wait===null?'provider_paused':response.status===429?'rate_limited':'provider_failed',wait===null?503:502,wait)
+        error.providerPause=response.status===429||header!==null
+        throw error
       }
       const chunks=[];let size=0
       for await (const chunk of response.body) { size+=chunk.length; if(size>PROVIDER_LIMITS.bodyBytes) throw new RecordError('response_too_large'); chunks.push(chunk) }

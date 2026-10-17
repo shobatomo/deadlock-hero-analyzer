@@ -587,8 +587,8 @@
     },
     {
       "path": "backend/deadhub/app.js",
-      "bytes": 5514,
-      "sha256": "978f2257714e2862e79ddd5f0879df2b448efa32d176ca398aa26cd87953a4be"
+      "bytes": 6117,
+      "sha256": "1d7a01ae1e55e98380f2b7e84767e9a178df879cfe36933cb706fd9b3dff8396"
     },
     {
       "path": "backend/deadhub/auth.js",
@@ -597,23 +597,23 @@
     },
     {
       "path": "backend/deadhub/provider.js",
-      "bytes": 5124,
-      "sha256": "d23469637fc86b7a72c4aa048e2379b85d7431b836f3d726aebb50e42b590824"
+      "bytes": 6100,
+      "sha256": "492cd92447f325a7b773ef8c7dd420ed4f816bda2d02fe2c762166c857a354ef"
     },
     {
       "path": "backend/deadhub/runtime.js",
-      "bytes": 2047,
-      "sha256": "ff3aa99df208e273f8a73a996b0a9c498ce1489e2adfaf6a037c81b83fca2833"
+      "bytes": 2364,
+      "sha256": "86f4fe2eaf426b5ca377b7166073e9138d9d99dbda88eadf8c4d1eb704365bbe"
     },
     {
       "path": "backend/deadhub/store.js",
-      "bytes": 10188,
-      "sha256": "4ab15bba156b35efe632f315776056b009bc2a207103f25b2407594f1b798983"
+      "bytes": 10479,
+      "sha256": "8a392ce67a5a423067b469b5bbff818cd0ea6d2b4900ac2b8f4bcb6b8f794cb0"
     },
     {
       "path": "backend/deadhub/sync.js",
-      "bytes": 1107,
-      "sha256": "1192b249fc19f10fd1248d359e3ae99fbbc4087a0b6e0d022a3cf41325096f6d"
+      "bytes": 1461,
+      "sha256": "67c589e5f0ee144c0c7cc819c8cefbf6e47dbefead61dcf57c12ed1a4a1072b6"
     },
     {
       "path": "frontend/src/pages/Deadhub/Deadhub.css",
@@ -622,8 +622,8 @@
     },
     {
       "path": "frontend/src/pages/Deadhub/Deadhub.jsx",
-      "bytes": 14228,
-      "sha256": "a179ef749e9fb4a46bcbdb9ab4e916c7c46701127a3910228219f4ba7e603397"
+      "bytes": 14807,
+      "sha256": "571d4def243b7d2f5b957d3f4e02ce59d0843579047e23dbab8c227a6e23cc25"
     },
     {
       "path": "shared/deadhub.mjs",
@@ -684,6 +684,16 @@
       "path": "frontend/src/pages/Deadhub/item-details.mjs",
       "bytes": 6597,
       "sha256": "40a05bf913e5636f33c1dab54d625af11a82e64f13dd2dc955f8b5ab315989ef"
+    },
+    {
+      "path": "backend/deadhub/invitations.js",
+      "bytes": 878,
+      "sha256": "9598d31beeb8ff3ce08e1167d616285f09fe7f3b33446b9218c2028259cce3c0"
+    },
+    {
+      "path": "backend/deadhub/sync-gate.js",
+      "bytes": 2257,
+      "sha256": "5d174b0344d144a99a886d0153906a3658967fe840610e7382e53dfacbe5068c"
     }
   ]
 }

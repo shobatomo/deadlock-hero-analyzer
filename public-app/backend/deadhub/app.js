@@ -7,6 +7,8 @@ import {safeSteamProfile} from '../../shared/steam-profile.mjs'
 const MESSAGES={unauthorized:'Steamでログインしてください。',not_allowed:'このSteamアカウントは利用許可されていません。',
   login_failed:'Steamログインを確認できませんでした。最初からお試しください。',
   busy:'記録を取得中です。しばらくお待ちください。',cooldown:'連続取得を防ぐため、少しお待ちください。',
+  shared_busy:'更新の受付を待機しています。しばらくしてからお試しください。',shared_unavailable:'更新の受付を確認できませんでした。保存済みの記録は残っています。',
+  provider_paused:'提供元の待機指定を安全に扱えないため、更新を停止しています。再開には管理者の確認が必要です。保存済みの記録は残っています。',
   already_registered:'このSteamアカウントは登録済みです。',not_registered:'先に記録対象として登録してください。',
   rate_limited:'提供元の取得制限に達しました。時間をおいてお試しください。',provider_timeout:'提供元の応答が時間内に返りませんでした。保存済みの記録は残っています。'}
 const digest=s=>createHash('sha256').update(s).digest()
@@ -22,7 +24,7 @@ export function createDeadhubApp({store=null,sync=null,auth=null,profile=null,av
     const bearer=req.get('authorization')??''
     if (!cronSecret || cronSecret.length<32 || !cronOwner || !timingSafeEqual(digest(bearer),digest('Bearer '+cronSecret))) throw new RecordError('unauthorized',401)
     try {res.json(await sync(cronOwner))} catch(error) {
-      if(['not_registered','busy','cooldown'].includes(error.code))return res.json({status:'skipped',reason:error.code})
+      if(['not_registered','busy','cooldown','shared_busy'].includes(error.code))return res.json({status:'skipped',reason:error.code})
       throw error
     }
   })
@@ -57,7 +59,8 @@ export function createDeadhubApp({store=null,sync=null,auth=null,profile=null,av
   app.get('/api/deadhub/records',async(req,res)=>{
     const month=req.query.month??tokyoDay(Date.now()).slice(0,7)
     try{monthBounds(month)}catch{throw new RecordError('invalid_month',400)}
-    res.json({identity:{steam_id:req.identity.steamId},...await store.snapshot(req.identity.owner,month)})
+    res.json({...await store.snapshot(req.identity.owner,month),identity:{steam_id:req.identity.steamId},
+      sync_mode:req.identity.owner===cronOwner?'daily':'manual'})
   })
   app.post('/api/deadhub/register',async(req,res)=>{
     if(!req.body || Array.isArray(req.body) || Object.keys(req.body).length)throw new RecordError('invalid_input',400)
@@ -73,7 +76,7 @@ export function createDeadhubApp({store=null,sync=null,auth=null,profile=null,av
     if(res.headersSent)return next(error)
     const code=error instanceof RecordError?error.code:'request_failed'
     const status=error instanceof RecordError?error.status:error.type==='entity.too.large'?413:error.type==='entity.parse.failed'?400:503
-    if(['cooldown','busy','rate_limited'].includes(code))res.set('Retry-After',String(error.retryAfter??60))
+    if((['cooldown','busy','rate_limited','shared_busy'].includes(code)||error.providerPause)&&Number.isSafeInteger(error.retryAfter)&&error.retryAfter>0)res.set('Retry-After',String(error.retryAfter))
     res.status(status).json({code,error:MESSAGES[code]??'記録の取得に失敗しました。保存済みの記録は残っています。'})
   })
   return app

@@ -107,16 +107,18 @@ export default function Deadhub() {
     {error&&<p className="dh-alert" role="alert">{error}</p>}
     {new URLSearchParams(window.location.search).get('login')==='failed'&&authState!=='signed_in'&&<p role="alert" className="dh-alert">Steamログインを確認できませんでした。許可されたアカウントで、もう一度お試しください。</p>}
     {config?.enabled===false ? <section className="dh-panel"><h2>接続準備中</h2><p>所有者ログインと記録用データベースの設定を待っています。</p></section> : authState!=='signed_in' ?
-      <section className="dh-panel dh-signin"><h2>Steamでログイン</h2><p>本人確認後、このSteamアカウントを記録対象として登録できます。</p><p>現在は所有者だけが利用できます。パスワードの入力はSteam公式画面で行います。</p>
+      <section className="dh-panel dh-signin"><h2>Steamでログイン</h2><p>本人確認後、このSteamアカウントを記録対象として登録できます。</p><p>招待されたアカウントだけが利用できます。記録は本人だけが閲覧できます。パスワードの入力はSteam公式画面で行います。</p>
         <button className="dh-primary" onClick={login} disabled={busy||!config?.enabled||authState==='checking'}>{busy?'Steamを開いています…':'Steamでログインする'}</button>
         {authState==='checking'&&config?.enabled&&<p role="status">ログイン状態を確認しています…</p>}
       </section> : <>
       <section className="dh-panel dh-account" aria-label="登録と同期">
         <div className="dh-account-main"><SteamProfile steamId={steamId} profile={profile}/>
-          <p>最終同期：{dateTime(account?.last_success_at)}</p></div>
-        <div className="dh-actions">{account?<button className="dh-primary" onClick={()=>update()} disabled={busy||remoteBusy||cooldown>0}>
-          {busy||remoteBusy?'記録を取得中…':cooldown>0?`再取得まで ${cooldown} 秒`:'最新の記録を取得'}</button>:<button className="dh-primary" onClick={()=>update(true)} disabled={busy}>{busy?'初回同期中…':'このアカウントを登録して過去30日を取得'}</button>}
+          <p>最終同期：{dateTime(account?.last_success_at)}</p>
+          <p>{view?.sync_mode==='daily'?'毎朝の自動取得と手動更新が利用できます。':'記録は手動で更新します。自動取得はありません。'}</p></div>
+        <div className="dh-actions">{account?<button className="dh-primary" onClick={()=>update()} disabled={busy||remoteBusy||cooldown>0||account.sync_paused}>
+          {account.sync_paused?'更新を停止中':busy||remoteBusy?'記録を取得中…':cooldown>0?`再取得まで ${cooldown} 秒`:'最新の記録を取得'}</button>:<button className="dh-primary" onClick={()=>update(true)} disabled={busy}>{busy?'初回同期中…':'このアカウントを登録して過去30日を取得'}</button>}
           <button className="dh-secondary" onClick={logout} disabled={busy}>ログアウト</button></div>
+        {account?.sync_paused&&<p className="dh-muted">提供元の待機指定により更新を停止しています。再開には管理者の確認が必要です。</p>}
         <div className="dh-sync-note" role="status">{message||((busy||remoteBusy)?(!account?.last_success_at?'初回同期中です。':'記録を取得しています。'):account?.sync_status==='partial'?'未取得の続きがあります。次の更新で再開します。':account?.sync_status==='interrupted'?'前回の同期が中断されました。次の更新で再開します。':account?.sync_status==='error'?'前回の取得に失敗しました。保存済みの記録を表示しています。':account?'保存済みの記録を表示しています。':'登録すると初回同期を開始します。')}</div>
       </section>
       {account&&<>
@@ -145,7 +147,7 @@ export default function Deadhub() {
         <p>保存済み：{view.observed.count}試合{view.observed.first?`（${dateTime(view.observed.first)} 〜 ${dateTime(view.observed.last)}）`:''}</p>
         <p>提供元に保存されたランク・通常マッチが対象です。全試合の取得は保証されません。未取得の項目は0として数えません。</p>
         <p>与ダメージはAPIの <code>final_stats.player_damage</code>（対プレイヤーの最終スナップショット）です。試合終了時点まで揃わない場合があります。</p>
-        <p>日次取得は毎朝6時台（JST）を予定。最新の完了時刻は上部に表示します。直近7日を再照会し、途中の取得は次回に続けます。</p>
+        <p>{view?.sync_mode==='daily'?'自動取得は毎朝6時台（JST）を予定。最新の完了時刻は上部に表示します。':'「最新の記録を取得」から手動で更新してください。'}直近7日を再照会し、途中の取得は次回に続けます。</p>
       </section>
       </>}
       </>}

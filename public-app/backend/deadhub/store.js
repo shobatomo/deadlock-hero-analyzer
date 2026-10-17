@@ -1,7 +1,7 @@
 import pg from 'pg'
 import {randomUUID} from 'node:crypto'
 import {monthBounds, DAY_MS, RECORD_FIELDS} from '../../shared/deadhub.mjs'
-import {RecordError} from './provider.js'
+import {RecordError,safeRetrySeconds} from './provider.js'
 import {safeFinalItems} from '../../shared/final-items.mjs'
 const storedFields=[...RECORD_FIELDS,'final_items']
 
@@ -47,12 +47,13 @@ export function createRecordPool({connectionString, ca, Pool}={}) {
     throw failure
   }
 }
-const iso = value => value ? new Date(value).toISOString() : null
+const paused = value => value===Infinity||value==='infinity'
+const iso = value => value&&!paused(value) ? new Date(value).toISOString() : null
 function publicAccount(row) {
   if (!row) return null
   const keys=['steam_account_id','sync_status','last_error']
   const dates=['created_at','initial_from','last_attempt_at','last_success_at','retry_after','coverage_from','coverage_until']
-  return {...Object.fromEntries(keys.map(k=>[k,row[k]])),...Object.fromEntries(dates.map(k=>[k,iso(row[k])])),
+  return {...Object.fromEntries(keys.map(k=>[k,row[k]])),...Object.fromEntries(dates.map(k=>[k,iso(row[k])])),sync_paused:paused(row.retry_after),
     sync_status:row.sync_status==='running' && new Date(row.lease_until).getTime()<=Date.now()?'interrupted':row.sync_status}
 }
 export function createRecordStore(pool) {
@@ -100,6 +101,7 @@ export function createRecordStore(pool) {
         if (!row) throw new RecordError('not_registered',409)
         const now=Date.now()
         if (row.lease_token && new Date(row.lease_until).getTime()>now) throw new RecordError('busy',409)
+        if (paused(row.retry_after)) throw new RecordError('provider_paused',503,null)
         if (row.retry_after && new Date(row.retry_after).getTime()>now) throw new RecordError('cooldown',429,Math.ceil((new Date(row.retry_after).getTime()-now)/1000))
         const token=randomUUID(), until=iso(row.window_until)??new Date(Math.floor(now/1000)*1000).toISOString()
         const from=iso(row.window_from)??new Date(Math.max(new Date(row.initial_from).getTime(),row.coverage_until?new Date(row.coverage_until).getTime()-7*DAY_MS:0)).toISOString()
@@ -140,7 +142,8 @@ export function createRecordStore(pool) {
     async fail(owner,token,code,retryAfter=60) {
       // Fencing: an expired worker must never overwrite the next worker's state.
       return tx(owner,client=>client.query(`UPDATE deadhub_private.accounts SET sync_status='error',last_error=$3,
-        retry_after=now()+($4::int * interval '1 second'),lease_token=null,lease_until=null WHERE owner_id=$1 AND lease_token=$2`,[owner,token,code,Math.min(86400,Math.max(60,retryAfter))]))
+        retry_after=CASE WHEN $4::int IS NULL THEN 'infinity'::timestamptz ELSE clock_timestamp()+($4::int * interval '1 second') END,
+        lease_token=null,lease_until=null WHERE owner_id=$1 AND lease_token=$2`,[owner,token,code,safeRetrySeconds(retryAfter)]))
     },
     async openSession(hash,owner,accountId,nonceHash,stateHash,previousHash=null) {return (await pool.query('SELECT deadhub_private.open_session($1,$2,$3,$4,$5,$6) AS ok',[hash,owner,accountId,nonceHash,stateHash,previousHash])).rows[0].ok},
     async resolveSession(hash) {return (await pool.query('SELECT * FROM deadhub_private.resolve_session($1)',[hash])).rows[0]??null},
