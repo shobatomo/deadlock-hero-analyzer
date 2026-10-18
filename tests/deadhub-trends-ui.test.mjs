@@ -140,7 +140,7 @@ const movePage=(view,step)=>fireEvent.click(view.getByRole('button',{name:step<0
 test('calendar and selected-day records precede trends, retaining header and shared month navigation',async()=>{
  const view=await racePage()
  const assertOrder=()=>{
-  const panels=['登録と同期','プレイ記録カレンダー','選択日の記録','ヒーロー別の推移','取得範囲'].map(name=>view.getByRole('region',{name,exact:true}))
+  const panels=['登録と同期','プレイ記録カレンダー','選択日の記録','ヒーロー別の推移','照会範囲'].map(name=>view.getByRole('region',{name,exact:true}))
   for(let i=1;i<panels.length;i++)assert.ok(panels[i-1].compareDocumentPosition(panels[i])&Node.DOCUMENT_POSITION_FOLLOWING)
   assert.equal(view.container.querySelectorAll('.dh-trends').length,1)
   assert.ok(panels[0].contains(view.getByRole('button',{name:'最新の記録を取得',exact:true})))

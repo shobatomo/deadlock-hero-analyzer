@@ -12,7 +12,14 @@ const dateTime=value=>value?new Intl.DateTimeFormat('ja-JP',{timeZone:'Asia/Toky
 const clock=value=>new Intl.DateTimeFormat('ja-JP',{timeZone:'Asia/Tokyo',hour:'2-digit',minute:'2-digit'}).format(new Date(value))
 const number=value=>value==null?'未取得':value.toLocaleString('ja-JP')
 const total=value=>value.known===0?'未取得':`${number(value.value)}${value.known<value.total?`（取得 ${value.known}/${value.total} 試合分）`:''}`
-const stateLabel={recorded:'記録あり',empty:'取得済みデータ上は記録なし',unsynced:'未同期・未確認',failed:'取得失敗・未確認',initial:'初回同期中',loading:'この月を読み込み中'}
+const stateLabel={recorded:'記録あり',empty:'照会済み・記録なし',unsynced:'未同期・未確認',failed:'取得失敗・未確認',initial:'初回同期中',loading:'この月を読み込み中'}
+const stateDescription={
+  empty:'照会したデータには、この日の試合がありません。提供元に未収録の可能性があり、プレイしていないことを示すものではありません。',
+  unsynced:'この日全体の照会はまだ終わっていません。記録の有無は未確認です。',
+  failed:'取得に失敗したため、この日の記録の有無は未確認です。保存済みの記録は引き続き表示します。',
+  initial:'初回同期中です。この日の記録の有無はまだ確認できていません。',
+  loading:'この月の保存済み記録を読み込んでいます。'
+}
 async function request(path,{signal,...options}={}) {
   const response=await fetch('/api/deadhub/'+path,{credentials:'same-origin',cache:'no-store',signal,
     ...options,...(options.method?{headers:{'Content-Type':'application/json'},body:'{}'}:{})})
@@ -82,7 +89,7 @@ export default function Deadhub() {
   }
   async function update(register=false) {
     if(active.current)return;active.current=true;setBusy(true);setError('');setMessage(register?'初回同期中です。過去30日の記録を確認しています。':'最新の記録を取得しています。')
-    try{const result=await request(register?'register':'sync',{method:'POST'});setMessage(result.status==='partial'?'今回の取得上限に達しました。保存済みの記録を表示しています。残りは次の更新で取得します。':'更新が完了しました。')}
+    try{const result=await request(register?'register':'sync',{method:'POST'});setMessage(result.status==='partial'?'今回の取得上限に達しました。保存済みの記録を表示しています。続きは次の更新で照会します。':'提供元の保存済みデータを確認しました。未収録の試合や未取得の項目が残る場合があります。')}
     catch(e){setMessage('');setError(e.message)}
     finally{await load();setNow(Date.now());setBusy(false);active.current=false}
   }
@@ -113,7 +120,7 @@ export default function Deadhub() {
       </section> : <>
       <section className="dh-panel dh-account" aria-label="登録と同期">
         <div className="dh-account-main"><SteamProfile steamId={steamId} profile={profile}/>
-          <p>最終同期：{dateTime(account?.last_success_at)}</p>
+          <p>最終照会成功：{dateTime(account?.last_success_at)}</p>
           <p>{view?.sync_mode==='daily'?'毎朝の自動取得と手動更新が利用できます。':'記録は手動で更新します。自動取得はありません。'}</p></div>
         <div className="dh-actions">{account?<button className="dh-primary" onClick={()=>update()} disabled={busy||remoteBusy||cooldown>0||account.sync_paused}>
           {account.sync_paused?'更新を停止中':busy||remoteBusy?'記録を取得中…':cooldown>0?`再取得まで ${cooldown} 秒`:'最新の記録を取得'}</button>:<button className="dh-primary" onClick={()=>update(true)} disabled={busy}>{busy?'初回同期中…':'このアカウントを登録して過去30日を取得'}</button>}
@@ -131,23 +138,24 @@ export default function Deadhub() {
               return <button key={day} className={`dh-day dh-${state}`} aria-label={`${day} ${stateLabel[state]}${count?` ${count}試合`:''}`} aria-pressed={selected===day} onClick={()=>setSelected(day)}><span>{i+1}</span></button>})}
           </div>
           <div className="dh-legend"><span><i className="dh-dot recorded"/>記録あり</span><span><i className="dh-dot unsynced"/>記録の表示なし</span></div>
-          <p className="dh-muted">色は記録の有無を表します。日付を選ぶと取得状況を確認できます。勝敗や成績による色分けはありません。</p>
+          <p className="dh-muted">色は保存済みの記録の有無を表します。記録が表示されない日は、プレイしていないとは限りません。日付を選ぶと取得状況を確認できます。勝敗や成績による色分けはありません。</p>
         </section>
         <section className="dh-panel dh-detail" aria-label="選択日の記録">
           <p className="dh-label">DAY RECORD</p><h2>{Number(selected.slice(5,7))}月{Number(selected.slice(8))}日の記録</h2>
           {daily.length?<><p>{summary.count}試合を取得 · {summary.wins}勝 {summary.losses}敗{summary.unknown>0?` · 勝敗未取得 ${summary.unknown}試合`:''}</p>
             <dl className="dh-totals">{[['kills','キル'],['deaths','デス'],['assists','アシスト'],['hero_damage','与ダメージ（対プレイヤー）']].map(([key,label])=><div key={key}><dt>{label}</dt><dd>{total(summary[key])}</dd></div>)}</dl>
             <ul className="dh-matches">{daily.map(row=><Match key={row.match_id} row={row}/>)}</ul></>:
-            <div className="dh-empty"><strong>{stateLabel[selectedState]}</strong><p>{selectedState==='empty'?'取得済みのデータには、この日の試合がありません。外部データに取得漏れがある可能性があります。':'この日の記録の有無を、まだ確認できていません。'}</p></div>}
+            <div className="dh-empty"><strong>{stateLabel[selectedState]}</strong><p>{stateDescription[selectedState]}</p></div>}
         </section>
       </div>
       <MatchTrends rows={rows} month={month} pending={monthPending} observedCount={view.observed.count} onMove={move} canPrevious={month!=='2020-01'} canNext={month!==currentMonth}/>
-      <section className="dh-panel dh-coverage" aria-label="取得範囲">
-        <h2>取得できた範囲</h2><p>照会完了：{account.coverage_from?`${dateTime(account.coverage_from)} 〜 ${dateTime(account.coverage_until)}`:'まだ完了していません'}</p>
+      <section className="dh-panel dh-coverage" aria-label="照会範囲">
+        <h2>照会した範囲</h2><p>照会した期間：{account.coverage_from?`${dateTime(account.coverage_from)} 〜 ${dateTime(account.coverage_until)}`:'まだ確定していません'}</p>
+        <p>この範囲は提供元の保存済みデータを確認した期間です。全試合・全項目の取得完了を示すものではありません。</p>
         <p>保存済み：{view.observed.count}試合{view.observed.first?`（${dateTime(view.observed.first)} 〜 ${dateTime(view.observed.last)}）`:''}</p>
         <p>提供元に保存されたランク・通常マッチが対象です。全試合の取得は保証されません。未取得の項目は0として数えません。</p>
         <p>与ダメージはAPIの <code>final_stats.player_damage</code>（対プレイヤーの最終スナップショット）です。試合終了時点まで揃わない場合があります。</p>
-        <p>{view?.sync_mode==='daily'?'自動取得は毎朝6時台（JST）を予定。最新の完了時刻は上部に表示します。':'「最新の記録を取得」から手動で更新してください。'}直近7日を再照会し、途中の取得は次回に続けます。</p>
+        <p>{view?.sync_mode==='daily'?'自動取得は毎朝6時台（JST）を予定。最終照会成功の時刻は上部に表示します。':'「最新の記録を取得」から手動で更新してください。'}直近7日を再照会し、途中の取得は次回に続けます。</p>
       </section>
       </>}
       </>}

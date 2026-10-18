@@ -18,19 +18,19 @@ const fixture=()=>[{match_id:'101',started_at:today+'T01:00:00+09:00',hero_id:15
 let originalFetch=globalThis.fetch
 afterEach(()=>{cleanup();globalThis.fetch=()=>{throw Error('Unexpected fetch outside fixture')}})
 after(()=>{globalThis.fetch=originalFetch;dom.window.close()})
-function mockApi({profile={profile:null},profileFail=false}={}){
- const state={rows:fixture(),calls:[],syncs:0,profileSignal:null,release:null}
+function mockApi({profile={profile:null},profileFail=false,rows=fixture(),account={},syncMode='manual'}={}){
+ const state={rows,account:{sync_status:'success',last_success_at:today+'T06:00:00+09:00',coverage_from:month+'-01T00:00:00+09:00',coverage_until:today+'T06:00:00+09:00',...account},calls:[],syncs:0,profileSignal:null,release:null,recordsFail:false}
  globalThis.fetch=async(input,options={})=>{
   state.calls.push(String(input));assert.ok(String(input).startsWith('/api/deadhub/'),'No external fetch allowed')
   if(input==='/api/deadhub/config')return Response.json({enabled:true,auth:'steam',time_zone:'Asia/Tokyo'})
   if(input==='/api/deadhub/profile'){state.profileSignal=options.signal;if(profileFail)throw Error('DUMMY_PROFILE_FAILURE');return profile instanceof Promise?profile:Response.json(profile)}
-  if(String(input).startsWith('/api/deadhub/records?')){const requested=new URL(input,'https://dummy.example.test').searchParams.get('month');return Response.json({identity:{steam_id:id},month:requested,account:{sync_status:'success',last_success_at:today+'T06:00:00+09:00',coverage_from:month+'-01T00:00:00+09:00',coverage_until:today+'T06:00:00+09:00'},matches:requested===month?state.rows:[],observed:{count:state.rows.length}})}
-  if(input==='/api/deadhub/sync'){state.syncs++;if(state.release===null)return new Promise(resolve=>{state.release=()=>resolve(Response.json({status:'success'}))});return Response.json({status:'success'})}
+  if(String(input).startsWith('/api/deadhub/records?')){if(state.recordsFail)return Response.json({error:'テスト用：保存済み記録の再読み込みに失敗しました。'},{status:503});const requested=new URL(input,'https://dummy.example.test').searchParams.get('month');return Response.json({identity:{steam_id:id},month:requested,sync_mode:syncMode,account:state.account,matches:requested===month?state.rows:[],observed:{count:state.rows.length}})}
+  if(input==='/api/deadhub/sync'){state.syncs++;if(state.release===null)return new Promise(resolve=>{state.release=(response=Response.json({status:'success'}))=>resolve(response)});return Response.json({status:'success'})}
   throw Error('Unexpected local route')
  }
  return state
 }
-async function page(options){const state=mockApi(options),view=render(React.createElement(Deadhub));await waitFor(()=>assert.equal(view.container.querySelectorAll('.dh-match').length,2));return {state,...view}}
+async function page(options){const state=mockApi(options),view=render(React.createElement(Deadhub));await waitFor(()=>assert.ok(view.container.querySelector('.dh-calendar')));assert.equal(view.container.querySelectorAll('.dh-match').length,state.rows.length);return {state,...view}}
 test('each match reuses the local hero portrait; missing and broken images retain the record text',async()=>{
  const view=await page(),portraits=view.container.querySelectorAll('.dh-hero-portrait')
  assert.equal(portraits.length,2);assert.equal(portraits[0].querySelector('img').getAttribute('src'),'/heroes/15.webp');assert.ok(portraits[1].querySelector('.portrait-fallback'))
@@ -91,6 +91,70 @@ test('a stalled profile does not block records and is cancelled on unmount',asyn
  const view=await page({profile:new Promise(()=>{})});assert.equal(view.container.querySelectorAll('.dh-match').length,2)
  assert.equal(view.state.profileSignal.aborted,false);view.unmount();assert.equal(view.state.profileSignal.aborted,true)
 })
+
+test('successful rechecking does not claim new matches or complete history when rows and missing details are unchanged',async()=>{
+ const view=await page()
+ assert.equal(view.container.querySelectorAll('.dh-match').length,2)
+ fireEvent.click(view.getByRole('button',{name:'最新の記録を取得',exact:true}))
+ await waitFor(()=>assert.equal(view.state.syncs,1));view.state.release()
+ await waitFor(()=>assert.match(view.container.querySelector('.dh-sync-note').textContent,/提供元の保存済みデータを確認しました/))
+ assert.match(view.container.querySelector('.dh-sync-note').textContent,/未収録の試合や未取得の項目が残る/)
+ assert.equal(view.container.querySelectorAll('.dh-match').length,2)
+ assert.ok(!view.container.textContent.includes('更新が完了しました。'))
+ assert.match(view.container.textContent,/最終照会成功/)
+ assert.match(view.container.querySelector('.dh-coverage').textContent,/全試合・全項目の取得完了を示すものではありません/)
+})
+for(const scenario of [
+ {name:'unsynced',account:{last_success_at:null,coverage_from:null,coverage_until:null},label:'未同期・未確認',description:/この日全体の照会はまだ終わっていません/},
+ {name:'failed',account:{sync_status:'error'},label:'取得失敗・未確認',description:/取得に失敗したため、この日の記録の有無は未確認/},
+ {name:'queried empty',account:{coverage_until:new Date(new Date(today+'T00:00:00+09:00').getTime()+86_400_000).toISOString()},label:'照会済み・記録なし',description:/プレイしていないことを示すものではありません/},
+ {name:'initial sync',account:{sync_status:'running',last_success_at:null,coverage_from:null,coverage_until:null},label:'初回同期中',description:/この日の記録の有無はまだ確認できていません/}
+])test(`${scenario.name} explains why no records are displayed without asserting the user did not play`,async()=>{
+ const view=await page({rows:[],account:scenario.account}),empty=view.container.querySelector('.dh-detail .dh-empty')
+ assert.equal(empty.querySelector('strong').textContent,scenario.label)
+ assert.match(empty.querySelector('p').textContent,scenario.description)
+ assert.match(view.container.querySelector('.dh-calendar').textContent,/記録が表示されない日は、プレイしていないとは限りません/)
+ assert.match(view.getByRole('button',{name:new RegExp('^'+today+' ')}).getAttribute('aria-label'),new RegExp(scenario.label))
+})
+
+test('a partial sync promises only a continuation of queries and retains saved records',async()=>{
+ const view=await page()
+ fireEvent.click(view.getByRole('button',{name:'最新の記録を取得',exact:true}))
+ await waitFor(()=>assert.equal(view.state.syncs,1));view.state.account.sync_status='partial';view.state.release(Response.json({status:'partial'}))
+ await waitFor(()=>assert.match(view.container.querySelector('.dh-sync-note').textContent,/続きは次の更新で照会します/))
+ assert.equal(view.container.querySelectorAll('.dh-match').length,2)
+ assert.doesNotMatch(view.container.querySelector('.dh-sync-note').textContent,/残りは次の更新で取得します|更新が完了/)
+})
+
+test('a failed sync retains existing records, zero totals and unknown fields',async()=>{
+ const view=await page()
+ fireEvent.click(view.getByRole('button',{name:'最新の記録を取得',exact:true}))
+ await waitFor(()=>assert.equal(view.state.syncs,1));view.state.account.sync_status='error'
+ view.state.release(Response.json({error:'テスト用の取得失敗。'},{status:502}))
+ await waitFor(()=>assert.match(view.container.querySelector('.dh-sync-note').textContent,/前回の取得に失敗しました。保存済みの記録を表示しています/))
+ assert.match(view.getByRole('alert').textContent,/テスト用の取得失敗/)
+ assert.equal(view.container.querySelectorAll('.dh-match').length,2)
+ assert.ok(view.container.textContent.includes('0（取得 1/2 試合分）'))
+ assert.match(view.container.querySelectorAll('.dh-match')[1].textContent,/未取得/)
+ assert.match(view.getByRole('button',{name:new RegExp('^'+today+' ')}).getAttribute('aria-label'),/記録あり 2試合/)
+})
+
+test('a failed record refresh after sync leaves the previously displayed records visible',async()=>{
+ const view=await page()
+ fireEvent.click(view.getByRole('button',{name:'最新の記録を取得',exact:true}))
+ await waitFor(()=>assert.equal(view.state.syncs,1));view.state.recordsFail=true;view.state.release()
+ await waitFor(()=>assert.match(view.getByRole('alert').textContent,/保存済み記録の再読み込みに失敗/))
+ assert.equal(view.container.querySelectorAll('.dh-match').length,2)
+ assert.ok(view.container.textContent.includes('0（取得 1/2 試合分）'))
+})
+
+test('daily guidance labels the last success as a query result without identifying its trigger',async()=>{
+ const view=await page({syncMode:'daily'})
+ assert.match(view.container.querySelector('.dh-account-main').textContent,/最終照会成功/)
+ assert.match(view.container.querySelector('.dh-coverage').textContent,/自動取得は毎朝6時台（JST）を予定。最終照会成功の時刻は上部に表示します/)
+ assert.doesNotMatch(view.container.textContent,/自動取得が完了|cronが実行|ボット登録|ソフト.*インストール/)
+})
+
 test('a corrected hero after synchronization gets a fresh portrait despite an earlier load failure',async()=>{
  const view=await page(),image=view.container.querySelector('.dh-hero-portrait img');fireEvent.error(image)
  view.state.rows[0].hero_id=4;view.state.rows[1].hero_id=999999
