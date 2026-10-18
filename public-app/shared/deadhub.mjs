@@ -1,6 +1,6 @@
 export const TIME_ZONE = 'Asia/Tokyo'
 export const DAY_MS = 86400000
-export const RECORD_FIELDS = ['hero_id', 'won', 'kills', 'deaths', 'assists', 'hero_damage', 'duration_s']
+export const RECORD_FIELDS = ['hero_id', 'won', 'kills', 'deaths', 'assists', 'hero_damage', 'player_healing', 'duration_s']
 export function tokyoDay(value) {
   const date = new Date(value)
   if (!Number.isFinite(date.getTime())) throw new Error('Invalid date')
@@ -24,7 +24,7 @@ export function sumKnown(rows, field) {
 }
 export function daySummary(rows) {
   return {count:rows.length, wins:rows.filter(r=>r.won===true).length, losses:rows.filter(r=>r.won===false).length,
-    unknown:rows.filter(r=>r.won==null).length, ...Object.fromEntries(['kills','deaths','assists','hero_damage'].map(f=>[f,sumKnown(rows,f)]))}
+    unknown:rows.filter(r=>r.won==null).length, ...Object.fromEntries(['kills','deaths','assists','hero_damage','player_healing'].map(f=>[f,sumKnown(rows,f)]))}
 }
 export function dayState(day, rows, account) {
   if (rows.some(row=>tokyoDay(row.started_at)===day)) return 'recorded'

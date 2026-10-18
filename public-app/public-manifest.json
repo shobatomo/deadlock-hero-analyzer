@@ -598,7 +598,7 @@
     {
       "path": "backend/deadhub/provider.js",
       "bytes": 6100,
-      "sha256": "492cd92447f325a7b773ef8c7dd420ed4f816bda2d02fe2c762166c857a354ef"
+      "sha256": "e554a59c034efd3510c4a76a892f8a3c6269db31e398c2181e37352e3fc84bcf"
     },
     {
       "path": "backend/deadhub/runtime.js",
@@ -608,7 +608,7 @@
     {
       "path": "backend/deadhub/store.js",
       "bytes": 10479,
-      "sha256": "8a392ce67a5a423067b469b5bbff818cd0ea6d2b4900ac2b8f4bcb6b8f794cb0"
+      "sha256": "200d59b3affb7abcfd766744fdb9b3267bbb0ec2cc70f4cc6f0cfb250ca2a389"
     },
     {
       "path": "backend/deadhub/sync.js",
@@ -618,17 +618,17 @@
     {
       "path": "frontend/src/pages/Deadhub/Deadhub.css",
       "bytes": 5722,
-      "sha256": "bb9f620c9e3244b5c0841fc96fc3d67b208512f1536de88dbd5ec51180312004"
+      "sha256": "a2fb784c9e0638ac85c2851cf24952c1baf69f5293081bf37608918f3d280959"
     },
     {
       "path": "frontend/src/pages/Deadhub/Deadhub.jsx",
       "bytes": 15627,
-      "sha256": "f2ca45d28d4c69d111bc27ac7220b6cb4bd70ff10ac17f424aad43e15417d9fc"
+      "sha256": "657ff7d5075ece26d3cf48f698ef19c379d74c6aceccb9e87694988c42093ff4"
     },
     {
       "path": "shared/deadhub.mjs",
       "bytes": 2231,
-      "sha256": "f486885e7a497e8c6ec3bbb3b43e6cf35e889c67e7bd916200e2432475e2ce76"
+      "sha256": "e726edafb860c51baf3e452fab033e2b35c076a17169b2b6106ec7603d13e7a5"
     },
     {
       "path": "backend/deadhub/steam-profile.js",

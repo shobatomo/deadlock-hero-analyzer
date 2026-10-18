@@ -37,6 +37,7 @@ create table deadhub_private.matches (
   deaths integer check (deaths >= 0),
   assists integer check (assists >= 0),
   hero_damage bigint check (hero_damage >= 0),
+  player_healing bigint constraint matches_player_healing_nonnegative check (player_healing >= 0),
   duration_s integer check (duration_s >= 0),
   final_items jsonb constraint matches_final_items_shape check (
     final_items is null or

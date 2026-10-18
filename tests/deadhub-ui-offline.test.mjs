@@ -31,6 +31,39 @@ function mockApi({profile={profile:null},profileFail=false,rows=fixture(),accoun
  return state
 }
 async function page(options){const state=mockApi(options),view=render(React.createElement(Deadhub));await waitFor(()=>assert.ok(view.container.querySelector('.dh-calendar')));assert.equal(view.container.querySelectorAll('.dh-match').length,state.rows.length);return {state,...view}}
+
+const healingEntry=element=>[...element.querySelectorAll('dl>div')].find(entry=>entry.querySelector('dt')?.textContent.startsWith('回復量'))
+for(const [values,expected] of [
+ [[2462,0],'2,462'],[[2462,null,0],'2,462（部分合計 · 取得 2/3 試合分）'],
+ [[0,null],'0（部分合計 · 取得 1/2 試合分）'],[[null,undefined],'未取得'],
+])test(`healing ${JSON.stringify(values)} preserves zero and explicitly labels partial totals`,async()=>{
+ const rows=values.map((player_healing,i)=>({...fixture()[0],match_id:String(200+i),player_healing}))
+ const view=await page({rows}),sum=healingEntry(view.container.querySelector('.dh-detail'))
+ assert.equal(sum.querySelector('dd').textContent,expected);assert.equal(sum.querySelector('small').textContent,'API提供値')
+ const matches=[...view.container.querySelectorAll('.dh-match')]
+ matches.forEach((match,i)=>{
+  const entry=healingEntry(match)
+  assert.equal(entry.querySelector('dd').textContent,values[i]==null?'未取得':values[i].toLocaleString('ja-JP'))
+  assert.equal(entry.querySelector('small').textContent,'API提供値')
+ })
+ assert.match(view.container.querySelector('.dh-coverage').textContent,/回復量はAPI提供値です。提供元の最終スナップショットを表示し、試合終了時点まで揃わない場合があります/)
+ assert.doesNotMatch(view.container.textContent,/自分と味方の合計|自己と味方の合計|総回復/)
+})
+
+test('healing appears after refresh without duplicate matches and remains after a failed refresh',async()=>{
+ const rows=fixture().map(row=>({...row,player_healing:null})),view=await page({rows})
+ assert.equal(healingEntry(view.container.querySelector('.dh-detail')).querySelector('dd').textContent,'未取得')
+ view.state.rows[0].player_healing=2462;view.state.rows[1].player_healing=0
+ fireEvent.click(view.getByRole('button',{name:'最新の記録を取得',exact:true}))
+ await waitFor(()=>assert.equal(view.state.syncs,1));view.state.release()
+ await waitFor(()=>assert.equal(healingEntry(view.container.querySelector('.dh-detail')).querySelector('dd').textContent,'2,462'))
+ assert.equal(view.container.querySelectorAll('.dh-match').length,2)
+ view.state.recordsFail=true
+ fireEvent.click(view.getByRole('button',{name:'最新の記録を取得',exact:true}))
+ await waitFor(()=>assert.match(view.getByRole('alert').textContent,/保存済み記録の再読み込みに失敗/))
+ assert.equal(healingEntry(view.container.querySelector('.dh-detail')).querySelector('dd').textContent,'2,462')
+ assert.equal(view.container.querySelectorAll('.dh-match').length,2)
+})
 test('each match reuses the local hero portrait; missing and broken images retain the record text',async()=>{
  const view=await page(),portraits=view.container.querySelectorAll('.dh-hero-portrait')
  assert.equal(portraits.length,2);assert.equal(portraits[0].querySelector('img').getAttribute('src'),'/heroes/15.webp');assert.ok(portraits[1].querySelector('.portrait-fallback'))

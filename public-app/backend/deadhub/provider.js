@@ -47,7 +47,8 @@ export function projectRecord(raw, accountId, from, until) {
   return {match_id:String(match), started_at, hero_id:uint(p.hero_id),
     won:decided && winner!==null && own!==null ? winner===own : null,
     kills:uint(p.kills), deaths:uint(p.deaths), assists:uint(p.assists),
-    hero_damage:uint(p.final_stats?.player_damage), duration_s:uint(raw.duration_s),final_items:null}
+    hero_damage:uint(p.final_stats?.player_damage), player_healing:uint(p.final_stats?.player_healing),
+    duration_s:uint(raw.duration_s),final_items:null}
 }
 export function createRecordProvider({fetchImpl=fetch,itemCatalog=createItemCatalog({fetchImpl}),now=()=>Date.now()}={}) {
   return {async page({accountId, from, until, cursor}, signal) {

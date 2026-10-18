@@ -11,7 +11,7 @@ import './Deadhub.css'
 const dateTime=value=>value?new Intl.DateTimeFormat('ja-JP',{timeZone:'Asia/Tokyo',dateStyle:'medium',timeStyle:'short'}).format(new Date(value)):'未同期'
 const clock=value=>new Intl.DateTimeFormat('ja-JP',{timeZone:'Asia/Tokyo',hour:'2-digit',minute:'2-digit'}).format(new Date(value))
 const number=value=>value==null?'未取得':value.toLocaleString('ja-JP')
-const total=value=>value.known===0?'未取得':`${number(value.value)}${value.known<value.total?`（取得 ${value.known}/${value.total} 試合分）`:''}`
+const total=(value,partialLabel='取得')=>value.known===0?'未取得':`${number(value.value)}${value.known<value.total?`（${partialLabel} ${value.known}/${value.total} 試合分）`:''}`
 const stateLabel={recorded:'記録あり',empty:'照会済み・記録なし',unsynced:'未同期・未確認',failed:'取得失敗・未確認',initial:'初回同期中',loading:'この月を読み込み中'}
 const stateDescription={
   empty:'照会したデータには、この日の試合がありません。提供元に未収録の可能性があり、プレイしていないことを示すものではありません。',
@@ -34,6 +34,7 @@ function Match({row}) {
       <span>{row.won==null?'勝敗未取得':row.won?'勝利':'敗北'}</span></div>
     <dl><div><dt>キル / デス / アシスト</dt><dd>{number(row.kills)} / {number(row.deaths)} / {number(row.assists)}</dd></div>
       <div><dt>与ダメージ（対プレイヤー）</dt><dd>{number(row.hero_damage)}</dd></div>
+      <div><dt>回復量 <small className="dh-metric-source">API提供値</small></dt><dd>{number(row.player_healing)}</dd></div>
       <div><dt>試合時間</dt><dd>{row.duration_s==null?'未取得':`${Math.floor(row.duration_s/60)}分${row.duration_s%60}秒`}</dd></div></dl>
     <small>試合ID {row.match_id}</small>
     <FinalItems items={row.final_items}/>
@@ -143,7 +144,8 @@ export default function Deadhub() {
         <section className="dh-panel dh-detail" aria-label="選択日の記録">
           <p className="dh-label">DAY RECORD</p><h2>{Number(selected.slice(5,7))}月{Number(selected.slice(8))}日の記録</h2>
           {daily.length?<><p>{summary.count}試合を取得 · {summary.wins}勝 {summary.losses}敗{summary.unknown>0?` · 勝敗未取得 ${summary.unknown}試合`:''}</p>
-            <dl className="dh-totals">{[['kills','キル'],['deaths','デス'],['assists','アシスト'],['hero_damage','与ダメージ（対プレイヤー）']].map(([key,label])=><div key={key}><dt>{label}</dt><dd>{total(summary[key])}</dd></div>)}</dl>
+            <dl className="dh-totals">{[['kills','キル'],['deaths','デス'],['assists','アシスト'],['hero_damage','与ダメージ（対プレイヤー）']].map(([key,label])=><div key={key} className={key==='hero_damage'?'dh-total-wide':undefined}><dt>{label}</dt><dd>{total(summary[key])}</dd></div>)}
+              <div className="dh-total-wide"><dt>回復量 <small className="dh-metric-source">API提供値</small></dt><dd>{total(summary.player_healing,'部分合計 · 取得')}</dd></div></dl>
             <ul className="dh-matches">{daily.map(row=><Match key={row.match_id} row={row}/>)}</ul></>:
             <div className="dh-empty"><strong>{stateLabel[selectedState]}</strong><p>{stateDescription[selectedState]}</p></div>}
         </section>
@@ -155,6 +157,7 @@ export default function Deadhub() {
         <p>保存済み：{view.observed.count}試合{view.observed.first?`（${dateTime(view.observed.first)} 〜 ${dateTime(view.observed.last)}）`:''}</p>
         <p>提供元に保存されたランク・通常マッチが対象です。全試合の取得は保証されません。未取得の項目は0として数えません。</p>
         <p>与ダメージはAPIの <code>final_stats.player_damage</code>（対プレイヤーの最終スナップショット）です。試合終了時点まで揃わない場合があります。</p>
+        <p>回復量はAPI提供値です。提供元の最終スナップショットを表示し、試合終了時点まで揃わない場合があります。</p>
         <p>{view?.sync_mode==='daily'?'自動取得は毎朝6時台（JST）を予定。最終照会成功の時刻は上部に表示します。':'「最新の記録を取得」から手動で更新してください。'}直近7日を再照会し、途中の取得は次回に続けます。</p>
       </section>
       </>}

@@ -88,10 +88,10 @@ export function createRecordStore(pool) {
       const {start,end}=monthBounds(month)
       return tx(owner,async client=>{
         const account=(await client.query('SELECT * FROM deadhub_private.accounts WHERE owner_id=$1',[owner])).rows[0]
-        const {rows}=await client.query(`SELECT match_id,started_at,hero_id,won,kills,deaths,assists,hero_damage,duration_s,final_items,fetched_at,updated_at
+        const {rows}=await client.query(`SELECT match_id,started_at,hero_id,won,kills,deaths,assists,hero_damage,player_healing,duration_s,final_items,fetched_at,updated_at
           FROM deadhub_private.matches WHERE owner_id=$1 AND started_at >= $2 AND started_at < $3 ORDER BY started_at DESC,match_id DESC`,[owner,start,end])
         const range=(await client.query('SELECT count(*)::int AS count,min(started_at) AS first,max(started_at) AS last FROM deadhub_private.matches WHERE owner_id=$1',[owner])).rows[0]
-        return {account:publicAccount(account),month,matches:rows.map(r=>({...r,final_items:safeFinalItems(r.final_items),hero_damage:r.hero_damage===null?null:Number(r.hero_damage),started_at:iso(r.started_at),fetched_at:iso(r.fetched_at),updated_at:iso(r.updated_at)})),
+        return {account:publicAccount(account),month,matches:rows.map(r=>({...r,final_items:safeFinalItems(r.final_items),hero_damage:r.hero_damage===null?null:Number(r.hero_damage),player_healing:r.player_healing==null?null:Number(r.player_healing),started_at:iso(r.started_at),fetched_at:iso(r.fetched_at),updated_at:iso(r.updated_at)})),
           observed:{count:range.count,first:iso(range.first),last:iso(range.last)},provider:'stored_metadata',requery_days:7}
       })
     },
