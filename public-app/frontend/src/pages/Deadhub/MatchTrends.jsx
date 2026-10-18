@@ -78,9 +78,9 @@ export default function MatchTrends({rows,month,pending=false,observedCount,onMo
   const unknown = rows.filter(row => trendHeroId(row.hero_id) === null).length
   const [year,monthIndex] = month.split('-').map(Number), points = result?.points ?? []
   return <section className="dh-panel dh-trends" aria-labelledby={`${uid}-heading`} aria-busy={pending}>
-    <div className="dh-trend-heading"><div><p className="dh-label">MATCH TRENDS</p><h2 id={`${uid}-heading`}>ヒーロー別の推移</h2></div>
+    <header className="dh-trend-heading"><div><p className="dh-label">MATCH TRENDS</p><h2 id={`${uid}-heading`}>ヒーロー別の推移</h2></div>
       <div className="dh-trend-month"><button type="button" aria-label="グラフの前の月" onClick={() => onMove(-1)} disabled={!canPrevious}>‹</button><strong>{year}年{monthIndex}月</strong><button type="button" aria-label="グラフの次の月" onClick={() => onMove(1)} disabled={!canNext}>›</button></div>
-    </div>
+    </header>
     <p className="dh-trend-scope">カレンダーと同じ月（JST）の保存済み試合が対象です。全履歴ではなく、取得できた記録だけを表示します。</p>
     {pending ? <p role="status">この月の記録を読み込み中…</p> : <>
       <p className="dh-trend-count">この月：{rows.length}試合{Number.isInteger(observedCount)?` / 保存済み全期間：${observedCount}試合`:''}{selected?` ・ 選択ヒーロー：${points.length}試合`:''}</p>

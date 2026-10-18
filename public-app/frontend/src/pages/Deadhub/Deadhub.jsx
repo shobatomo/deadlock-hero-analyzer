@@ -33,7 +33,7 @@ function Match({row}) {
       <div className="dh-match-heading"><time dateTime={row.started_at}>{clock(row.started_at)}</time><strong>{row.hero_id==null?'ヒーロー未取得':heroName(row.hero_id)}</strong></div>
       <span>{row.won==null?'勝敗未取得':row.won?'勝利':'敗北'}</span></div>
     <dl><div><dt>キル / デス / アシスト</dt><dd>{number(row.kills)} / {number(row.deaths)} / {number(row.assists)}</dd></div>
-      <div><dt>与ダメージ（対プレイヤー）</dt><dd>{number(row.hero_damage)}</dd></div>
+      <div><dt>与ダメージ<span className="dh-metric-detail">（対プレイヤー）</span></dt><dd>{number(row.hero_damage)}</dd></div>
       <div><dt>回復量 <small className="dh-metric-source">API提供値</small></dt><dd>{number(row.player_healing)}</dd></div>
       <div><dt>試合時間</dt><dd>{row.duration_s==null?'未取得':`${Math.floor(row.duration_s/60)}分${row.duration_s%60}秒`}</dd></div></dl>
     <small>試合ID {row.match_id}</small>
@@ -132,7 +132,8 @@ export default function Deadhub() {
       {account&&<>
       <div className="dh-layout">
         <section className="dh-panel dh-calendar" aria-label="プレイ記録カレンダー">
-          <div className="dh-month"><button aria-label="前の月" onClick={()=>move(-1)} disabled={month==='2020-01'}>‹</button><h2>{year}年{index}月</h2><button aria-label="次の月" onClick={()=>move(1)} disabled={month===currentMonth}>›</button></div>
+          <header className="dh-section-heading dh-calendar-heading"><div><p className="dh-label">PLAY CALENDAR</p><h2>プレイカレンダー</h2></div><p>日付から記録を確認</p></header>
+          <div className="dh-month"><button aria-label="前の月" onClick={()=>move(-1)} disabled={month==='2020-01'}>‹</button><h3>{year}年{index}月</h3><button aria-label="次の月" onClick={()=>move(1)} disabled={month===currentMonth}>›</button></div>
           <div className="dh-grid"><div className="dh-week" aria-hidden="true">{['日','月','火','水','木','金','土'].map(d=><span key={d}>{d}</span>)}</div>
             {Array.from({length:offset},(_,i)=><span key={'blank'+i} aria-hidden="true"/>)}
             {Array.from({length:days},(_,i)=>{const day=`${month}-${String(i+1).padStart(2,'0')}`,state=monthPending?'loading':dayState(day,rows,account),count=rows.filter(r=>tokyoDay(r.started_at)===day).length
@@ -141,13 +142,19 @@ export default function Deadhub() {
           <div className="dh-legend"><span><i className="dh-dot recorded"/>記録あり</span><span><i className="dh-dot unsynced"/>記録の表示なし</span></div>
           <p className="dh-muted">色は保存済みの記録の有無を表します。記録が表示されない日は、プレイしていないとは限りません。日付を選ぶと取得状況を確認できます。勝敗や成績による色分けはありません。</p>
         </section>
-        <section className="dh-panel dh-detail" aria-label="選択日の記録">
-          <p className="dh-label">DAY RECORD</p><h2>{Number(selected.slice(5,7))}月{Number(selected.slice(8))}日の記録</h2>
+        <section className="dh-detail" aria-label="選択日の記録">
+          <div className="dh-panel dh-day-summary">
+          <header className="dh-section-heading"><div><p className="dh-label">日別サマリー</p><h2>{Number(selected.slice(5,7))}月{Number(selected.slice(8))}日の記録</h2></div></header>
           {daily.length?<><p>{summary.count}試合を取得 · {summary.wins}勝 {summary.losses}敗{summary.unknown>0?` · 勝敗未取得 ${summary.unknown}試合`:''}</p>
             <dl className="dh-totals">{[['kills','キル'],['deaths','デス'],['assists','アシスト'],['hero_damage','与ダメージ（対プレイヤー）']].map(([key,label])=><div key={key} className={key==='hero_damage'?'dh-total-wide':undefined}><dt>{label}</dt><dd>{total(summary[key])}</dd></div>)}
               <div className="dh-total-wide"><dt>回復量 <small className="dh-metric-source">API提供値</small></dt><dd>{total(summary.player_healing,'部分合計 · 取得')}</dd></div></dl>
-            <ul className="dh-matches">{daily.map(row=><Match key={row.match_id} row={row}/>)}</ul></>:
+            </>:
             <div className="dh-empty"><strong>{stateLabel[selectedState]}</strong><p>{stateDescription[selectedState]}</p></div>}
+          </div>
+          {daily.length>0&&<section className="dh-panel dh-match-section" aria-label="試合一覧">
+            <header className="dh-section-heading"><div><p className="dh-label">MATCH LIST</p><h3>試合一覧</h3></div><p>{summary.count}試合</p></header>
+            <ul className="dh-matches">{daily.map(row=><Match key={row.match_id} row={row}/>)}</ul>
+          </section>}
         </section>
       </div>
       <MatchTrends rows={rows} month={month} pending={monthPending} observedCount={view.observed.count} onMove={move} canPrevious={month!=='2020-01'} canNext={month!==currentMonth}/>
