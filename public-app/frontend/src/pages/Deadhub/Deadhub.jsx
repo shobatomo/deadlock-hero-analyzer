@@ -14,13 +14,14 @@ const dateTime=value=>value?new Intl.DateTimeFormat('ja-JP',{timeZone:'Asia/Toky
 const clock=value=>new Intl.DateTimeFormat('ja-JP',{timeZone:'Asia/Tokyo',hour:'2-digit',minute:'2-digit'}).format(new Date(value))
 const number=value=>value==null?'未取得':value.toLocaleString('ja-JP')
 const total=(value,partialLabel='取得')=>value.known===0?'未取得':`${number(value.value)}${value.known<value.total?`（${partialLabel} ${value.known}/${value.total} 試合分）`:''}`
-const stateLabel={recorded:'記録あり',empty:'照会済み・記録なし',unsynced:'未同期・未確認',failed:'取得失敗・未確認',initial:'初回同期中',loading:'この月を読み込み中'}
+const stateLabel={recorded:'記録あり',empty:'照会済み・記録なし',unsynced:'未同期・未確認',failed:'取得失敗・未確認',initial:'初回同期中',loading:'この月を読み込み中',read_failed:'記録の読取り失敗'}
 const stateDescription={
   empty:'照会したデータには、この日の試合がありません。提供元に未収録の可能性があり、プレイしていないことを示すものではありません。',
   unsynced:'この日全体の照会はまだ終わっていません。記録の有無は未確認です。',
   failed:'取得に失敗したため、この日の記録の有無は未確認です。保存済みの記録は引き続き表示します。',
   initial:'初回同期中です。この日の記録の有無はまだ確認できていません。',
-  loading:'この月の保存済み記録を読み込んでいます。'
+  loading:'この月の保存済み記録を読み込んでいます。',
+  read_failed:'この月の保存済み記録を読み込めませんでした。記録がないことを示すものではありません。月を切り替えて再確認してください。'
 }
 async function request(path,{signal,...options}={}) {
   const response=await fetch('/api/deadhub/'+path,{credentials:'same-origin',cache:'no-store',signal,
@@ -50,6 +51,7 @@ export default function Deadhub() {
   const [busy,setBusy]=useState(false),[message,setMessage]=useState(''),[error,setError]=useState(''),[now,setNow]=useState(Date.now())
   const active=useRef(false)
   const [syncRevision,setSyncRevision]=useState(0)
+  const [recordsError,setRecordsError]=useState(null)
   const records=useRef({month:currentMonth,request:0,controller:null,mounted:false})
   useEffect(()=>{
     records.current.mounted=true
@@ -71,9 +73,10 @@ export default function Deadhub() {
     state.controller?.abort()
     const control=new AbortController(),generation=++state.request,requestedMonth=state.month
     state.controller=control
+    setRecordsError(null)
     const stale=()=>control.signal.aborted||!state.mounted||generation!==state.request
     try {const data=await request('records?month='+requestedMonth,{signal:control.signal});if(stale())return;setView(data);setAuthState('signed_in')}
-    catch(e){if(stale())return;if(e.code==='unauthorized'){setView(null);setAuthState('signed_out')}else setError(e.message)}
+    catch(e){if(stale())return;if(e.code==='unauthorized'){setView(null);setAuthState('signed_out')}else setRecordsError({month:requestedMonth,message:e.message})}
     finally{if(state.controller===control)state.controller=null}
   },[])
   useEffect(()=>{const control=new AbortController();request('config',{signal:control.signal}).then(setConfig).catch(e=>{if(!control.signal.aborted)setError(e.message)});return()=>control.abort()},[])
@@ -99,7 +102,7 @@ export default function Deadhub() {
     finally{await load();setNow(Date.now());setBusy(false);active.current=false;if(records.current.mounted)setSyncRevision(value=>value+1)}
   }
   async function logout() {
-    try{await request('auth/logout',{method:'POST'});setView(null);setAuthState('signed_out');setError('');setMessage('')}
+    try{await request('auth/logout',{method:'POST'});setView(null);setAuthState('signed_out');setError('');setRecordsError(null);setMessage('')}
     catch(e){setError(e.message)}
   }
   function move(step) {
@@ -118,10 +121,13 @@ export default function Deadhub() {
   const [year,index]=month.split('-').map(Number), days=new Date(Date.UTC(year,index,0)).getUTCDate()
   const offset=new Date(Date.UTC(year,index-1,1)).getUTCDay()
   const monthPending=view?.month!==month
-  const selectedState=monthPending?'loading':dayState(selected,rows,account)
+  const monthReadFailed=monthPending&&recordsError?.month===month
+  const pendingState=monthReadFailed?'read_failed':'loading'
+  const selectedState=monthPending?pendingState:dayState(selected,rows,account)
+  const displayError=recordsError?.message||error
   return <main className="deadhub" id="main-content" tabIndex={-1}>
     <div className="dh-title"><div><p className="eyebrow">DEADLOCK PLAY RECORDS</p><h1>遊んだ日を、見返そう。</h1><p>Deadlockの日々の試合記録。日付はすべて日本時間です。</p></div></div>
-    {error&&<p className="dh-alert" role="alert">{error}</p>}
+    {displayError&&<p className="dh-alert" role="alert">{displayError}</p>}
     {new URLSearchParams(window.location.search).get('login')==='failed'&&authState!=='signed_in'&&<p role="alert" className="dh-alert">Steamログインを確認できませんでした。許可されたアカウントで、もう一度お試しください。</p>}
     {config?.enabled===false ? <section className="dh-panel"><h2>接続準備中</h2><p>所有者ログインと記録用データベースの設定を待っています。</p></section> : authState!=='signed_in' ?
       <section className="dh-panel dh-signin"><h2>Steamでログイン</h2><p>本人確認後、このSteamアカウントを記録対象として登録できます。</p><p>招待されたアカウントだけが利用できます。記録は本人だけが閲覧できます。パスワードの入力はSteam公式画面で行います。</p>
@@ -146,7 +152,7 @@ export default function Deadhub() {
           <div className="dh-month"><button aria-label="前の月" onClick={()=>move(-1)} disabled={month==='2020-01'}>‹</button><h3>{year}年{index}月</h3><button aria-label="次の月" onClick={()=>move(1)} disabled={month===currentMonth}>›</button></div>
           <div className="dh-grid"><div className="dh-week" aria-hidden="true">{['日','月','火','水','木','金','土'].map(d=><span key={d}>{d}</span>)}</div>
             {Array.from({length:offset},(_,i)=><span key={'blank'+i} aria-hidden="true"/>)}
-            {Array.from({length:days},(_,i)=>{const day=`${month}-${String(i+1).padStart(2,'0')}`,state=monthPending?'loading':dayState(day,rows,account),count=rows.filter(r=>tokyoDay(r.started_at)===day).length
+            {Array.from({length:days},(_,i)=>{const day=`${month}-${String(i+1).padStart(2,'0')}`,state=monthPending?pendingState:dayState(day,rows,account),count=rows.filter(r=>tokyoDay(r.started_at)===day).length
               return <button key={day} className={`dh-day dh-${state}`} aria-label={`${day} ${stateLabel[state]}${count?` ${count}試合`:''}`} aria-pressed={selected===day} onClick={()=>{setSelected(day);setListHero('')}}><span>{i+1}</span></button>})}
           </div>
           <div className="dh-legend"><span><i className="dh-dot recorded"/>記録あり</span><span><i className="dh-dot unsynced"/>記録の表示なし</span></div>
@@ -161,25 +167,25 @@ export default function Deadhub() {
             </>:
             <div className="dh-empty"><strong>{stateLabel[selectedState]}</strong><p>{stateDescription[selectedState]}</p></div>}
           </div>
-          <section className="dh-panel dh-match-section" aria-label="試合一覧" aria-busy={monthPending}>
+          <section className="dh-panel dh-match-section" aria-label="試合一覧" aria-busy={monthPending&&!monthReadFailed}>
             <header className="dh-section-heading"><div><p className="dh-label">MATCH LIST</p><h3>試合一覧</h3></div></header>
             <p id={listId+'-scope'} className="dh-list-scope">対象：{year}年{index}月の保存済み記録（JST）。全履歴ではありません。別の月はカレンダーで切り替えてください。</p>
             <div className="dh-list-controls">
               <label htmlFor={listId+'-hero'}>一覧のヒーロー<select id={listId+'-hero'} value={listHero} disabled={monthPending} aria-describedby={listId+'-scope'} onChange={event=>setListHero(event.target.value)}>
                 <option value="">{Number(selected.slice(5,7))}月{Number(selected.slice(8))}日（絞り込みなし）</option>
                 {listHeroes.map(hero=><option key={hero.id} value={hero.id}>{heroName(hero.id)}（月内{hero.count}試合）</option>)}
-                {listHero&&listHero!=='unknown'&&!listHeroes.some(hero=>hero.id===listHero)&&<option value={listHero}>{listHeroName}（{monthPending?'読み込み中':'この月は0試合'}）</option>}
+                {listHero&&listHero!=='unknown'&&!listHeroes.some(hero=>hero.id===listHero)&&<option value={listHero}>{listHeroName}（{monthReadFailed?'読取り失敗':monthPending?'読み込み中':'この月は0試合'}）</option>}
                 {(unknownHeroes>0||listHero==='unknown')&&<option value="unknown">ヒーロー未取得{monthPending?'':`（月内${unknownHeroes}試合）`}</option>}
               </select></label>
               <button type="button" onClick={()=>setListHero('')} disabled={!listHero||monthPending}>絞り込みを解除</button>
             </div>
             <p className="dh-list-hint">ヒーローを選ぶと月内の日付をまたいで表示します。カレンダーの日付を選ぶと日別表示に戻ります。</p>
-            <p className="dh-list-count" role="status">{monthPending?'この月の記録を読み込み中…':`${listHero?`${listHeroName} · ${year}年${index}月`:`${Number(selected.slice(5,7))}月${Number(selected.slice(8))}日`}：${listRows.length}試合 / この月の保存済み記録 ${rows.length}試合`}</p>
+            <p className="dh-list-count" role="status">{monthReadFailed?stateDescription.read_failed:monthPending?'この月の記録を読み込み中…':`${listHero?`${listHeroName} · ${year}年${index}月`:`${Number(selected.slice(5,7))}月${Number(selected.slice(8))}日`}：${listRows.length}試合 / この月の保存済み記録 ${rows.length}試合`}</p>
             {!monthPending&&(listRows.length>0?<ul className="dh-matches">{listRows.map(row=><Match key={row.match_id} row={row} showDate={Boolean(listHero)}/>)}</ul>:<p className="dh-list-empty">{listHero?'この月の保存済み記録に、該当する試合はありません。絞り込みを解除するか、別の月を選んでください。':'選択日の保存済み記録はありません。ヒーローを選ぶと、この月の別の日も確認できます。'}</p>)}
           </section>
         </section>
       </div>
-      <MatchTrends rows={rows} month={month} pending={monthPending} observedCount={view.observed.count} onMove={move} canPrevious={month!=='2020-01'} canNext={month!==currentMonth}/>
+      <MatchTrends rows={rows} month={month} pending={monthPending&&!monthReadFailed} readFailed={monthReadFailed} observedCount={view.observed.count} onMove={move} canPrevious={month!=='2020-01'} canNext={month!==currentMonth}/>
       <section className="dh-panel dh-coverage" aria-label="照会範囲">
         <h2>照会した範囲</h2><p>照会した期間：{account.coverage_from?`${dateTime(account.coverage_from)} 〜 ${dateTime(account.coverage_until)}`:'まだ確定していません'}</p>
         <p>この範囲は提供元の保存済みデータを確認した期間です。全試合・全項目の取得完了を示すものではありません。</p>

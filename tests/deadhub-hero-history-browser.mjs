@@ -26,6 +26,7 @@ const results=[]
 try{
  for(const width of [1280,390,320]){
   const touch=width<800,context=await browser.newContext({viewport:{width,height:900},hasTouch:touch,isMobile:touch}),page=await context.newPage(),errors=[],blocked=[],calls=[],detailCalls=[]
+  let failMonthRead=false
   page.on('pageerror',error=>errors.push(error.message))
   await page.route('**/*',route=>{
    const request=route.request(),url=new URL(request.url())
@@ -38,6 +39,7 @@ try{
    if(url.pathname==='/api/deadhub/config')return route.fulfill({json:{enabled:true,auth:'steam'}})
    if(url.pathname==='/api/deadhub/profile')return route.fulfill({json:{profile:null}})
    if(url.pathname==='/api/deadhub/records'){
+    if(failMonthRead)return route.fulfill({status:503,json:{error:'画面テスト用：月別記録の読取り失敗'}})
     const requested=url.searchParams.get('month')
     return route.fulfill({json:{identity:{steam_id:accountIdToSteamId('1')},month:requested,account:{sync_status:'success',last_success_at:today+'T06:00:00+09:00'},matches:requested===month?rows:requested===previous?[row(201,previous+'-01',4)]:[],observed:{count:999}}})
    }
@@ -107,8 +109,21 @@ try{
   await page.getByRole('button',{name:'次の月',exact:true}).click();await list.locator('.dh-match').first().waitFor()
   assert.deepEqual(await ids(),['試合ID 106','試合ID 104','試合ID 103','試合ID 102'])
   assert.equal(calls.filter(c=>c.path==='/api/deadhub/records').length,3)
+  failMonthRead=true;await page.getByRole('button',{name:'前の月',exact:true}).click()
+  await page.getByRole('alert').waitFor();await list.getByText(/読み込めませんでした/).waitFor()
+  assert.equal(await list.getAttribute('aria-busy'),'false');assert.equal(await page.locator('.dh-trends').getAttribute('aria-busy'),'false')
+  assert.doesNotMatch(await list.innerText(),/読み込み中|0試合|該当する試合はありません/)
+  assert.match(await page.locator('.dh-trends').innerText(),/読み込めませんでした/)
+  assert.match(await page.locator('.dh-day').first().getAttribute('aria-label'),/読取り失敗/)
+  assert.deepEqual(await ids(),[]);assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false)
+  await page.screenshot({path:join(output,`hero-month-read-error-${width}.png`),fullPage:true})
+  failMonthRead=false;await page.getByRole('button',{name:'次の月',exact:true}).click();await list.locator('.dh-match').first().waitFor()
+  await page.getByRole('alert').waitFor({state:'detached'})
+  assert.deepEqual(await ids(),['試合ID 106','試合ID 104','試合ID 103','試合ID 102']);assert.equal(await page.getByRole('alert').count(),0)
+  assert.equal(await select.inputValue(),'15');assert.equal(await page.getByRole('combobox',{name:'ヒーロー',exact:true}).inputValue(),'4')
+  assert.equal(calls.filter(c=>c.path==='/api/deadhub/records').length,5)
   assert.ok(calls.every(c=>c.method==='GET'));assert.deepEqual(errors,[]);assert.deepEqual(blocked,[])
-  results.push({width,touch,monthly_hero_list:true,calendar_resets_filter:true,graph_independent:true,no_fetch_on_filter:true,month_navigation_requests:2,zero_null_and_inventory_states:true,modal:true,empty_state:true,horizontal_overflow:false,min_text_contrast:Math.min(...contrast),day_height:cells[0].height})
+  results.push({width,touch,monthly_hero_list:true,calendar_resets_filter:true,graph_independent:true,no_fetch_on_filter:true,month_navigation_requests:4,month_read_failure_and_recovery:true,zero_null_and_inventory_states:true,modal:true,empty_state:true,horizontal_overflow:false,min_text_contrast:Math.min(...contrast),day_height:cells[0].height})
   await context.close()
  }
  assert.equal(unmockedApi,0)

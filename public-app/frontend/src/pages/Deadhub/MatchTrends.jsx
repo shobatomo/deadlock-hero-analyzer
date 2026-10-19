@@ -68,7 +68,7 @@ function TrendPlot({points,metric,hero,averageCount,ceiling,undated}) {
   </>
 }
 
-export default function MatchTrends({rows,month,pending=false,observedCount,onMove,canPrevious=true,canNext=true}) {
+export default function MatchTrends({rows,month,pending=false,readFailed=false,observedCount,onMove,canPrevious=true,canNext=true}) {
   const uid = useId(), [hero,setHero] = useState(null), [metricId,setMetricId] = useState('kills')
   const heroes = useMemo(() => trendHeroes(rows),[rows])
   const selected = heroes.find(item => item.id === hero) ?? heroes[0]
@@ -82,7 +82,7 @@ export default function MatchTrends({rows,month,pending=false,observedCount,onMo
       <div className="dh-trend-month"><button type="button" aria-label="グラフの前の月" onClick={() => onMove(-1)} disabled={!canPrevious}>‹</button><strong>{year}年{monthIndex}月</strong><button type="button" aria-label="グラフの次の月" onClick={() => onMove(1)} disabled={!canNext}>›</button></div>
     </header>
     <p className="dh-trend-scope">カレンダーと同じ月（JST）の保存済み試合が対象です。全履歴ではなく、取得できた記録だけを表示します。</p>
-    {pending ? <p role="status">この月の記録を読み込み中…</p> : <>
+    {pending||readFailed ? <p role="status">{readFailed?'この月の保存済み記録を読み込めませんでした。記録がないことを示すものではありません。月を切り替えて再確認してください。':'この月の記録を読み込み中…'}</p> : <>
       <p className="dh-trend-count">この月：{rows.length}試合{Number.isInteger(observedCount)?` / 保存済み全期間：${observedCount}試合`:''}{selected?` ・ 選択ヒーロー：${points.length}試合`:''}</p>
       {unknown > 0 && <p className="dh-trend-note">ヒーロー未取得の{unknown}試合は、この比較の対象外です。日別記録には表示されます。</p>}
       {!selected ? <p className="dh-trend-empty">{rows.length === 0?'この月の保存済み記録はありません。月を切り替えると、その月の記録を確認できます。':'この月にはヒーローを判別できる記録がありません。'}</p> : <>

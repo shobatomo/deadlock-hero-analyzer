@@ -29,7 +29,7 @@ async function page({rows=fixture()}={}){
   if(path.startsWith('/api/deadhub/records?')){
    const requested=new URL(path,'https://local.test').searchParams.get('month')
    const body={identity:{steam_id:accountIdToSteamId('1')},month:requested,account:{sync_status:'success',last_success_at:today+'T06:00:00+09:00'},matches:requested===month?state.rows:requested===previous?[record(201,previous+'-01',4)]:[],observed:{count:999}}
-   if(state.defer)return new Promise(resolve=>state.pending.push({month:requested,signal:options.signal,release:()=>resolve(Response.json(body))}))
+   if(state.defer)return new Promise(resolve=>state.pending.push({month:requested,signal:options.signal,release:(response=Response.json(body))=>resolve(response)}))
    return Response.json(body)
   }
   if(path===`https://api.deadlock-api.com/v1/assets/items/${item.id}?language=japanese`)return Response.json({id:item.id,type:'upgrade',description:{desc:'合成データの効果'}})
@@ -95,13 +95,37 @@ test('changing months retains explicit hero and an honest empty state without sh
  fireEvent.click(view.getByRole('button',{name:'絞り込みを解除'}));assert.deepEqual(ids(view),['105','104'])
 })
 
-test('late old-month responses never replace a newer selected-month hero list',async()=>{
+for(const lateFailure of [false,true])test(`late old-month ${lateFailure?'failure':'success'} never replaces a newer selected-month hero list`,async()=>{
  const view=await page();fireEvent.change(view.select(),{target:{value:'15'}});view.state.defer=true
  fireEvent.click(view.getByRole('button',{name:'前の月',exact:true}));await waitFor(()=>assert.equal(view.state.pending.length,1))
  fireEvent.click(view.getByRole('button',{name:'次の月',exact:true}));await waitFor(()=>assert.equal(view.state.pending.length,2))
  assert.equal(view.state.pending[0].signal.aborted,true)
  await act(async()=>view.state.pending[1].release());assert.deepEqual(ids(view),['105','103','102'])
- await act(async()=>view.state.pending[0].release());assert.deepEqual(ids(view),['105','103','102'])
+ await act(async()=>view.state.pending[0].release(lateFailure?Response.json({error:'古い月の読取り失敗'},{status:503}):undefined));assert.deepEqual(ids(view),['105','103','102'])
+ assert.equal(view.queryByRole('alert'),null)
+})
+
+test('failed month read stops loading without claiming empty records; returning to a saved month recovers',async()=>{
+ const view=await page();fireEvent.change(view.select(),{target:{value:'15'}})
+ fireEvent.change(view.getByRole('combobox',{name:'ヒーロー',exact:true}),{target:{value:'4'}})
+ view.state.defer=true
+ fireEvent.click(view.getByRole('button',{name:'前の月',exact:true}));await waitFor(()=>assert.equal(view.state.pending.length,1))
+ await act(async()=>view.state.pending[0].release(Response.json({error:'テスト用：月別記録の読取り失敗'},{status:503})))
+ assert.match(view.getByRole('alert').textContent,/月別記録の読取り失敗/)
+ assert.equal(view.list().getAttribute('aria-busy'),'false')
+ assert.doesNotMatch(view.list().textContent,/読み込み中|0試合|該当する試合はありません/)
+ assert.match(view.list().textContent,/読み込めませんでした/)
+ assert.equal(ids(view).length,0,'Do not show a different month as the failed month')
+ assert.match(view.container.querySelector('.dh-day-summary').textContent,/読取り失敗/)
+ assert.match(view.container.querySelector('.dh-day').getAttribute('aria-label'),/読取り失敗/)
+ assert.equal(view.container.querySelector('.dh-trends').getAttribute('aria-busy'),'false')
+ assert.doesNotMatch(view.container.querySelector('.dh-trends').textContent,/読み込んでいます|読み込み中|記録がありません/)
+ assert.match(view.container.querySelector('.dh-trends').textContent,/読み込めませんでした/)
+ view.state.defer=false;fireEvent.click(view.getByRole('button',{name:'次の月',exact:true}))
+ await waitFor(()=>assert.deepEqual(ids(view),['105','103','102']))
+ await waitFor(()=>assert.equal(view.queryByRole('alert'),null))
+ assert.equal(view.select().disabled,false)
+ assert.equal(view.select().value,'15');assert.equal(view.getByRole('combobox',{name:'ヒーロー',exact:true}).value,'4')
 })
 
 test('filtered matches reuse the item dialog and filtering alone never loads item details',async()=>{

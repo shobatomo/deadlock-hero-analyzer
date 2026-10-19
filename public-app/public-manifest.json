@@ -622,8 +622,8 @@
     },
     {
       "path": "frontend/src/pages/Deadhub/Deadhub.jsx",
-      "bytes": 19985,
-      "sha256": "8ad52ead104dc4775dba67c74762d540c245dda830de0afc49e5443b1e71f460"
+      "bytes": 20700,
+      "sha256": "3f8c689907a422fabcdeafb8663ddcd3f3d020a83cbfcc51529bb3de13b5b68c"
     },
     {
       "path": "shared/deadhub.mjs",
@@ -652,8 +652,8 @@
     },
     {
       "path": "frontend/src/pages/Deadhub/MatchTrends.jsx",
-      "bytes": 11678,
-      "sha256": "9d75adddfdb05908a2e4f646e75801ec87ee1c0884f0d8d2d0d0dbd9bf5f42df"
+      "bytes": 11908,
+      "sha256": "f97a9c135de594b6cca2f6a4e7c485b66f8aba22cd28cb2622637b325fb79360"
     },
     {
       "path": "frontend/src/pages/Deadhub/MatchTrends.css",
