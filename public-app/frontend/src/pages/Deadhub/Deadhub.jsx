@@ -6,6 +6,7 @@ import HeroPortrait from '../../components/HeroPortrait'
 import SteamProfile from './SteamProfile'
 import MatchTrends from './MatchTrends'
 import FinalItems from './FinalItems'
+import SyncRunDetails from './SyncRunDetails'
 import {safeSteamProfile} from '../../../../shared/steam-profile.mjs'
 import './Deadhub.css'
 
@@ -48,6 +49,7 @@ export default function Deadhub() {
   const [config,setConfig]=useState(null),[view,setView]=useState(null),[authState,setAuthState]=useState('checking')
   const [busy,setBusy]=useState(false),[message,setMessage]=useState(''),[error,setError]=useState(''),[now,setNow]=useState(Date.now())
   const active=useRef(false)
+  const [syncRevision,setSyncRevision]=useState(0)
   const records=useRef({month:currentMonth,request:0,controller:null,mounted:false})
   useEffect(()=>{
     records.current.mounted=true
@@ -94,7 +96,7 @@ export default function Deadhub() {
     if(active.current)return;active.current=true;setBusy(true);setError('');setMessage(register?'初回同期中です。過去30日の記録を確認しています。':'最新の記録を取得しています。')
     try{const result=await request(register?'register':'sync',{method:'POST'});setMessage(result.status==='partial'?'今回の取得上限に達しました。保存済みの記録を表示しています。続きは次の更新で照会します。':'提供元の保存済みデータを確認しました。未収録の試合や未取得の項目が残る場合があります。')}
     catch(e){setMessage('');setError(e.message)}
-    finally{await load();setNow(Date.now());setBusy(false);active.current=false}
+    finally{await load();setNow(Date.now());setBusy(false);active.current=false;if(records.current.mounted)setSyncRevision(value=>value+1)}
   }
   async function logout() {
     try{await request('auth/logout',{method:'POST'});setView(null);setAuthState('signed_out');setError('');setMessage('')}
@@ -135,6 +137,7 @@ export default function Deadhub() {
           <button className="dh-secondary" onClick={logout} disabled={busy}>ログアウト</button></div>
         {account?.sync_paused&&<p className="dh-muted">提供元の待機指定により更新を停止しています。再開には管理者の確認が必要です。</p>}
         <div className="dh-sync-note" role="status">{message||((busy||remoteBusy)?(!account?.last_success_at?'初回同期中です。':'記録を取得しています。'):account?.sync_status==='partial'?'未取得の続きがあります。次の更新で再開します。':account?.sync_status==='interrupted'?'前回の同期が中断されました。次の更新で再開します。':account?.sync_status==='error'?'前回の取得に失敗しました。保存済みの記録を表示しています。':account?'保存済みの記録を表示しています。':'登録すると初回同期を開始します。')}</div>
+        <SyncRunDetails key={steamId} revision={syncRevision}/>
       </section>
       {account&&<>
       <div className="dh-layout">

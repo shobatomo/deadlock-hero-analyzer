@@ -622,8 +622,8 @@
     },
     {
       "path": "frontend/src/pages/Deadhub/Deadhub.jsx",
-      "bytes": 19765,
-      "sha256": "02a73b327040d8407cb3d53dc5a587f3740ce05c6d20b44b786a5b672852da11"
+      "bytes": 19985,
+      "sha256": "8ad52ead104dc4775dba67c74762d540c245dda830de0afc49e5443b1e71f460"
     },
     {
       "path": "shared/deadhub.mjs",
@@ -699,6 +699,21 @@
       "path": "backend/deadhub/sync-runs.js",
       "bytes": 2664,
       "sha256": "0656ba329be39f13ba762635f645e8b7d8b750309f77c2be2d4140a304b2f7e0"
+    },
+    {
+      "path": "frontend/src/pages/Deadhub/SyncRunDetails.jsx",
+      "bytes": 4704,
+      "sha256": "069df13dc6d1cbb6436cc1cfdd4cdec25b95826391c2e3f09df874417ee2f918"
+    },
+    {
+      "path": "frontend/src/pages/Deadhub/SyncRunDetails.css",
+      "bytes": 2172,
+      "sha256": "14b458e1bf498f48d8323f04df15a18fad4bfb0810a661f6f229623832a044b3"
+    },
+    {
+      "path": "frontend/src/pages/Deadhub/syncRunView.mjs",
+      "bytes": 4605,
+      "sha256": "ac9ee3d6ecc3645707dffeac69f96c3608d900df505fd1ce41acae0349fd2404"
     }
   ]
 }

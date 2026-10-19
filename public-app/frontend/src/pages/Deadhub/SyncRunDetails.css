@@ -1,0 +1,23 @@
+.dh-run-disclosure{flex-basis:100%;min-width:0}
+.dh-run-toggle,.dh-run-heading button{min-height:44px;border:1px solid #64745e;border-radius:8px;background:transparent;color:#d2dfc8;font:inherit;font-size:.8rem;padding:8px 12px;cursor:pointer}
+.dh-run-toggle{border-color:transparent;padding-left:0;text-align:left}
+.dh-run-toggle span{display:inline-block;width:1.1em;color:#bedba1}
+.dh-run-toggle:focus-visible,.dh-run-heading button:focus-visible{outline:3px dashed #fff;outline-offset:3px}
+.dh-run-heading button:disabled{opacity:.55;cursor:default}
+.dh-run-details{margin-top:8px;padding-top:18px;border-top:1px solid #50614b}
+.dh-run-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.dh-panel .dh-run-heading h2{font-size:1rem;margin:0}
+.dh-panel .dh-run-details p{font-size:.78rem;line-height:1.8;margin:10px 0}
+.dh-run-hint,.dh-run-observed{color:#c0cdb9}
+.dh-run-sources{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;list-style:none;padding:0;margin:16px 0}
+.dh-run-source{min-width:0;padding:14px;border:1px solid #50614b;border-radius:9px;background:#17231d}
+.dh-run-source h3{font-size:.88rem;font-family:inherit;margin:0 0 12px;color:#e5eddf}
+.dh-panel .dh-run-outcome{display:inline-block;margin:0 0 8px;border:1px solid currentColor;border-radius:5px;padding:2px 7px;font-size:.75rem}
+.dh-run-success{color:#c8e4ad}.dh-run-failed,.dh-run-partial,.dh-run-started{color:#ffdb9f}.dh-run-skipped,.dh-run-empty{color:#d2dfc8}
+.dh-run-source dl{margin:4px 0 12px;font-size:.75rem;line-height:1.8}
+.dh-run-source dt{color:#b9c8b0}.dh-run-source dd{margin:0 0 6px;color:#e1ead9;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.dh-run-source time{font-variant-numeric:tabular-nums}
+.dh-run-history{color:#c0cdb9}.dh-run-unfinished{border-top:1px solid #50614b;padding-top:10px;color:#ffdb9f}
+.dh-run-error{color:#ffe0bd}
+@media(max-width:800px){.dh-run-sources{grid-template-columns:minmax(0,1fr)}.dh-run-source dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 12px}}
+@media(max-width:360px){.dh-run-source dl{grid-template-columns:minmax(0,1fr)}}
