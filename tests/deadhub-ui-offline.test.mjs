@@ -32,6 +32,31 @@ function mockApi({profile={profile:null},profileFail=false,rows=fixture(),accoun
 }
 async function page(options){const state=mockApi(options),view=render(React.createElement(Deadhub));await waitFor(()=>assert.ok(view.container.querySelector('.dh-calendar')));assert.equal(view.container.querySelectorAll('.dh-match').length,state.rows.length);return {state,...view}}
 
+test('an initial record-read failure stops the checking message without inventing a signed-out or empty state',async()=>{
+ let release
+ const calls=[]
+ globalThis.fetch=async path=>{
+  calls.push(path)
+  if(path==='/api/deadhub/config')return Response.json({enabled:true})
+  if(path.startsWith('/api/deadhub/records?'))return new Promise(resolve=>{release=resolve})
+  throw Error('Unexpected initial-read request')
+ }
+ const view=render(React.createElement(Deadhub))
+ await waitFor(()=>assert.equal(typeof release,'function'))
+ assert.match(view.getByRole('status').textContent,/ログイン状態を確認しています/)
+ release(Response.json({error:'画面テスト用：記録の読取り失敗'},{status:503}))
+ await view.findByRole('alert')
+ assert.match(view.getByRole('status').textContent,/確認できませんでした。ページを再読み込みしてください/)
+ assert.doesNotMatch(view.container.textContent,/確認しています|照会済み・記録なし|0試合/)
+ assert.equal(view.getByRole('button',{name:'Steamでログインする'}).disabled,true)
+ assert.equal(view.container.querySelector('.dh-calendar'),null)
+ assert.equal(calls.length,2,'An error must not trigger synchronization or automatic retries')
+ view.unmount()
+ const recovered=await page()
+ assert.equal(recovered.container.querySelectorAll('.dh-match').length,2)
+ assert.equal(recovered.queryByRole('alert'),null)
+})
+
 test('daily totals explain the all-hero scope and partial denominator, retaining zero and missing values after filtering',async()=>{
  const values=[
   {hero_id:15,kills:4,deaths:0,assists:null,hero_damage:100},

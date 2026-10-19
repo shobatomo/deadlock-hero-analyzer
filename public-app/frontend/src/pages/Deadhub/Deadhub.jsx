@@ -132,7 +132,7 @@ export default function Deadhub() {
     {config?.enabled===false ? <section className="dh-panel"><h2>接続準備中</h2><p>所有者ログインと記録用データベースの設定を待っています。</p></section> : authState!=='signed_in' ?
       <section className="dh-panel dh-signin"><h2>Steamでログイン</h2><p>本人確認後、このSteamアカウントを記録対象として登録できます。</p><p>招待されたアカウントだけが利用できます。記録は本人だけが閲覧できます。パスワードの入力はSteam公式画面で行います。</p>
         <button className="dh-primary" onClick={login} disabled={busy||!config?.enabled||authState==='checking'}>{busy?'Steamを開いています…':'Steamでログインする'}</button>
-        {authState==='checking'&&config?.enabled&&<p role="status">ログイン状態を確認しています…</p>}
+        {authState==='checking'&&config?.enabled&&<p role="status">{recordsError?'ログイン状態と保存済み記録を確認できませんでした。ページを再読み込みしてください。':'ログイン状態を確認しています…'}</p>}
       </section> : <>
       <section className="dh-panel dh-account" aria-label="登録と同期">
         <div className="dh-account-main"><SteamProfile steamId={steamId} profile={profile}/>

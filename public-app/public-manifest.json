@@ -622,8 +622,8 @@
     },
     {
       "path": "frontend/src/pages/Deadhub/Deadhub.jsx",
-      "bytes": 20901,
-      "sha256": "ea8dc3211910e1dadfc4b63eca57638421279af6db82a248791b9608bb705e5d"
+      "bytes": 21044,
+      "sha256": "1193a70e2022c1c6f917d21c849272637332691e4da8c4004eb4978cacd6170d"
     },
     {
       "path": "shared/deadhub.mjs",

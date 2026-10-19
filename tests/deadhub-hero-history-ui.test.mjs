@@ -36,6 +36,8 @@ async function page({rows=fixture()}={}){
   throw Error('Unmocked request: '+path)
  }
  const view=render(React.createElement(Deadhub));await waitFor(()=>assert.ok(view.container.querySelector('.dh-calendar')))
+ // Settle the initial profile effect before measuring requests caused by filters.
+ await waitFor(()=>assert.ok(state.calls.some(call=>call.path==='/api/deadhub/profile')))
  return {...view,state,list:()=>view.getByRole('region',{name:'試合一覧',exact:true}),select:()=>view.getByRole('combobox',{name:'一覧のヒーロー',exact:true})}
 }
 const ids=view=>[...view.list().querySelectorAll('.dh-match>small')].map(el=>el.textContent.replace('試合ID ',''))
