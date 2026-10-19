@@ -6,6 +6,7 @@ import {normalizeAccountId} from '../../shared/diagnosis.mjs'
 import {createSteamProfileProvider,createSteamAvatarProvider} from './steam-profile.js'
 import {invitedAccounts} from './invitations.js'
 import {createSharedSyncGate} from './sync-gate.js'
+import {createSyncRunRecorder} from './sync-runs.js'
 export function createRecordRuntime({env=process.env,initializationLogger=code=>console.warn(code)}={}) {
   // Preview is deliberately disconnected. No fallback to any FYTH credential.
   // Only a fixed local stage code is logged. Never log env values or errors.
@@ -31,7 +32,7 @@ export function createRecordRuntime({env=process.env,initializationLogger=code=>
     let profile=null,avatar=null
     try{profile=createSteamProfileProvider({apiKey:env.DEADHUB_STEAM_WEB_API_KEY});avatar=createSteamAvatarProvider({profile})}catch{/* Optional display data cannot disable records. */}
     stage='DEADHUB_INIT_SERVICES'
-    return {store,auth,profile,avatar,sync:createRecordSync({store,provider:createRecordProvider(),
+    return {store,auth,profile,avatar,syncRuns:createSyncRunRecorder({store}),sync:createRecordSync({store,provider:createRecordProvider(),
       gate:inviteSetting!==undefined?createSharedSyncGate(pool):null}),cronOwner:ownerForAccount(account)}
   } catch(error) {
     if(stage==='DEADHUB_INIT_DATABASE')stage=getRecordPoolFailureCode(error)??stage

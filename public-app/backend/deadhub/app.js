@@ -12,8 +12,11 @@ const MESSAGES={unauthorized:'Steamでログインしてください。',not_all
   already_registered:'このSteamアカウントは登録済みです。',not_registered:'先に記録対象として登録してください。',
   rate_limited:'提供元の取得制限に達しました。時間をおいてお試しください。',provider_timeout:'提供元の応答が時間内に返りませんでした。保存済みの記録は残っています。'}
 const digest=s=>createHash('sha256').update(s).digest()
-export function createDeadhubApp({store=null,sync=null,auth=null,profile=null,avatar=null,cronSecret=null,cronOwner=null,loginFailureLogger=code=>console.warn(code)}={}) {
+export function createDeadhubApp({store=null,sync=null,syncRuns=null,auth=null,profile=null,avatar=null,cronSecret=null,cronOwner=null,loginFailureLogger=code=>console.warn(code)}={}) {
   const app=express();app.disable('x-powered-by')
+  const recordRun=(owner,source,operation,res)=>syncRuns
+    ?syncRuns.run(owner,source,operation,status=>res.set('X-Deadhub-Sync-Recording',status))
+    :operation()
   app.use((req,res,next)=>{res.set({'Cache-Control':'private, no-store','Referrer-Policy':'no-referrer','X-Content-Type-Options':'nosniff'});next()})
   app.use(express.json({limit:'1kb',strict:true}))
   const enabled=!!(store&&sync&&auth)
@@ -23,7 +26,7 @@ export function createDeadhubApp({store=null,sync=null,auth=null,profile=null,av
   app.get('/api/deadhub/cron',async(req,res)=>{
     const bearer=req.get('authorization')??''
     if (!cronSecret || cronSecret.length<32 || !cronOwner || !timingSafeEqual(digest(bearer),digest('Bearer '+cronSecret))) throw new RecordError('unauthorized',401)
-    try {res.json(await sync(cronOwner))} catch(error) {
+    try {res.json(await recordRun(cronOwner,'cron_endpoint',()=>sync(cronOwner),res))} catch(error) {
       if(['not_registered','busy','cooldown','shared_busy'].includes(error.code))return res.json({status:'skipped',reason:error.code})
       throw error
     }
@@ -56,6 +59,9 @@ export function createDeadhubApp({store=null,sync=null,auth=null,profile=null,av
     res.set('Content-Type','image/jpeg').send(bytes)
   })
   app.post('/api/deadhub/auth/logout',(req,res)=>auth.logout(req,res))
+  app.get('/api/deadhub/sync-runs',async(req,res)=>{
+    res.json(syncRuns?await syncRuns.snapshot(req.identity.owner):{available:false,evidence:'unavailable',cron_origin_verified:false,sources:null})
+  })
   app.get('/api/deadhub/records',async(req,res)=>{
     const month=req.query.month??tokyoDay(Date.now()).slice(0,7)
     try{monthBounds(month)}catch{throw new RecordError('invalid_month',400)}
@@ -65,12 +71,14 @@ export function createDeadhubApp({store=null,sync=null,auth=null,profile=null,av
   app.post('/api/deadhub/register',async(req,res)=>{
     if(!req.body || Array.isArray(req.body) || Object.keys(req.body).length)throw new RecordError('invalid_input',400)
     // Registration target comes exclusively from verified Steam identity.
-    await store.register(req.identity.owner,req.identity.accountId)
-    res.json(await sync(req.identity.owner))
+    res.json(await recordRun(req.identity.owner,'registration',async()=>{
+      await store.register(req.identity.owner,req.identity.accountId)
+      return sync(req.identity.owner)
+    },res))
   })
   app.post('/api/deadhub/sync',async(req,res)=>{
     if(!req.body || Array.isArray(req.body) || Object.keys(req.body).length)throw new RecordError('invalid_input',400)
-    res.json(await sync(req.identity.owner))
+    res.json(await recordRun(req.identity.owner,'manual',()=>sync(req.identity.owner),res))
   })
   app.use((error,req,res,next)=>{
     if(res.headersSent)return next(error)

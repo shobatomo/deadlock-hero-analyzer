@@ -587,8 +587,8 @@
     },
     {
       "path": "backend/deadhub/app.js",
-      "bytes": 6117,
-      "sha256": "1d7a01ae1e55e98380f2b7e84767e9a178df879cfe36933cb706fd9b3dff8396"
+      "bytes": 6677,
+      "sha256": "39b197ca92077b1abdc20034fb64732871315eb382ef40c8edf309240c6f668d"
     },
     {
       "path": "backend/deadhub/auth.js",
@@ -602,13 +602,13 @@
     },
     {
       "path": "backend/deadhub/runtime.js",
-      "bytes": 2364,
-      "sha256": "86f4fe2eaf426b5ca377b7166073e9138d9d99dbda88eadf8c4d1eb704365bbe"
+      "bytes": 2457,
+      "sha256": "7ff08a9ba1a7472e9f7975c52d29aaa7b71cc3f2ef39d666f8e075475766de83"
     },
     {
       "path": "backend/deadhub/store.js",
-      "bytes": 10479,
-      "sha256": "200d59b3affb7abcfd766744fdb9b3267bbb0ec2cc70f4cc6f0cfb250ca2a389"
+      "bytes": 13004,
+      "sha256": "587bff7590b8bfd3ab20d0cafebc8326507068f3da34786a01789dfde49cf770"
     },
     {
       "path": "backend/deadhub/sync.js",
@@ -694,6 +694,11 @@
       "path": "backend/deadhub/sync-gate.js",
       "bytes": 2257,
       "sha256": "5d174b0344d144a99a886d0153906a3658967fe840610e7382e53dfacbe5068c"
+    },
+    {
+      "path": "backend/deadhub/sync-runs.js",
+      "bytes": 2664,
+      "sha256": "0656ba329be39f13ba762635f645e8b7d8b750309f77c2be2d4140a304b2f7e0"
     }
   ]
 }

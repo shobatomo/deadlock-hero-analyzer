@@ -75,6 +75,38 @@ export function createRecordStore(pool) {
     return row
   }
   return {
+    async startSyncRun(owner,runId,source) {
+      return tx(owner,client=>client.query(`INSERT INTO deadhub_private.sync_runs(run_id,owner_id,source)
+        VALUES($1,$2,$3)`,[runId,owner,source]))
+    },
+    async finishSyncRun(owner,runId,{outcome,result_code,processed_count}) {
+      return tx(owner,async client=>{
+        const result=await client.query(`UPDATE deadhub_private.sync_runs SET finished_at=clock_timestamp(),
+          outcome=$3,result_code=$4,processed_count=$5 WHERE owner_id=$1 AND run_id=$2 AND outcome='started'`,
+        [owner,runId,outcome,result_code,processed_count])
+        if(result.rowCount!==1)throw new Error('Sync audit completion unavailable')
+      })
+    },
+    async syncRunSnapshot(owner) {
+      return tx(owner,async client=>{
+        const {rows}=await client.query(`SELECT s.source,clock_timestamp() AS observed_at,
+          to_jsonb(latest) AS latest,to_jsonb(success) AS last_success,to_jsonb(failed) AS last_failure,
+          unfinished.count AS unfinished_count,unfinished.oldest AS oldest_unfinished_at
+          FROM (VALUES ('manual'),('registration'),('cron_endpoint')) AS s(source)
+          LEFT JOIN LATERAL (SELECT started_at,finished_at,outcome,result_code,processed_count
+            FROM deadhub_private.sync_runs WHERE owner_id=$1 AND source=s.source ORDER BY started_at DESC,run_id DESC LIMIT 1) latest ON true
+          LEFT JOIN LATERAL (SELECT started_at,finished_at,outcome,result_code,processed_count
+            FROM deadhub_private.sync_runs WHERE owner_id=$1 AND source=s.source AND outcome='success' ORDER BY started_at DESC,run_id DESC LIMIT 1) success ON true
+          LEFT JOIN LATERAL (SELECT started_at,finished_at,outcome,result_code,processed_count
+            FROM deadhub_private.sync_runs WHERE owner_id=$1 AND source=s.source AND outcome='failed' ORDER BY started_at DESC,run_id DESC LIMIT 1) failed ON true
+          LEFT JOIN LATERAL (SELECT count(*)::text AS count,min(started_at) AS oldest
+            FROM deadhub_private.sync_runs WHERE owner_id=$1 AND source=s.source AND outcome='started') unfinished ON true`,[owner])
+        return {observed_at:iso(rows[0].observed_at),sources:Object.fromEntries(rows.map(row=>[row.source,{
+          latest:row.latest,last_success:row.last_success,last_failure:row.last_failure,
+          unfinished_count:row.unfinished_count,oldest_unfinished_at:iso(row.oldest_unfinished_at)
+        }]))}
+      })
+    },
     async register(owner,accountId) {
       try {return await tx(owner,async client=>{
         await client.query(`INSERT INTO deadhub_private.accounts(owner_id,steam_account_id,initial_from)
