@@ -21,6 +21,7 @@
 .dh-day-summary .dh-section-heading{border-bottom-color:#52788c}
 .dh-day-summary .dh-label{color:#b8ddf5}
 .dh-day-summary>.dh-section-heading+p{color:#d5e4ef;font-size:.85rem}
+.dh-panel .dh-summary-note{font-size:.75rem;color:#c2d7e7;line-height:1.7;margin:8px 0 0}
 .deadhub .dh-totals{grid-template-columns:repeat(3,minmax(0,1fr));margin-bottom:0}
 .dh-totals>div{background:#132331;border:1px solid #3f627c}
 .dh-totals>.dh-total-wide{grid-column:1/-1}

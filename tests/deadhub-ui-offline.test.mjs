@@ -32,6 +32,23 @@ function mockApi({profile={profile:null},profileFail=false,rows=fixture(),accoun
 }
 async function page(options){const state=mockApi(options),view=render(React.createElement(Deadhub));await waitFor(()=>assert.ok(view.container.querySelector('.dh-calendar')));assert.equal(view.container.querySelectorAll('.dh-match').length,state.rows.length);return {state,...view}}
 
+test('daily totals explain the all-hero scope and partial denominator, retaining zero and missing values after filtering',async()=>{
+ const values=[
+  {hero_id:15,kills:4,deaths:0,assists:null,hero_damage:100},
+  {hero_id:4,kills:null,deaths:2,assists:6,hero_damage:null},
+  {hero_id:4,kills:0,deaths:0,assists:null,hero_damage:200},
+ ]
+ const rows=values.map((value,i)=>({...fixture()[0],match_id:String(300+i),...value})),view=await page({rows})
+ const summary=view.container.querySelector('.dh-day-summary'),totals=()=>[...summary.querySelectorAll('dd')].map(el=>el.textContent)
+ assert.match(summary.querySelector('.dh-summary-note').textContent,/この日の全ヒーローの合計/)
+ assert.match(summary.querySelector('.dh-summary-note').textContent,/取得件数／この日の保存済み試合数/)
+ const expected=['4（取得 2/3 試合分）','2','6（取得 1/3 試合分）','300（取得 2/3 試合分）','未取得']
+ assert.deepEqual(totals(),expected)
+ fireEvent.change(view.getByRole('combobox',{name:'一覧のヒーロー',exact:true}),{target:{value:'4'}})
+ assert.equal(view.container.querySelectorAll('.dh-match').length,2)
+ assert.deepEqual(totals(),expected)
+})
+
 const healingEntry=element=>[...element.querySelectorAll('dl>div')].find(entry=>entry.querySelector('dt')?.textContent.startsWith('回復量'))
 for(const [values,expected] of [
  [[2462,0],'2,462'],[[2462,null,0],'2,462（部分合計 · 取得 2/3 試合分）'],

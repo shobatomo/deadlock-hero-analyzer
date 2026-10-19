@@ -35,7 +35,7 @@ function TrendPlot({points,metric,hero,averageCount,ceiling,undated}) {
     <div className="dh-trend-plot" ref={frame}>
       <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-labelledby={`${uid}-title ${uid}-desc`} data-axis-maximum={ceiling}>
         <title id={`${uid}-title`}>{hero}の{metric.label}、{points.length}試合</title>
-        <desc id={`${uid}-desc`}>古い試合から等間隔。未取得の値は空白で、線をつなぎません。平均があるのは{averageCount}試合です。下の試合選択と数値一覧で値を確認できます。</desc>
+        <desc id={`${uid}-desc`}>古い試合から等間隔。未取得の値は空白で、線をつなぎません。5試合平均の表示点は{averageCount}点です。下の試合選択と数値一覧で値を確認できます。</desc>
         {[0,ceiling/2,ceiling].map(value => <g key={value} className="dh-trend-gridline"><line x1={left} x2={right} y1={y(value)} y2={y(value)}/><text x={left-8} y={y(value)+4} textAnchor="end">{axisNumbers.format(value)}</text></g>)}
         <text className="dh-trend-unit" x={left} y={14}>{metric.unit}</text>
         <line className="dh-trend-cursor" x1={x(selected)} x2={x(selected)} y1={top} y2={bottom}/>
@@ -94,7 +94,7 @@ export default function MatchTrends({rows,month,pending=false,readFailed=false,o
         <h3 className="dh-trend-chart-title">{heroName(selected.id)} <span>／ {metric.label}</span></h3>
         {points.length > 0 ? <>
           <p className="dh-trend-range">表示範囲：{date(points[0].row.started_at)} ～ {date(points.at(-1).row.started_at)}（JST）</p>
-          <p className="dh-trend-note">{points.length}試合中、{metric.label}が未取得：{result.missing}試合 ・ 平均を表示できる試合：{result.averages}試合</p>
+          <p className="dh-trend-note">{points.length}試合中、{metric.label}が未取得：{result.missing}試合 ・ 5試合平均の表示点：{result.averages}点</p>
           {result.undated > 0 && <p className="dh-trend-note">開始日時不明の{result.undated}試合は描画できないため、平均も表示しません。</p>}
           {result.missing === points.length && <p className="dh-trend-empty">この指標はすべて未取得です。0として描画していません。</p>}
           <TrendPlot key={`${month}:${selected.id}`} points={points} metric={metric} hero={heroName(selected.id)} averageCount={result.averages} ceiling={ceiling} undated={result.undated}/>

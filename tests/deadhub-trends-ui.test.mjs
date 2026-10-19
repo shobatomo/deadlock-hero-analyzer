@@ -40,6 +40,17 @@ test('missing values split paths and valid zero remains visible and inspectable'
  fireEvent.change(view.getByRole('slider'),{target:{value:'3'}})
  assert.equal(view.container.querySelector('[data-selected-value]').textContent,'未取得')
 })
+test('average point count differs from the five-match denominator and missing windows stay absent',()=>{
+ const view=render(component([0,2,null,6,8,10,12,14].map((kills,i)=>row(i+1,{kills}))))
+ assert.match(view.container.textContent,/8試合中、キルが未取得：1試合 ・ 5試合平均の表示点：1点/)
+ assert.match(view.getByRole('img').querySelector('desc').textContent,/5試合平均の表示点は1点/)
+ assert.equal(view.container.querySelectorAll('[data-point=average]').length,1)
+ assert.equal(view.container.querySelector('[data-selected-average]').textContent,'10回')
+ fireEvent.change(view.getByRole('slider'),{target:{value:'7'}})
+ assert.equal(view.container.querySelector('[data-selected-average]').textContent,'—')
+ assert.match(view.container.textContent,/対象の指標に1件でも欠損がある区間は表示せず/)
+})
+
 test('metric switches render only the chosen count or damage/min, with duration gaps and actual zero deaths',()=>{
  const records=[row(1),row(2,{duration_s:0}),row(3,{duration_s:null}),row(4),row(5,{hero_damage:0})]
  const view=render(component(records))

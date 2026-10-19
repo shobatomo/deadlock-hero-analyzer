@@ -162,6 +162,7 @@ export default function Deadhub() {
           <div className="dh-panel dh-day-summary">
           <header className="dh-section-heading"><div><p className="dh-label">日別サマリー</p><h2>{Number(selected.slice(5,7))}月{Number(selected.slice(8))}日の記録</h2></div></header>
           {daily.length?<><p>{summary.count}試合を取得 · {summary.wins}勝 {summary.losses}敗{summary.unknown>0?` · 勝敗未取得 ${summary.unknown}試合`:''}</p>
+            <p className="dh-summary-note">この日の全ヒーローの合計です。未取得は除き、部分合計には取得件数／この日の保存済み試合数を併記します。</p>
             <dl className="dh-totals">{[['kills','キル'],['deaths','デス'],['assists','アシスト'],['hero_damage','与ダメージ（対プレイヤー）']].map(([key,label])=><div key={key} className={key==='hero_damage'?'dh-total-wide':undefined}><dt>{label}</dt><dd>{total(summary[key])}</dd></div>)}
               <div className="dh-total-wide"><dt>回復量 <small className="dh-metric-source">API提供値</small></dt><dd>{total(summary.player_healing,'部分合計 · 取得')}</dd></div></dl>
             </>:
