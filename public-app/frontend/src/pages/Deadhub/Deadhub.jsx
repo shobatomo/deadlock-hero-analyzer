@@ -1,6 +1,7 @@
-import {useCallback,useEffect,useRef,useState} from 'react'
+import {useCallback,useEffect,useId,useRef,useState} from 'react'
 import {heroName} from '../../../../shared/heroes.mjs'
 import {tokyoDay,shiftMonth,dayState,daySummary} from '../../../../shared/deadhub.mjs'
+import {trendHeroes,trendHeroId} from '../../../../shared/record-trends.mjs'
 import HeroPortrait from '../../components/HeroPortrait'
 import SteamProfile from './SteamProfile'
 import MatchTrends from './MatchTrends'
@@ -27,10 +28,10 @@ async function request(path,{signal,...options}={}) {
   if(!response.ok){const error=Error(data.error??'取得に失敗しました。');error.code=data.code;throw error}
   return data
 }
-function Match({row}) {
+function Match({row,showDate=false}) {
   return <li className="dh-match">
     <div className="dh-match-head"><div aria-hidden="true"><HeroPortrait key={row.hero_id??'unknown'} id={row.hero_id} className="dh-hero-portrait"/></div>
-      <div className="dh-match-heading"><time dateTime={row.started_at}>{clock(row.started_at)}</time><strong>{row.hero_id==null?'ヒーロー未取得':heroName(row.hero_id)}</strong></div>
+      <div className="dh-match-heading"><time dateTime={row.started_at}>{showDate?`${dateTime(row.started_at)} JST`:clock(row.started_at)}</time><strong>{row.hero_id==null?'ヒーロー未取得':heroName(row.hero_id)}</strong></div>
       <span>{row.won==null?'勝敗未取得':row.won?'勝利':'敗北'}</span></div>
     <dl><div><dt>キル / デス / アシスト</dt><dd>{number(row.kills)} / {number(row.deaths)} / {number(row.assists)}</dd></div>
       <div><dt>与ダメージ<span className="dh-metric-detail">（対プレイヤー）</span></dt><dd>{number(row.hero_damage)}</dd></div>
@@ -43,6 +44,7 @@ function Match({row}) {
 export default function Deadhub() {
   const today=tokyoDay(Date.now()), currentMonth=today.slice(0,7)
   const [month,setMonth]=useState(currentMonth),[selected,setSelected]=useState(today)
+  const [listHero,setListHero]=useState(''),listId=useId()
   const [config,setConfig]=useState(null),[view,setView]=useState(null),[authState,setAuthState]=useState('checking')
   const [busy,setBusy]=useState(false),[message,setMessage]=useState(''),[error,setError]=useState(''),[now,setNow]=useState(Date.now())
   const active=useRef(false)
@@ -106,6 +108,11 @@ export default function Deadhub() {
     setMonth(next);setSelected(next===currentMonth?today:next+'-01')
   }
   const account=view?.account, rows=view?.month===month?view.matches:[], daily=rows.filter(r=>tokyoDay(r.started_at)===selected),summary=daySummary(daily)
+  // Only this month's snapshot is loaded. Reuse the graph's hero identity rules;
+  // its hero/metric selection remains independent of the record list.
+  const listHeroes=trendHeroes(rows),unknownHeroes=rows.filter(row=>trendHeroId(row.hero_id)===null).length
+  const listRows=listHero?rows.filter(row=>listHero==='unknown'?trendHeroId(row.hero_id)===null:trendHeroId(row.hero_id)===listHero):daily
+  const listHeroName=listHero==='unknown'?'ヒーロー未取得':heroName(listHero)
   const [year,index]=month.split('-').map(Number), days=new Date(Date.UTC(year,index,0)).getUTCDate()
   const offset=new Date(Date.UTC(year,index-1,1)).getUTCDay()
   const monthPending=view?.month!==month
@@ -137,12 +144,12 @@ export default function Deadhub() {
           <div className="dh-grid"><div className="dh-week" aria-hidden="true">{['日','月','火','水','木','金','土'].map(d=><span key={d}>{d}</span>)}</div>
             {Array.from({length:offset},(_,i)=><span key={'blank'+i} aria-hidden="true"/>)}
             {Array.from({length:days},(_,i)=>{const day=`${month}-${String(i+1).padStart(2,'0')}`,state=monthPending?'loading':dayState(day,rows,account),count=rows.filter(r=>tokyoDay(r.started_at)===day).length
-              return <button key={day} className={`dh-day dh-${state}`} aria-label={`${day} ${stateLabel[state]}${count?` ${count}試合`:''}`} aria-pressed={selected===day} onClick={()=>setSelected(day)}><span>{i+1}</span></button>})}
+              return <button key={day} className={`dh-day dh-${state}`} aria-label={`${day} ${stateLabel[state]}${count?` ${count}試合`:''}`} aria-pressed={selected===day} onClick={()=>{setSelected(day);setListHero('')}}><span>{i+1}</span></button>})}
           </div>
           <div className="dh-legend"><span><i className="dh-dot recorded"/>記録あり</span><span><i className="dh-dot unsynced"/>記録の表示なし</span></div>
           <p className="dh-muted">色は保存済みの記録の有無を表します。記録が表示されない日は、プレイしていないとは限りません。日付を選ぶと取得状況を確認できます。勝敗や成績による色分けはありません。</p>
         </section>
-        <section className="dh-detail" aria-label="選択日の記録">
+        <section className="dh-detail" aria-label="日別サマリーと試合一覧">
           <div className="dh-panel dh-day-summary">
           <header className="dh-section-heading"><div><p className="dh-label">日別サマリー</p><h2>{Number(selected.slice(5,7))}月{Number(selected.slice(8))}日の記録</h2></div></header>
           {daily.length?<><p>{summary.count}試合を取得 · {summary.wins}勝 {summary.losses}敗{summary.unknown>0?` · 勝敗未取得 ${summary.unknown}試合`:''}</p>
@@ -151,10 +158,22 @@ export default function Deadhub() {
             </>:
             <div className="dh-empty"><strong>{stateLabel[selectedState]}</strong><p>{stateDescription[selectedState]}</p></div>}
           </div>
-          {daily.length>0&&<section className="dh-panel dh-match-section" aria-label="試合一覧">
-            <header className="dh-section-heading"><div><p className="dh-label">MATCH LIST</p><h3>試合一覧</h3></div><p>{summary.count}試合</p></header>
-            <ul className="dh-matches">{daily.map(row=><Match key={row.match_id} row={row}/>)}</ul>
-          </section>}
+          <section className="dh-panel dh-match-section" aria-label="試合一覧" aria-busy={monthPending}>
+            <header className="dh-section-heading"><div><p className="dh-label">MATCH LIST</p><h3>試合一覧</h3></div></header>
+            <p id={listId+'-scope'} className="dh-list-scope">対象：{year}年{index}月の保存済み記録（JST）。全履歴ではありません。別の月はカレンダーで切り替えてください。</p>
+            <div className="dh-list-controls">
+              <label htmlFor={listId+'-hero'}>一覧のヒーロー<select id={listId+'-hero'} value={listHero} disabled={monthPending} aria-describedby={listId+'-scope'} onChange={event=>setListHero(event.target.value)}>
+                <option value="">{Number(selected.slice(5,7))}月{Number(selected.slice(8))}日（絞り込みなし）</option>
+                {listHeroes.map(hero=><option key={hero.id} value={hero.id}>{heroName(hero.id)}（月内{hero.count}試合）</option>)}
+                {listHero&&listHero!=='unknown'&&!listHeroes.some(hero=>hero.id===listHero)&&<option value={listHero}>{listHeroName}（{monthPending?'読み込み中':'この月は0試合'}）</option>}
+                {(unknownHeroes>0||listHero==='unknown')&&<option value="unknown">ヒーロー未取得{monthPending?'':`（月内${unknownHeroes}試合）`}</option>}
+              </select></label>
+              <button type="button" onClick={()=>setListHero('')} disabled={!listHero||monthPending}>絞り込みを解除</button>
+            </div>
+            <p className="dh-list-hint">ヒーローを選ぶと月内の日付をまたいで表示します。カレンダーの日付を選ぶと日別表示に戻ります。</p>
+            <p className="dh-list-count" role="status">{monthPending?'この月の記録を読み込み中…':`${listHero?`${listHeroName} · ${year}年${index}月`:`${Number(selected.slice(5,7))}月${Number(selected.slice(8))}日`}：${listRows.length}試合 / この月の保存済み記録 ${rows.length}試合`}</p>
+            {!monthPending&&(listRows.length>0?<ul className="dh-matches">{listRows.map(row=><Match key={row.match_id} row={row} showDate={Boolean(listHero)}/>)}</ul>:<p className="dh-list-empty">{listHero?'この月の保存済み記録に、該当する試合はありません。絞り込みを解除するか、別の月を選んでください。':'選択日の保存済み記録はありません。ヒーローを選ぶと、この月の別の日も確認できます。'}</p>)}
+          </section>
         </section>
       </div>
       <MatchTrends rows={rows} month={month} pending={monthPending} observedCount={view.observed.count} onMove={move} canPrevious={month!=='2020-01'} canNext={month!==currentMonth}/>

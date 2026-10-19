@@ -47,3 +47,16 @@
 .dh-match>dl dt{color:#dbcab8}
 .dh-match>small,.dh-match>dl .dh-metric-source{color:#cdbca9}
 .dh-match-heading time{color:#dccbb7}
+
+/* The list filter keeps the calendar and graph selections independent. */
+.dh-match-section .dh-list-scope,.dh-match-section .dh-list-hint{color:#e2cbb3;font-size:.78rem;line-height:1.7}
+.dh-list-controls{display:flex;align-items:end;flex-wrap:wrap;gap:12px;margin:18px 0 12px}
+.dh-list-controls label{display:grid;gap:8px;flex:1 1 200px;min-width:0;font-size:.82rem;color:#f0cfaa}
+.dh-list-controls select,.dh-list-controls button{min-height:46px;max-width:100%;border:1px solid #b58a65;border-radius:8px;background:#211d19;color:#f4eadc;padding:10px 12px;font:inherit}
+.dh-list-controls select{width:100%}
+.dh-list-controls button{font-size:.8rem}
+.dh-list-controls :disabled{opacity:.55;cursor:default}
+.dh-list-controls select:focus-visible,.dh-list-controls button:focus-visible{outline:3px dashed #fff;outline-offset:3px}
+.dh-match-section .dh-list-count{color:#f0dfcc;font-size:.85rem;margin:16px 0}
+.dh-match-section .dh-list-empty{color:#e2cbb3;font-size:.85rem;padding:16px 0 0;border-top:1px solid #86694f}
+@media(max-width:360px){.dh-list-controls{display:grid;grid-template-columns:minmax(0,1fr)}.dh-list-controls button{justify-self:start}}

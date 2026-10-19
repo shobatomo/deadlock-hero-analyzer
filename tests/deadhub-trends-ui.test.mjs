@@ -70,7 +70,7 @@ test('loading another month hides the old chart and returning uses current rows 
  view.rerender(component([],{month:'2026-09',pending:true}))
  assert.equal(view.queryByRole('img'),null);assert.match(view.getByRole('status').textContent,/読み込み中/)
  view.rerender(component([],{month:'2026-09',pending:false}));assert.equal(view.queryByRole('slider'),null)
- view.rerender(component([row(2,{hero_id:4})]));assert.equal(view.getByRole('combobox').value,'4')
+ view.rerender(component([row(2,{hero_id:4})]));assert.equal(view.getByRole('combobox',{name:'ヒーロー',exact:true}).value,'4')
  assert.equal(view.container.querySelector('[data-selected-value]').textContent,'2回')
 })
 test('a saved-record refresh updates values while retaining a still-present inspected match',()=>{
@@ -90,7 +90,7 @@ test('long hero names remain text, and the optional table gives every record, mi
   await waitFor(()=>assert.ok(view.getByRole('table')))
   assert.equal(view.getAllByRole('row').length,7);assert.match(view.getByRole('table').textContent,/未取得/)
   assert.equal(view.getByRole('region',{name:/数値一覧/}).tabIndex,0)
-  const select=view.getByRole('combobox');select.focus();assert.equal(document.activeElement,select)
+  const select=view.getByRole('combobox',{name:'ヒーロー',exact:true});select.focus();assert.equal(document.activeElement,select)
  } finally {manifest.heroes.pop()}
 })
 test('month navigation delegates the same callbacks and honours both range boundaries',()=>{
@@ -140,7 +140,7 @@ const movePage=(view,step)=>fireEvent.click(view.getByRole('button',{name:step<0
 test('calendar and selected-day records precede trends, retaining header and shared month navigation',async()=>{
  const view=await racePage()
  const assertOrder=()=>{
-  const panels=['登録と同期','プレイ記録カレンダー','選択日の記録','ヒーロー別の推移','照会範囲'].map(name=>view.getByRole('region',{name,exact:true}))
+  const panels=['登録と同期','プレイ記録カレンダー','日別サマリーと試合一覧','ヒーロー別の推移','照会範囲'].map(name=>view.getByRole('region',{name,exact:true}))
   for(let i=1;i<panels.length;i++)assert.ok(panels[i-1].compareDocumentPosition(panels[i])&Node.DOCUMENT_POSITION_FOLLOWING)
   assert.equal(view.container.querySelectorAll('.dh-trends').length,1)
   assert.ok(panels[0].contains(view.getByRole('button',{name:'最新の記録を取得',exact:true})))
@@ -173,12 +173,12 @@ for(const ok of [true,false])test(`sync ${ok?'success':'failure'} refreshes the 
  fireEvent.click(view.getByRole('button',{name:'最新の記録を取得',exact:true}))
  movePage(view,-1)
  await waitFor(()=>assertMonth(view,previousMonth,'5回'))
- fireEvent.change(view.getByRole('combobox'),{target:{value:'4'}})
+ fireEvent.change(view.getByRole('combobox',{name:'ヒーロー',exact:true}),{target:{value:'4'}})
  fireEvent.click(view.getByRole('button',{name:'アシスト（A）',exact:true}))
  await act(async()=>view.state.sync(ok))
  await waitFor(()=>assert.equal(view.getByRole('button',{name:'最新の記録を取得',exact:true}).disabled,false))
  assertMonth(view,previousMonth,'90回')
- assert.equal(view.getByRole('combobox').value,'4')
+ assert.equal(view.getByRole('combobox',{name:'ヒーロー',exact:true}).value,'4')
  assert.equal(view.state.records.at(-1).month,previousMonth)
  if(!ok)assert.match(view.getByRole('alert').textContent,/DUMMY_SYNC_FAILURE/)
 })
@@ -213,7 +213,7 @@ for(const fail of [false,true])test(`repeated A-B-A navigation discards older sa
   await act(async()=>old.release(99,fail))
   assertMonth(view,activeMonth,'25回')
  }
- fireEvent.change(view.getByRole('combobox'),{target:{value:'4'}})
+ fireEvent.change(view.getByRole('combobox',{name:'ヒーロー',exact:true}),{target:{value:'4'}})
  view.state.defer=false
  await act(async()=>view.state.sync(true))
  await waitFor(()=>assert.equal(view.getByRole('button',{name:'最新の記録を取得',exact:true}).disabled,false))
