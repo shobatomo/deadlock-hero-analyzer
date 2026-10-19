@@ -65,6 +65,9 @@ export function createDeadhubApp({store=null,sync=null,syncRuns=null,auth=null,p
   app.get('/api/deadhub/statistics',async(req,res)=>{
     res.json(await store.statistics(req.identity.owner))
   })
+  app.get('/api/deadhub/trend-history',async(req,res)=>{
+    res.json(await store.trendHistory(req.identity.owner,{hero_id:req.query.hero_id,page:req.query.page}))
+  })
   app.get('/api/deadhub/records',async(req,res)=>{
     const month=req.query.month??tokyoDay(Date.now()).slice(0,7)
     try{monthBounds(month)}catch{throw new RecordError('invalid_month',400)}

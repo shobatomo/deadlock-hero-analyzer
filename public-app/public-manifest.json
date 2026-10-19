@@ -587,8 +587,8 @@
     },
     {
       "path": "backend/deadhub/app.js",
-      "bytes": 6793,
-      "sha256": "cec26c35fc32ef6edb84d47a14dc761b11e8d5b7a39e862e4f0b285bd88a2724"
+      "bytes": 6962,
+      "sha256": "6442c24f8037cfdcf2c0da65c8ac0b0fa734661442a8cbab003850e5caf07c37"
     },
     {
       "path": "backend/deadhub/auth.js",
@@ -607,8 +607,8 @@
     },
     {
       "path": "backend/deadhub/store.js",
-      "bytes": 14371,
-      "sha256": "2f29fce69b5ce1ca68fa9695d4888f010ddddfc82168affc9bd766aa9059034e"
+      "bytes": 17552,
+      "sha256": "b25b39b7b9ac61e112008684ec8650a1c24170b950bc3ddcf3aa0c4b3268cbba"
     },
     {
       "path": "backend/deadhub/sync.js",
@@ -622,8 +622,8 @@
     },
     {
       "path": "frontend/src/pages/Deadhub/Deadhub.jsx",
-      "bytes": 22223,
-      "sha256": "fa0843d47361d7898da6218874819b2f46380b938b3bc41beee74b0a6ea868af"
+      "bytes": 22261,
+      "sha256": "f1507006c7f5ad5ac6c0563218b1689e183fdf7df6023f4cdf7b4fa5284824db"
     },
     {
       "path": "shared/deadhub.mjs",
@@ -647,18 +647,18 @@
     },
     {
       "path": "shared/record-trends.mjs",
-      "bytes": 4178,
-      "sha256": "035aa78b7d3e2ce0e27c4c0a523080669fe3669cce8cc14ec6a84727421065aa"
+      "bytes": 4306,
+      "sha256": "42a9b61081aca9b7b8170f857ccae8c7b13e3c94c9e0964334cd61503d98ec2a"
     },
     {
       "path": "frontend/src/pages/Deadhub/MatchTrends.jsx",
-      "bytes": 11904,
-      "sha256": "6c2a3e4e67a92749ab16da9c13c7aa6e2114edd4b5e553b108017c8373fb239d"
+      "bytes": 17455,
+      "sha256": "03e151f4989d32d82cb8ab51d7f625f4ea36b8b0af24bb9e3d26a5e5997556ec"
     },
     {
       "path": "frontend/src/pages/Deadhub/MatchTrends.css",
-      "bytes": 6292,
-      "sha256": "9a9179ed409f12ec178d37a32cbe63b561f82bdaad545c0f844a1403aaa4434a"
+      "bytes": 7415,
+      "sha256": "530af26bb86088cf5459b3039d016b239530fda27da54491bf806d497efcc728"
     },
     {
       "path": "backend/deadhub/item-assets.js",
@@ -729,6 +729,11 @@
       "path": "shared/record-statistics.mjs",
       "bytes": 2423,
       "sha256": "b47e8c6b869e6b1346c69e84c2181be0a7458bd5b189559fa87626028dd6a5ab"
+    },
+    {
+      "path": "shared/trend-history.mjs",
+      "bytes": 3179,
+      "sha256": "377ef021f65bf17ba02ab8167377fe8a0897eb1bf7cdbea653c542474a857a2b"
     }
   ]
 }

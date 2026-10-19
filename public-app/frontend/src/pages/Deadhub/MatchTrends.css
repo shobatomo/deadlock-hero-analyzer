@@ -19,3 +19,13 @@
 .dh-trend-inspector{background:#30283e}
 .dh-trend-inspector input{accent-color:#cbb7e6}
 .dh-trend-inspector dt,.dh-trend-inspector small{color:#d0c3df}
+.dh-trend-scopes{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.dh-trend-scopes button,.dh-trend-pages button,.dh-trend-history-status button{min-height:44px;padding:10px 12px;border:1px solid #9684ae;border-radius:8px;background:#302743;color:#f3ecff;font:inherit;font-size:.85rem}
+.dh-trend-scopes button[aria-pressed=true]{background:#cbb7e6;color:#251b34;font-weight:700}
+.dh-trends button[aria-disabled=true]{opacity:.5;cursor:default}
+.dh-trend-history-status{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.dh-trend-history-status p{font-size:.8rem;margin:8px 0;flex:1;min-width:180px}
+.dh-trend-pages{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:16px 0}
+.dh-trend-pages span{text-align:center;font-size:.8rem;font-variant-numeric:tabular-nums}
+.dh-trend-period{color:#d9c6ff}
+@media(max-width:600px){.dh-trend-pages{display:grid;grid-template-columns:1fr 1fr;gap:8px}.dh-trend-pages span{grid-column:1/-1;grid-row:1}.dh-trend-scopes{display:grid;grid-template-columns:1fr 1fr}.dh-trend-scopes button{padding:10px 6px;font-size:.8rem}}

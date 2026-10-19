@@ -4,6 +4,7 @@ import {monthBounds, DAY_MS, RECORD_FIELDS} from '../../shared/deadhub.mjs'
 import {RecordError,safeRetrySeconds} from './provider.js'
 import {safeFinalItems} from '../../shared/final-items.mjs'
 import {recordStatistics,statisticFields} from '../../shared/record-statistics.mjs'
+import {trendHistory,trendHistoryQuery,TREND_PAGE_SIZE,TREND_HERO_LIMIT} from '../../shared/trend-history.mjs'
 const storedFields=[...RECORD_FIELDS,'final_items']
 
 const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
@@ -58,11 +59,11 @@ function publicAccount(row) {
     sync_status:row.sync_status==='running' && new Date(row.lease_until).getTime()<=Date.now()?'interrupted':row.sync_status}
 }
 export function createRecordStore(pool) {
-  async function tx(owner, fn) {
+  async function tx(owner, fn, {readOnly=false}={}) {
     if (!uuid.test(owner)) throw new RecordError('unauthorized',401)
     const client=await pool.connect();let broken=false
     try {
-      await client.query('BEGIN')
+      await client.query(readOnly?'BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY':'BEGIN')
       await client.query("SELECT set_config('deadhub.owner_id',$1,true)",[owner])
       const result=await fn(client)
       await client.query('COMMIT');return result
@@ -76,6 +77,41 @@ export function createRecordStore(pool) {
     return row
   }
   return {
+    async trendHistory(owner,query={}) {
+      let selection
+      try { selection=trendHistoryQuery(query) } catch { throw new RecordError('invalid_input',400) }
+      return tx(owner,async client=>{
+        // Metadata and the bounded page see the same snapshot. Existing SELECT
+        // grants and transaction-local owner RLS suffice; no sync or writes.
+        const summary=(await client.query(`SELECT count(*)::text AS match_count,
+          min(started_at) AS first_started_at,max(started_at) AS last_started_at,
+          transaction_timestamp() AS observed_at,
+          count(*) FILTER (WHERE hero_id IS NULL OR hero_id=0)::text AS unknown_hero_count,
+          max(kills) FILTER (WHERE hero_id>0) AS kills,
+          max(deaths) FILTER (WHERE hero_id>0) AS deaths,
+          max(assists) FILTER (WHERE hero_id>0) AS assists,
+          max(hero_damage::double precision / nullif(duration_s,0) * 60) FILTER (WHERE hero_id>0) AS damage_per_minute
+          FROM deadhub_private.matches WHERE owner_id=$1`,[owner])).rows[0]
+        const groups=(await client.query(`SELECT hero_id,count(*)::text AS count FROM deadhub_private.matches
+          WHERE owner_id=$1 AND hero_id>0 GROUP BY hero_id ORDER BY count(*) DESC,hero_id LIMIT $2`,[owner,TREND_HERO_LIMIT+1])).rows
+        if(groups.length>TREND_HERO_LIMIT)throw new RecordError('trend_capacity',503)
+        const heroes=groups.map(row=>({id:String(row.hero_id),count:Number(row.count)}))
+        const hero=selection.heroId??heroes[0]?.id??null, selected=heroes.find(item=>item.id===hero)?.count??0
+        const page=selection.page,offset=(page-1)*TREND_PAGE_SIZE,context=Math.min(offset,4)
+        if(page>Math.max(1,Math.ceil(selected/TREND_PAGE_SIZE)))throw new RecordError('invalid_input',400)
+        const matches=selected ? (await client.query(`SELECT match_id,started_at,hero_id,kills,deaths,assists,hero_damage,duration_s
+          FROM deadhub_private.matches WHERE owner_id=$1 AND hero_id=$2
+          ORDER BY started_at ASC,match_id ASC OFFSET $3 LIMIT $4`,[owner,hero,offset-context,TREND_PAGE_SIZE+context])).rows.map(row=>({
+            match_id:String(row.match_id),started_at:iso(row.started_at),hero_id:row.hero_id,
+            ...Object.fromEntries(['kills','deaths','assists','hero_damage','duration_s'].map(key=>[key,row[key]===null?null:Number(row[key])]))
+          })) : []
+        return trendHistory({scope:'saved_all_time',time_zone:'Asia/Tokyo',observed_at:iso(summary.observed_at),
+          match_count:Number(summary.match_count),unknown_hero_count:Number(summary.unknown_hero_count),
+          first_started_at:iso(summary.first_started_at),last_started_at:iso(summary.last_started_at),heroes,hero_id:hero,
+          selected_count:selected,page,page_size:TREND_PAGE_SIZE,offset,context_count:context,matches,
+          maxima:Object.fromEntries(['kills','deaths','assists','damage_per_minute'].map(key=>[key,summary[key]===null?null:Number(summary[key])]))})
+      },{readOnly:true})
+    },
     async statistics(owner) {
       return tx(owner,async client=>{
         // One owner-scoped aggregate; no month restriction or match details.

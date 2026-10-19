@@ -202,7 +202,7 @@ export default function Deadhub() {
           </section>
         </section>
       </div>
-      <MatchTrends rows={rows} month={month} pending={monthPending&&!monthReadFailed} readFailed={monthReadFailed} observedCount={view.observed.count} onMove={move} canPrevious={month!=='2020-01'} canNext={month!==currentMonth}/>
+      <MatchTrends key={steamId} revision={syncRevision} rows={rows} month={month} pending={monthPending&&!monthReadFailed} readFailed={monthReadFailed} observedCount={view.observed.count} onMove={move} canPrevious={month!=='2020-01'} canNext={month!==currentMonth}/>
       <section className="dh-panel dh-coverage" aria-label="照会範囲">
         <h2>照会した範囲</h2><p>照会した期間：{account.coverage_from?`${dateTime(account.coverage_from)} 〜 ${dateTime(account.coverage_until)}`:'まだ確定していません'}</p>
         <p>この範囲は提供元の保存済みデータを確認した期間です。全試合・全項目の取得完了を示すものではありません。</p>

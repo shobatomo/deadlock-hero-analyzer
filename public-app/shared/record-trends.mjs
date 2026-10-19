@@ -9,7 +9,7 @@ export const TREND_METRICS = [
 const nonnegative = value => typeof value === 'number' && Number.isFinite(value) && value >= 0
 export function trendHeroId(value) {
   if (typeof value === 'number') return Number.isSafeInteger(value) && value > 0 ? String(value) : null
-  return typeof value === 'string' && /^[1-9]\d{0,8}$/.test(value) ? value : null
+  return typeof value === 'string' && /^[1-9]\d{0,9}$/.test(value) && Number(value) <= 2147483647 ? value : null
 }
 export function trendHeroes(rows) {
   const counts = new Map()
@@ -42,12 +42,13 @@ function compareIds(left,right) {
   return a < b ? -1 : a > b ? 1 : 0
 }
 export function buildHeroTrend(rows,{month,heroId,metric}) {
-  const bounds = monthBounds(month), start = Date.parse(bounds.start), end = Date.parse(bounds.end)
+  const bounds = month === null ? null : monthBounds(month)
+  const start = bounds ? Date.parse(bounds.start) : -Infinity, end = bounds ? Date.parse(bounds.end) : Infinity
   const selected = rows.filter(row => trendHeroId(row.hero_id) === heroId)
   const undated = selected.filter(row => !Number.isFinite(Date.parse(row.started_at))).length
   const ordered = selected.filter(row => {
     const time = Date.parse(row.started_at)
-    return time >= start && time < end
+    return Number.isFinite(time) && time >= start && time < end
   }).slice().sort((a,b) => Date.parse(a.started_at)-Date.parse(b.started_at) || compareIds(a.match_id,b.match_id))
   const values = ordered.map(row => trendValue(row,metric))
   // Stored dates are required by the DB. If malformed input occurs, do not imply
