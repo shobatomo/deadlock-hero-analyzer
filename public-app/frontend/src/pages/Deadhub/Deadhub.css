@@ -39,6 +39,10 @@
 
 .dh-metric-detail{display:block}
 
+.dh-month-title{display:grid;justify-items:center;gap:4px;min-width:0}
+.dh-month .dh-current-month{font-size:.8rem;min-height:44px;padding:8px 12px;background:transparent}
+.dh-month button:focus-visible{outline:3px dashed #fff;outline-offset:3px}
+
 /* Section hues are constant across wins, losses and missing data.
    Keep alerts, calendar state colors and item/modal category colors unchanged. */
 .dh-day-summary .dh-totals dt{color:#c2d7e7}

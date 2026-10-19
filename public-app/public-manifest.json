@@ -587,8 +587,8 @@
     },
     {
       "path": "backend/deadhub/app.js",
-      "bytes": 6677,
-      "sha256": "39b197ca92077b1abdc20034fb64732871315eb382ef40c8edf309240c6f668d"
+      "bytes": 6793,
+      "sha256": "cec26c35fc32ef6edb84d47a14dc761b11e8d5b7a39e862e4f0b285bd88a2724"
     },
     {
       "path": "backend/deadhub/auth.js",
@@ -607,8 +607,8 @@
     },
     {
       "path": "backend/deadhub/store.js",
-      "bytes": 13004,
-      "sha256": "587bff7590b8bfd3ab20d0cafebc8326507068f3da34786a01789dfde49cf770"
+      "bytes": 14371,
+      "sha256": "2f29fce69b5ce1ca68fa9695d4888f010ddddfc82168affc9bd766aa9059034e"
     },
     {
       "path": "backend/deadhub/sync.js",
@@ -617,13 +617,13 @@
     },
     {
       "path": "frontend/src/pages/Deadhub/Deadhub.css",
-      "bytes": 9727,
-      "sha256": "3a24422b94f0a677355fa89454de334558a088f5573771569d757d7480141ed6"
+      "bytes": 9975,
+      "sha256": "e99a268e71192b07d3464dda1e59ab53b26d67217d5755bbd0dca38e86e77497"
     },
     {
       "path": "frontend/src/pages/Deadhub/Deadhub.jsx",
-      "bytes": 21044,
-      "sha256": "1193a70e2022c1c6f917d21c849272637332691e4da8c4004eb4978cacd6170d"
+      "bytes": 22223,
+      "sha256": "fa0843d47361d7898da6218874819b2f46380b938b3bc41beee74b0a6ea868af"
     },
     {
       "path": "shared/deadhub.mjs",
@@ -714,6 +714,21 @@
       "path": "frontend/src/pages/Deadhub/syncRunView.mjs",
       "bytes": 4605,
       "sha256": "ac9ee3d6ecc3645707dffeac69f96c3608d900df505fd1ce41acae0349fd2404"
+    },
+    {
+      "path": "frontend/src/pages/Deadhub/AllTimeStats.jsx",
+      "bytes": 4627,
+      "sha256": "ed1a3510f1e13227bd34428e273696042f842db851b62706a823ecb4cc206b04"
+    },
+    {
+      "path": "frontend/src/pages/Deadhub/AllTimeStats.css",
+      "bytes": 1845,
+      "sha256": "cbbb0064d4f7178a3e844c9fc8586ccd40b728b242a8551bd52413abfced849d"
+    },
+    {
+      "path": "shared/record-statistics.mjs",
+      "bytes": 2423,
+      "sha256": "b47e8c6b869e6b1346c69e84c2181be0a7458bd5b189559fa87626028dd6a5ab"
     }
   ]
 }

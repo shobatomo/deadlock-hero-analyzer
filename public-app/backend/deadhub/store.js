@@ -3,6 +3,7 @@ import {randomUUID} from 'node:crypto'
 import {monthBounds, DAY_MS, RECORD_FIELDS} from '../../shared/deadhub.mjs'
 import {RecordError,safeRetrySeconds} from './provider.js'
 import {safeFinalItems} from '../../shared/final-items.mjs'
+import {recordStatistics,statisticFields} from '../../shared/record-statistics.mjs'
 const storedFields=[...RECORD_FIELDS,'final_items']
 
 const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
@@ -75,6 +76,25 @@ export function createRecordStore(pool) {
     return row
   }
   return {
+    async statistics(owner) {
+      return tx(owner,async client=>{
+        // One owner-scoped aggregate; no month restriction or match details.
+        // Existing SELECT grants and transaction-local owner RLS apply unchanged.
+        const {rows}=await client.query(`SELECT count(*)::text AS match_count,
+          min(started_at) AS first_started_at,max(started_at) AS last_started_at,
+          statement_timestamp() AS observed_at,
+          count(*) FILTER (WHERE won IS TRUE)::text AS wins,
+          count(*) FILTER (WHERE won IS FALSE)::text AS losses,
+          count(*) FILTER (WHERE won IS NULL)::text AS unknown,
+          ${statisticFields.map(key=>`sum(${key})::text AS ${key}_sum,count(${key})::text AS ${key}_known`).join(',')}
+          FROM deadhub_private.matches WHERE owner_id=$1`,[owner])
+        const row=rows[0]
+        return recordStatistics({scope:'saved_all_time',time_zone:'Asia/Tokyo',observed_at:iso(row.observed_at),
+          match_count:row.match_count,first_started_at:iso(row.first_started_at),last_started_at:iso(row.last_started_at),
+          outcomes:{wins:row.wins,losses:row.losses,unknown:row.unknown},
+          metrics:Object.fromEntries(statisticFields.map(key=>[key,{sum:row[key+'_sum'],known:row[key+'_known']}]))})
+      })
+    },
     async startSyncRun(owner,runId,source) {
       return tx(owner,client=>client.query(`INSERT INTO deadhub_private.sync_runs(run_id,owner_id,source)
         VALUES($1,$2,$3)`,[runId,owner,source]))

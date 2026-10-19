@@ -7,6 +7,7 @@ import SteamProfile from './SteamProfile'
 import MatchTrends from './MatchTrends'
 import FinalItems from './FinalItems'
 import SyncRunDetails from './SyncRunDetails'
+import AllTimeStats from './AllTimeStats'
 import {safeSteamProfile} from '../../../../shared/steam-profile.mjs'
 import './Deadhub.css'
 
@@ -44,15 +45,25 @@ function Match({row,showDate=false}) {
   </li>
 }
 export default function Deadhub() {
-  const today=tokyoDay(Date.now()), currentMonth=today.slice(0,7)
+  const [now,setNow]=useState(Date.now)
+  const today=tokyoDay(now), currentMonth=today.slice(0,7)
   const [month,setMonth]=useState(currentMonth),[selected,setSelected]=useState(today)
   const [listHero,setListHero]=useState(''),listId=useId()
   const [config,setConfig]=useState(null),[view,setView]=useState(null),[authState,setAuthState]=useState('checking')
-  const [busy,setBusy]=useState(false),[message,setMessage]=useState(''),[error,setError]=useState(''),[now,setNow]=useState(Date.now())
+  const [busy,setBusy]=useState(false),[message,setMessage]=useState(''),[error,setError]=useState('')
   const active=useRef(false)
   const [syncRevision,setSyncRevision]=useState(0)
   const [recordsError,setRecordsError]=useState(null)
   const records=useRef({month:currentMonth,request:0,controller:null,mounted:false})
+  useEffect(()=>{
+    // Update the month shortcut at JST midnight and after a suspended tab resumes.
+    // This clock update never moves the calendar or fetches records on its own.
+    const refresh=()=>setNow(Date.now())
+    const midnight=new Date(today+'T00:00:00+09:00').getTime()+86400000
+    const timer=setTimeout(refresh,Math.max(1,midnight-Date.now()))
+    document.addEventListener('visibilitychange',refresh);window.addEventListener('focus',refresh)
+    return()=>{clearTimeout(timer);document.removeEventListener('visibilitychange',refresh);window.removeEventListener('focus',refresh)}
+  },[today])
   useEffect(()=>{
     records.current.mounted=true
     return()=>{records.current.mounted=false;records.current.request++;records.current.controller?.abort()}
@@ -105,13 +116,15 @@ export default function Deadhub() {
     try{await request('auth/logout',{method:'POST'});setView(null);setAuthState('signed_out');setError('');setRecordsError(null);setMessage('')}
     catch(e){setError(e.message)}
   }
-  function move(step) {
-    const state=records.current,next=shiftMonth(state.month,step)
-    if(next<'2020-01'||next>currentMonth)return
+  function goToMonth(next) {
+    const timestamp=Date.now(),day=tokyoDay(timestamp),current=day.slice(0,7),state=records.current
+    setNow(timestamp)
+    if(next<'2020-01'||next>current||next===state.month)return
     // Invalidate immediately, including A -> B -> A and responses ignoring abort.
     state.month=next;state.request++;state.controller?.abort()
-    setMonth(next);setSelected(next===currentMonth?today:next+'-01')
+    setMonth(next);setSelected(next===current?day:next+'-01')
   }
+  function move(step) {goToMonth(shiftMonth(records.current.month,step))}
   const account=view?.account, rows=view?.month===month?view.matches:[], daily=rows.filter(r=>tokyoDay(r.started_at)===selected),summary=daySummary(daily)
   // Only this month's snapshot is loaded. Reuse the graph's hero identity rules;
   // its hero/metric selection remains independent of the record list.
@@ -149,7 +162,9 @@ export default function Deadhub() {
       <div className="dh-layout">
         <section className="dh-panel dh-calendar" aria-label="プレイ記録カレンダー">
           <header className="dh-section-heading dh-calendar-heading"><div><p className="dh-label">PLAY CALENDAR</p><h2>プレイカレンダー</h2></div><p>日付から記録を確認</p></header>
-          <div className="dh-month"><button aria-label="前の月" onClick={()=>move(-1)} disabled={month==='2020-01'}>‹</button><h3>{year}年{index}月</h3><button aria-label="次の月" onClick={()=>move(1)} disabled={month===currentMonth}>›</button></div>
+          <div className="dh-month"><button aria-label="前の月" onClick={()=>move(-1)} disabled={month==='2020-01'}>‹</button>
+            <div className="dh-month-title"><h3 aria-live="polite">{year}年{index}月</h3><button type="button" className="dh-current-month" onClick={()=>goToMonth(tokyoDay(Date.now()).slice(0,7))} disabled={month===currentMonth} title={month===currentMonth?'今月を表示中':'日本時間の今月へ'}>今月へ</button></div>
+            <button aria-label="次の月" onClick={()=>move(1)} disabled={month===currentMonth}>›</button></div>
           <div className="dh-grid"><div className="dh-week" aria-hidden="true">{['日','月','火','水','木','金','土'].map(d=><span key={d}>{d}</span>)}</div>
             {Array.from({length:offset},(_,i)=><span key={'blank'+i} aria-hidden="true"/>)}
             {Array.from({length:days},(_,i)=>{const day=`${month}-${String(i+1).padStart(2,'0')}`,state=monthPending?pendingState:dayState(day,rows,account),count=rows.filter(r=>tokyoDay(r.started_at)===day).length
@@ -157,6 +172,7 @@ export default function Deadhub() {
           </div>
           <div className="dh-legend"><span><i className="dh-dot recorded"/>記録あり</span><span><i className="dh-dot unsynced"/>記録の表示なし</span></div>
           <p className="dh-muted">色は保存済みの記録の有無を表します。記録が表示されない日は、プレイしていないとは限りません。日付を選ぶと取得状況を確認できます。勝敗や成績による色分けはありません。</p>
+          <AllTimeStats key={steamId} revision={syncRevision}/>
         </section>
         <section className="dh-detail" aria-label="日別サマリーと試合一覧">
           <div className="dh-panel dh-day-summary">
