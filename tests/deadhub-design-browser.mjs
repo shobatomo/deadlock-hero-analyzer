@@ -1,4 +1,4 @@
-// Design regression: headings, spacing, calendar sizes/colors and text contrast.
+// Section palette regression: hue separation, contrast and existing layout/behavior.
 // Build first. All application APIs are synthetic and external browser requests
 // are blocked. Arguments: Playwright module, Chromium executable, output folder.
 import assert from 'node:assert/strict'
@@ -69,10 +69,17 @@ try{
   if(width<800)assert.ok(summary.y>=calendar.y+calendar.height+23,'Mobile calendar must precede daily summary')
   const colors=await page.locator('.dh-day').evaluateAll(nodes=>[...new Set(nodes.map(n=>getComputedStyle(n).backgroundColor))])
   assert.equal(colors.length,2,'Calendar uses only recorded / unrecorded background colors')
-  assert.equal(await page.locator('.dh-trends').evaluate(el=>getComputedStyle(el).backgroundColor),'rgb(23, 38, 42)','Trend accent must survive CSS import order')
+  assert.equal(await page.locator('.dh-trends').evaluate(el=>getComputedStyle(el).backgroundColor),'rgb(40, 34, 59)','Purple trend accent must survive CSS import order')
+  const palette=await page.evaluate(()=>['.dh-calendar','.dh-day-summary','.dh-match-section','.dh-trends'].map(selector=>{const style=getComputedStyle(document.querySelector(selector));return {selector,background:style.backgroundColor,border:style.borderTopColor}}))
+  assert.deepEqual(palette.map(p=>p.background),['rgb(25, 39, 32)','rgb(22, 43, 60)','rgb(52, 40, 32)','rgb(40, 34, 59)'])
+  const hue=color=>{const [r,g,b]=color.match(/\d+/g).slice(0,3).map(Number),max=Math.max(r,g,b),min=Math.min(r,g,b),delta=max-min;if(!delta)return 0;return ((max===r?(g-b)/delta:max===g?(b-r)/delta+2:(r-g)/delta+4)*60+360)%360}
+  const accentHues=palette.map(p=>hue(p.border))
+  for(let i=0;i<accentHues.length;i++)for(let j=i+1;j<accentHues.length;j++){const distance=Math.abs(accentHues[i]-accentHues[j]);assert.ok(Math.min(distance,360-distance)>=45,'Section border hues must be visibly separated')}
+  const outcomes=await page.locator('.dh-match-head>span').evaluateAll(nodes=>nodes.map(n=>({color:getComputedStyle(n).color,border:getComputedStyle(n).borderTopColor,background:getComputedStyle(n).backgroundColor})))
+  for(const style of outcomes)assert.deepEqual(style,outcomes[0],'Win/loss uses the same neutral style')
   const contrasts=await page.evaluate(()=>{
    const rgb=s=>s.match(/[\d.]+/g).slice(0,3).map(Number),lum=c=>c.map(v=>{v/=255;return v<=.04045?v/12.92:((v+.055)/1.055)**2.4}).reduce((s,v,i)=>s+v*[.2126,.7152,.0722][i],0)
-   const targets=[...document.querySelectorAll('.dh-section-heading .dh-label,.dh-section-heading h2,.dh-section-heading h3,.dh-section-heading>p,.dh-totals dt,.dh-totals dd,.dh-metric-source,.dh-metric-detail,.dh-match dt,.dh-match dd,.dh-match-head>span,.dh-match>small,.dh-calendar .dh-muted,.dh-legend,.dh-trend-heading .dh-label,.dh-trend-heading h2,.dh-trend-scope,.dh-trend-count,.dh-trend-note,.dh-trend-range,.dh-trend-method p')]
+   const targets=[...document.querySelectorAll('.dh-section-heading .dh-label,.dh-section-heading h2,.dh-section-heading h3,.dh-section-heading>p,.dh-totals dt,.dh-totals dd,.dh-metric-source,.dh-metric-detail,.dh-match dt,.dh-match dd,.dh-match-head>span,.dh-match>small,.dh-calendar .dh-muted,.dh-legend,.dh-trend-heading .dh-label,.dh-trend-heading h2,.dh-trend-scope,.dh-trend-count,.dh-trend-note,.dh-trend-range,.dh-trend-method p,.dh-trend-hero,.dh-trend-hero select,.dh-trend-metrics button,.dh-trend-inspector>label,.dh-trend-readout dt,.dh-trend-readout dd,.dh-trend-inspector small')]
    return targets.filter(el=>el.getBoundingClientRect().height>0).map(el=>{
     let parent=el,bg
     while(parent){const c=getComputedStyle(parent).backgroundColor;if(c!=='transparent'&&!c.match(/rgba\([^)]*,\s*0\)$/)){bg=c;break}parent=parent.parentElement}
@@ -83,19 +90,22 @@ try{
   for(const entry of contrasts)assert.ok(entry.ratio>=4.5,'Text contrast below 4.5: '+JSON.stringify(entry))
   assert.match(await page.locator('.dh-coverage').innerText(),/回復量はAPI提供値です。提供元の最終スナップショット/)
   await page.evaluate(()=>{const p=document.createElement('p');p.textContent='画面テスト用の合成データ（実取得ではありません）';p.style.cssText='background:#ffdf87;color:#19211b;padding:12px';document.querySelector('main').prepend(p)})
-  await page.screenshot({path:join(output,`design-${scenario.name}-${width}.png`),fullPage:true})
+  await page.screenshot({path:join(output,`colors-${scenario.name}-${width}.png`),fullPage:true})
   if(scenario.name==='partial'){
    await page.locator('.dh-day-summary').screenshot({path:join(output,'summary-'+width+'.png')})
    await page.locator('.dh-match-section').screenshot({path:join(output,'matches-'+width+'.png')})
    if(width<800)await day.tap();else{await day.focus();await page.keyboard.press('Enter')}
    await page.getByRole('button',{name:'最新の記録を取得',exact:true}).click();await page.getByRole('alert').waitFor()
    assert.equal(syncs,1);assert.equal(await total.locator('dd').innerText(),scenario.total);assert.equal(await page.locator('.dh-match').count(),rows.length)
+   const alert=page.getByRole('alert');assert.match(await alert.innerText(),/取得失敗/)
+   assert.deepEqual(await alert.evaluate(el=>({background:getComputedStyle(el).backgroundColor,border:getComputedStyle(el).borderTopColor})),{background:'rgb(59, 44, 37)',border:'rgb(217, 164, 119)'},'Status alert colors remain unchanged and separate from section borders')
+   await page.screenshot({path:join(output,'colors-error-'+width+'.png'),fullPage:true})
    await page.getByRole('button',{name:'前の月',exact:true}).click();await page.locator('.dh-empty').waitFor()
    await page.getByRole('button',{name:'次の月',exact:true}).click();await day.waitFor()
    assert.equal(await total.locator('dd').innerText(),scenario.total)
   }
   assert.deepEqual(errors,[]);assert.deepEqual(external,[])
-  results.push({width,scenario:scenario.name,day_height:dimensions[0].height,day_width:cellWidth,zero_and_unknown_distinct:true,overflow:false,browser_errors:0,calendar_colors:colors.length,min_text_contrast:Math.min(...contrasts.map(c=>c.ratio)),section_order:true,distinct_heading_and_border:true})
+  results.push({width,scenario:scenario.name,day_height:dimensions[0].height,day_width:cellWidth,zero_and_unknown_distinct:true,overflow:false,browser_errors:0,calendar_colors:colors.length,section_palette:palette,section_border_hues:accentHues,min_text_contrast:Math.min(...contrasts.map(c=>c.ratio)),section_order:true,distinct_heading_and_border:true})
   await page.close()
  }
  assert.equal(unmockedApi,0)

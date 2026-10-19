@@ -17,23 +17,33 @@
 .dh-calendar-heading h2{font-size:1.4rem}
 .dh-calendar-heading>p{flex-basis:100%;margin-top:-8px}
 .dh-detail{min-width:0;display:grid;gap:20px}
-.dh-day-summary{background:#252c23;border-color:#6e735b}
-.dh-day-summary .dh-section-heading{border-bottom-color:#5b634d}
-.dh-day-summary .dh-label{color:#e4cea4}
-.dh-day-summary>.dh-section-heading+p{color:#dbe3d1;font-size:.85rem}
+.dh-day-summary{background:#162b3c;border-color:#6c9fbe}
+.dh-day-summary .dh-section-heading{border-bottom-color:#52788c}
+.dh-day-summary .dh-label{color:#b8ddf5}
+.dh-day-summary>.dh-section-heading+p{color:#d5e4ef;font-size:.85rem}
 .deadhub .dh-totals{grid-template-columns:repeat(3,minmax(0,1fr));margin-bottom:0}
-.dh-totals>div{background:#1b241e;border:1px solid #48583f}
+.dh-totals>div{background:#132331;border:1px solid #3f627c}
 .dh-totals>.dh-total-wide{grid-column:1/-1}
 .dh-totals dd{font-variant-numeric:tabular-nums}
-.dh-match-section{background:#15221e;border-color:#4f6359}
-.dh-match-section .dh-label{color:#bfd1c7}
-.dh-match-section .dh-section-heading{margin-bottom:20px;border-bottom-color:#496052}
+.dh-match-section{background:#342820;border-color:#b58a65}
+.dh-match-section .dh-label{color:#f0cfaa}
+.dh-match-section .dh-section-heading{margin-bottom:20px;border-bottom-color:#86694f}
 .dh-matches{gap:16px}
-.dh-match{padding:16px;border:1px solid #50614b;border-radius:10px;background:#1e2c25}
-.dh-match-head>span{border:1px solid #60715c;border-radius:6px;padding:4px 8px;color:#dbe3d1;font-size:.75rem;white-space:nowrap}
+.dh-match{padding:16px;border:1px solid #8f7058;border-radius:10px;background:#382c24}
+.dh-match-head>span{border:1px solid #9b7d62;border-radius:6px;padding:4px 8px;color:#e8d9c8;font-size:.75rem;white-space:nowrap}
 .dh-match dl{padding:14px 0;margin:14px 0 8px;border-top:1px solid #46594b;border-bottom:1px solid #46594b}
 .dh-match dd{font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
 @media(max-width:800px){.dh-detail{gap:18px}.dh-section-heading{gap:12px}.dh-calendar-heading h2{font-size:1.3rem}}
 @media(max-width:360px){.dh-match{padding:12px}.dh-match-head>span{padding:3px 6px}.dh-totals>div{padding:8px}.dh-totals dd{font-size:.95rem}.dh-section-heading h2,.dh-section-heading h3{font-size:1.15rem}}
 
 .dh-metric-detail{display:block}
+
+/* Section hues are constant across wins, losses and missing data.
+   Keep alerts, calendar state colors and item/modal category colors unchanged. */
+.dh-day-summary .dh-totals dt{color:#c2d7e7}
+.dh-day-summary .dh-metric-source{color:#b5c8d8}
+.dh-match-section>.dh-section-heading>p{color:#e2cbb3}
+.dh-match>dl{border-color:#765a43}
+.dh-match>dl dt{color:#dbcab8}
+.dh-match>small,.dh-match>dl .dh-metric-source{color:#cdbca9}
+.dh-match-heading time{color:#dccbb7}

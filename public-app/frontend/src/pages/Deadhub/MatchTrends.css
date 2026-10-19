@@ -2,10 +2,20 @@
 @media(max-width:600px){.dh-trend-heading{gap:16px}.dh-trend-month{width:100%;justify-content:space-between}.dh-trend-controls{gap:14px;margin-top:20px;display:block}.dh-trend-hero{max-width:none;margin-bottom:14px}.dh-trend-metrics{display:grid;grid-template-columns:1fr 1fr}.dh-trend-metrics button{padding:10px 6px}.dh-trend-legend{gap:10px;font-size:.7rem}.dh-trend-inspector{padding:12px}.dh-trend-readout dl{gap:12px}.dh-trend-readout dd{font-size:1.3rem}}
 
 /* A separate monthly overview, without changing chart values or series colors. */
-.deadhub .dh-trends{margin-top:32px;background:#17262a;border-color:#536d73}
-.dh-trend-heading{padding-bottom:18px;border-bottom:1px solid #4a6268}
-.dh-trend-heading .dh-label{color:#b5d0dc;letter-spacing:.08em;font-size:.72rem;margin-bottom:6px}
+.deadhub .dh-trends{margin-top:32px;background:#28223b;border-color:#9381ba}
+.dh-trend-heading{padding-bottom:18px;border-bottom:1px solid #756196}
+.dh-trend-heading .dh-label{color:#d9c6ff;letter-spacing:.08em;font-size:.72rem;margin-bottom:6px}
 .dh-trend-heading h2{font-size:1.3rem}
-.dh-trend-controls{padding:16px;border:1px solid #4a6268;border-radius:10px;background:#1d3032}
-.dh-trend-method{border-top-color:#4a6268}
+.dh-trend-controls{padding:16px;border:1px solid #756196;border-radius:10px;background:#302743}
+.dh-trend-method{border-top-color:#756196}
 @media(max-width:600px){.deadhub .dh-trends{margin-top:24px}.dh-trend-controls{padding:12px}.dh-trend-heading{align-items:start}}
+
+.dh-trend-month button,.dh-trend-metrics button{background:#302743;border-color:#9684ae}
+.dh-trend-hero select{background:#211b30;border-color:#9684ae}
+.dh-trend-metrics button[aria-pressed=true]{background:#cbb7e6;border-color:#cbb7e6;color:#251b34;box-shadow:inset 0 -3px #78628e}
+.dh-trend-plot{background:#1d192b}
+.dh-trend-actual circle{stroke:#1d192b}
+.dh-trend-average circle{fill:#1d192b}
+.dh-trend-inspector{background:#30283e}
+.dh-trend-inspector input{accent-color:#cbb7e6}
+.dh-trend-inspector dt,.dh-trend-inspector small{color:#d0c3df}
